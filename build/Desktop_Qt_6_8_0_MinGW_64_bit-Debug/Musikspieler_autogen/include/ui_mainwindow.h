@@ -11,6 +11,7 @@
 
 #include <QtCore/QVariant>
 #include <QtWidgets/QApplication>
+#include <QtWidgets/QComboBox>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QListWidget>
 #include <QtWidgets/QMainWindow>
@@ -31,9 +32,10 @@ public:
     QListWidget *Playlist;
     QPushButton *AddTrack;
     QPushButton *RemoveTrack;
-    QPushButton *choosePlaylistButton;
+    QPushButton *ChoosePlaylistButton;
     QLabel *currentSongLabel;
     QSlider *LautstaerkeRegler;
+    QComboBox *comboBox;
     QMenuBar *menubar;
     QStatusBar *statusbar;
 
@@ -59,9 +61,9 @@ public:
         RemoveTrack = new QPushButton(centralwidget);
         RemoveTrack->setObjectName("RemoveTrack");
         RemoveTrack->setGeometry(QRect(320, 200, 101, 24));
-        choosePlaylistButton = new QPushButton(centralwidget);
-        choosePlaylistButton->setObjectName("choosePlaylistButton");
-        choosePlaylistButton->setGeometry(QRect(320, 120, 101, 24));
+        ChoosePlaylistButton = new QPushButton(centralwidget);
+        ChoosePlaylistButton->setObjectName("ChoosePlaylistButton");
+        ChoosePlaylistButton->setGeometry(QRect(320, 120, 101, 24));
         currentSongLabel = new QLabel(centralwidget);
         currentSongLabel->setObjectName("currentSongLabel");
         currentSongLabel->setGeometry(QRect(280, 350, 241, 41));
@@ -69,6 +71,9 @@ public:
         LautstaerkeRegler->setObjectName("LautstaerkeRegler");
         LautstaerkeRegler->setGeometry(QRect(290, 470, 221, 20));
         LautstaerkeRegler->setOrientation(Qt::Orientation::Horizontal);
+        comboBox = new QComboBox(centralwidget);
+        comboBox->setObjectName("comboBox");
+        comboBox->setGeometry(QRect(320, 30, 161, 24));
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName("menubar");
@@ -90,7 +95,7 @@ public:
         Pause->setText(QCoreApplication::translate("MainWindow", "Pause", nullptr));
         AddTrack->setText(QCoreApplication::translate("MainWindow", "AddTrack", nullptr));
         RemoveTrack->setText(QCoreApplication::translate("MainWindow", "RemoveTrack", nullptr));
-        choosePlaylistButton->setText(QCoreApplication::translate("MainWindow", "ChoosePlaylist", nullptr));
+        ChoosePlaylistButton->setText(QCoreApplication::translate("MainWindow", "ChoosePlaylist", nullptr));
         currentSongLabel->setText(QString());
     } // retranslateUi
 

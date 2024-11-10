@@ -15,6 +15,7 @@ public:
     MediaController(Playlist &playlist);
     void initializePlayer();
     void playCurrent();
+    void pauseCurrent();
     void next();
     void prev();
     void setCurrentIndex(int index);
@@ -29,6 +30,7 @@ private:
     Playlist &playlist;
     QMediaPlayer player;
     QAudioOutput audioOutput;
+    QString currentSource;
 
     int currentIndex;
 };

@@ -79,6 +79,6 @@ void MainWindow::onVolumeChanged(float value){
 }
 
 void MainWindow::onPauseButtonPressed(){
-
+    mediaController.pauseCurrent();
 }
 

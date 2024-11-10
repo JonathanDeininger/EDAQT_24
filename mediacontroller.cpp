@@ -22,16 +22,28 @@ void MediaController::initializePlayer() {
     connect(&player, &QMediaPlayer::errorOccurred, [](QMediaPlayer::Error error, const QString &errorString) {
         // Handle error occurred
     });
-    audioOutput.setVolume(0.5);
+    audioOutput.setVolume(0);
 }
 
 void MediaController::playCurrent() {
     const auto &files = playlist.getFiles();
     if (currentIndex >= 0 && currentIndex < files.size()) {
-        QString currentFile = files[currentIndex];
-        std::cout << "Playing: " << currentFile.toStdString() << std::endl;
-        player.setSource(QUrl::fromLocalFile(currentFile));
-        player.play();
+        QString newFile = files[currentIndex];
+        // std::cout << "Playing: " << currentFile.toStdString() << std::endl;
+        // hab eine if Abfrage hinzugefügt, welche prüft ob das aktuelle lied bereits ausgewählt ist.
+        // ohne if Abfrage würde der player nach jedem pausieren und abspielen dasselbe lied wieder auf Anfang setzen
+        if (newFile != currentSource){
+            currentSource = newFile;
+            player.setSource(QUrl::fromLocalFile(newFile));
+        }
+            player.play();
+    }
+}
+
+void MediaController::pauseCurrent() {
+    const auto &files = playlist.getFiles();
+    if (currentIndex >= 0 && currentIndex < files.size()) {
+        player.pause();
     }
 }
 
@@ -123,5 +135,4 @@ void MediaController::setCurrentIndex(int index){
     } else {
         std::cerr << "Wie?" << std::endl;
     }
-
 }
