@@ -49,18 +49,18 @@ void MainWindow::onChoosePlaylistButtonClicked()
         return;
     }
     QDir directory(folderPath);
-    // Sucht alle mp3 Dateien raus, wenn es keine gibt verlässt er die Funktion
-    QStringList mp3Files = directory.entryList(QStringList() << "*.mp3", QDir::Files);
-    if (mp3Files.isEmpty()) {
-        QMessageBox::information(this, tr("Keine Dateien gefunden"), tr("Der ausgewählte Ordner enthält keine mp3-Dateien."));
+    // Sucht alle unterstützten Audiodateien raus, wenn es keine gibt verlässt er die Funktion
+    QStringList audioFiles = directory.entryList(QStringList() << "*.mp3" << "*.wav" << "*.flac" << "*.aac", QDir::Files);
+    if (audioFiles.isEmpty()) {
+        QMessageBox::information(this, tr("Keine Dateien gefunden"), tr("Der ausgewählte Ordner enthält keine unterstützten Audiodateien."));
         return;
     }
 
     // Löschen der Inhalte der Playlist, falls es bereits Einträge hat
     ui->Playlist->clear();
 
-    // Füllen der Playlist mit den mp3-Dateien
-    foreach (const QString &fileName, mp3Files) {
+    // Füllen der Playlist mit den Audiodateien
+    foreach (const QString &fileName, audioFiles) {
         QString fullPath = directory.absoluteFilePath(fileName);
         QListWidgetItem *item = new QListWidgetItem(fileName);
         item->setData(Qt::UserRole, fullPath);  // Speichert den vollständigen Pfad

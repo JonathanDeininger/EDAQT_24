@@ -1,0 +1,8 @@
+C:/_Code/c++qt/EDAQT/build/CMakeFiles/Musikspieler.dir
+C:/_Code/c++qt/EDAQT/build/CMakeFiles/edit_cache.dir
+C:/_Code/c++qt/EDAQT/build/CMakeFiles/rebuild_cache.dir
+C:/_Code/c++qt/EDAQT/build/CMakeFiles/install.dir
+C:/_Code/c++qt/EDAQT/build/CMakeFiles/install/local.dir
+C:/_Code/c++qt/EDAQT/build/CMakeFiles/install/strip.dir
+C:/_Code/c++qt/EDAQT/build/CMakeFiles/Musikspieler_autogen_timestamp_deps.dir
+C:/_Code/c++qt/EDAQT/build/CMakeFiles/Musikspieler_autogen.dir
