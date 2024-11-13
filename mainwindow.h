@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QFileDialog>
+#include <QTimer>
 #include <QDir>
 #include <QListWidgetItem>
 #include <QMessageBox>
@@ -35,12 +36,20 @@ private slots:
 
     void onPauseButtonPressed();
 
+    void onNextButtonPressed();
 
+    void onPreviousButtonPressed();
+
+    void updateProgressBar();
+
+    void onSliderMoved();
 private:
     Ui::MainWindow *ui;
     Playlist playList;
     MediaController mediaController;
     DataBase dataBase;
+    QTimer *progressTimer;
+    int SliderPosition;
     // Hier als Beispiel, wenn ich nicht mit dem ui tool arbeiten würde, wäre dass hier die klassische Deklaration der einzelnen Elemente
     // QLabel *currentSongLabel;
     // QListWidget *Playlist;

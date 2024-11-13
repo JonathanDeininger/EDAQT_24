@@ -22,16 +22,22 @@ public:
     QStringList selectMediaFiles(DataBase &database);
     Playlist& getPlaylist() { return playlist; } // Add this method
     void addFolderToPlaylist(const QString &folderPath);
-
     QMediaPlayer* getPlayer() { return &player; }
     QAudioOutput* getAudioOutput() { return &audioOutput; }
-
+    // Slider und Timer für
+    int getCurrentSongPosition();
+    void setCurrentSongPosition(int position);
+    qint64 getCurrentSongDuration();
+    void updateCurrentSongDuration(qint64 duration);
 private:
+
     Playlist &playlist;
     QMediaPlayer player;
     QAudioOutput audioOutput;
     QString currentSource;
 
+    qint64 songDuration = 0;
+    int currentSongPosition = 0;
     int currentIndex;
 };
 

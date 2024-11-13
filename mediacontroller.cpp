@@ -22,6 +22,7 @@ void MediaController::initializePlayer() {
     connect(&player, &QMediaPlayer::errorOccurred, [](QMediaPlayer::Error error, const QString &errorString) {
         // Handle error occurred
     });
+    connect(&player,&QMediaPlayer::durationChanged, this, &MediaController::updateCurrentSongDuration);
     audioOutput.setVolume(0);
 }
 
@@ -136,3 +137,20 @@ void MediaController::setCurrentIndex(int index){
         std::cerr << "Wie?" << std::endl;
     }
 }
+
+void MediaController::updateCurrentSongDuration(qint64 duration) {
+    // Aktualisiere die Songdauer in Sekunden
+    songDuration = duration / 1000;
+}
+
+qint64 MediaController::getCurrentSongDuration() {
+    return songDuration;
+}
+
+void MediaController::setCurrentSongPosition(int position){
+    currentSongPosition = position;
+}
+int MediaController::getCurrentSongPosition(){
+    return currentSongPosition;
+}
+

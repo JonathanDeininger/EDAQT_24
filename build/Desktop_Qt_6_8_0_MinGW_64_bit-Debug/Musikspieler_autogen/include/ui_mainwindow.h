@@ -11,7 +11,6 @@
 
 #include <QtCore/QVariant>
 #include <QtWidgets/QApplication>
-#include <QtWidgets/QComboBox>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QListWidget>
 #include <QtWidgets/QMainWindow>
@@ -35,7 +34,11 @@ public:
     QPushButton *ChoosePlaylistButton;
     QLabel *currentSongLabel;
     QSlider *LautstaerkeRegler;
-    QComboBox *comboBox;
+    QListWidget *PlaylistSammlung;
+    QPushButton *previousPushButton;
+    QPushButton *nextPushButton;
+    QSlider *Fortschrittslider;
+    QLabel *currentSongDurationLabel;
     QMenuBar *menubar;
     QStatusBar *statusbar;
 
@@ -43,41 +46,54 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName("MainWindow");
-        MainWindow->resize(800, 600);
+        MainWindow->resize(1144, 607);
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName("centralwidget");
         Play = new QPushButton(centralwidget);
         Play->setObjectName("Play");
-        Play->setGeometry(QRect(300, 420, 80, 24));
+        Play->setGeometry(QRect(480, 520, 80, 24));
         Pause = new QPushButton(centralwidget);
         Pause->setObjectName("Pause");
-        Pause->setGeometry(QRect(420, 420, 80, 24));
+        Pause->setGeometry(QRect(570, 520, 80, 24));
         Playlist = new QListWidget(centralwidget);
         Playlist->setObjectName("Playlist");
-        Playlist->setGeometry(QRect(40, 30, 256, 192));
+        Playlist->setGeometry(QRect(320, 60, 521, 361));
         AddTrack = new QPushButton(centralwidget);
         AddTrack->setObjectName("AddTrack");
-        AddTrack->setGeometry(QRect(320, 160, 101, 24));
+        AddTrack->setGeometry(QRect(960, 150, 101, 24));
         RemoveTrack = new QPushButton(centralwidget);
         RemoveTrack->setObjectName("RemoveTrack");
-        RemoveTrack->setGeometry(QRect(320, 200, 101, 24));
+        RemoveTrack->setGeometry(QRect(960, 190, 101, 24));
         ChoosePlaylistButton = new QPushButton(centralwidget);
         ChoosePlaylistButton->setObjectName("ChoosePlaylistButton");
-        ChoosePlaylistButton->setGeometry(QRect(320, 120, 101, 24));
+        ChoosePlaylistButton->setGeometry(QRect(960, 110, 101, 24));
         currentSongLabel = new QLabel(centralwidget);
         currentSongLabel->setObjectName("currentSongLabel");
-        currentSongLabel->setGeometry(QRect(280, 350, 241, 41));
+        currentSongLabel->setGeometry(QRect(440, 440, 241, 41));
         LautstaerkeRegler = new QSlider(centralwidget);
         LautstaerkeRegler->setObjectName("LautstaerkeRegler");
-        LautstaerkeRegler->setGeometry(QRect(290, 470, 221, 20));
+        LautstaerkeRegler->setGeometry(QRect(840, 520, 221, 20));
         LautstaerkeRegler->setOrientation(Qt::Orientation::Horizontal);
-        comboBox = new QComboBox(centralwidget);
-        comboBox->setObjectName("comboBox");
-        comboBox->setGeometry(QRect(320, 30, 161, 24));
+        PlaylistSammlung = new QListWidget(centralwidget);
+        PlaylistSammlung->setObjectName("PlaylistSammlung");
+        PlaylistSammlung->setGeometry(QRect(10, 60, 221, 361));
+        previousPushButton = new QPushButton(centralwidget);
+        previousPushButton->setObjectName("previousPushButton");
+        previousPushButton->setGeometry(QRect(380, 520, 80, 24));
+        nextPushButton = new QPushButton(centralwidget);
+        nextPushButton->setObjectName("nextPushButton");
+        nextPushButton->setGeometry(QRect(670, 520, 80, 24));
+        Fortschrittslider = new QSlider(centralwidget);
+        Fortschrittslider->setObjectName("Fortschrittslider");
+        Fortschrittslider->setGeometry(QRect(379, 490, 371, 20));
+        Fortschrittslider->setOrientation(Qt::Orientation::Horizontal);
+        currentSongDurationLabel = new QLabel(centralwidget);
+        currentSongDurationLabel->setObjectName("currentSongDurationLabel");
+        currentSongDurationLabel->setGeometry(QRect(760, 490, 71, 21));
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName("menubar");
-        menubar->setGeometry(QRect(0, 0, 800, 21));
+        menubar->setGeometry(QRect(0, 0, 1144, 21));
         MainWindow->setMenuBar(menubar);
         statusbar = new QStatusBar(MainWindow);
         statusbar->setObjectName("statusbar");
@@ -97,6 +113,9 @@ public:
         RemoveTrack->setText(QCoreApplication::translate("MainWindow", "RemoveTrack", nullptr));
         ChoosePlaylistButton->setText(QCoreApplication::translate("MainWindow", "ChoosePlaylist", nullptr));
         currentSongLabel->setText(QString());
+        previousPushButton->setText(QCoreApplication::translate("MainWindow", "previous", nullptr));
+        nextPushButton->setText(QCoreApplication::translate("MainWindow", "next", nullptr));
+        currentSongDurationLabel->setText(QString());
     } // retranslateUi
 
 };
