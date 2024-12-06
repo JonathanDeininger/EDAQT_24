@@ -2,6 +2,7 @@ Musikspieler_autogen/timestamp: \
 	C:/Qt/6.8.0/mingw_64/include/QtCore/QDir \
 	C:/Qt/6.8.0/mingw_64/include/QtCore/QFileInfo \
 	C:/Qt/6.8.0/mingw_64/include/QtCore/QObject \
+	C:/Qt/6.8.0/mingw_64/include/QtCore/QProcessEnvironment \
 	C:/Qt/6.8.0/mingw_64/include/QtCore/QString \
 	C:/Qt/6.8.0/mingw_64/include/QtCore/QStringList \
 	C:/Qt/6.8.0/mingw_64/include/QtCore/QTimer \
@@ -86,6 +87,7 @@ Musikspieler_autogen/timestamp: \
 	C:/Qt/6.8.0/mingw_64/include/QtCore/qoverload.h \
 	C:/Qt/6.8.0/mingw_64/include/QtCore/qpair.h \
 	C:/Qt/6.8.0/mingw_64/include/QtCore/qpoint.h \
+	C:/Qt/6.8.0/mingw_64/include/QtCore/qprocess.h \
 	C:/Qt/6.8.0/mingw_64/include/QtCore/qprocessordetection.h \
 	C:/Qt/6.8.0/mingw_64/include/QtCore/qrect.h \
 	C:/Qt/6.8.0/mingw_64/include/QtCore/qrefcount.h \
@@ -186,6 +188,7 @@ Musikspieler_autogen/timestamp: \
 	C:/Qt/6.8.0/mingw_64/include/QtSql/qtsql-config.h \
 	C:/Qt/6.8.0/mingw_64/include/QtSql/qtsqlexports.h \
 	C:/Qt/6.8.0/mingw_64/include/QtSql/qtsqlglobal.h \
+	C:/Qt/6.8.0/mingw_64/include/QtWidgets/QDialog \
 	C:/Qt/6.8.0/mingw_64/include/QtWidgets/QFileDialog \
 	C:/Qt/6.8.0/mingw_64/include/QtWidgets/QListWidgetItem \
 	C:/Qt/6.8.0/mingw_64/include/QtWidgets/QMainWindow \
@@ -721,6 +724,8 @@ Musikspieler_autogen/timestamp: \
 	C:/Users/enigm/Documents/Musicplayer_2/Musikspieler/build/Desktop_Qt_6_8_0_MinGW_64_bit-Debug/Musikspieler_autogen/moc_predefs.h \
 	C:/Users/enigm/Documents/Musicplayer_2/Musikspieler/database.cpp \
 	C:/Users/enigm/Documents/Musicplayer_2/Musikspieler/database.h \
+	C:/Users/enigm/Documents/Musicplayer_2/Musikspieler/installerdialog.cpp \
+	C:/Users/enigm/Documents/Musicplayer_2/Musikspieler/installerdialog.h \
 	C:/Users/enigm/Documents/Musicplayer_2/Musikspieler/main.cpp \
 	C:/Users/enigm/Documents/Musicplayer_2/Musikspieler/mainwindow.cpp \
 	C:/Users/enigm/Documents/Musicplayer_2/Musikspieler/mainwindow.h \
@@ -728,5 +733,6 @@ Musikspieler_autogen/timestamp: \
 	C:/Users/enigm/Documents/Musicplayer_2/Musikspieler/mediacontroller.h \
 	C:/Users/enigm/Documents/Musicplayer_2/Musikspieler/playlist.cpp \
 	C:/Users/enigm/Documents/Musicplayer_2/Musikspieler/playlist.h \
+	C:/Users/enigm/Documents/Musicplayer_2/Musikspieler/installerdialog.ui \
 	C:/Users/enigm/Documents/Musicplayer_2/Musikspieler/mainwindow.ui \
 	C:/Qt/Tools/CMake_64/bin/cmake.exe

@@ -383,6 +383,12 @@
 			null
 		],
 		[
+			"C:/Users/enigm/Documents/Musicplayer_2/Musikspieler/installerdialog.h",
+			"MU",
+			"EWIEGA46WW/moc_installerdialog.cpp",
+			null
+		],
+		[
 			"C:/Users/enigm/Documents/Musicplayer_2/Musikspieler/mainwindow.h",
 			"MU",
 			"EWIEGA46WW/moc_mainwindow.cpp",
@@ -480,6 +486,11 @@
 	[
 		[
 			"C:/Users/enigm/Documents/Musicplayer_2/Musikspieler/database.cpp",
+			"MU",
+			null
+		],
+		[
+			"C:/Users/enigm/Documents/Musicplayer_2/Musikspieler/installerdialog.cpp",
 			"MU",
 			null
 		],

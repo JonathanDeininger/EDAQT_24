@@ -37,7 +37,7 @@ void MediaController::playCurrent() {
             currentSource = newFile;
             player.setSource(QUrl::fromLocalFile(newFile));
         }
-            player.play();
+        player.play();
     }
 }
 
@@ -63,50 +63,50 @@ void MediaController::prev() {
     }
 }
 
-QStringList MediaController::selectMediaFiles(DataBase &database) {
-    QStringList files;
-    QMessageBox msgBox;
-    msgBox.setText("Load media files");
-    msgBox.setInformativeText("Do you want to load the playlist from the database or select a directory?");
-    msgBox.setStandardButtons(QMessageBox::Cancel | QMessageBox::Open | QMessageBox::Save);
-    msgBox.setDefaultButton(QMessageBox::Open);
-    int ret = msgBox.exec();
+// QStringList MediaController::selectMediaFiles(DataBase &database) {
+//     QStringList files;
+//     QMessageBox msgBox;
+//     msgBox.setText("Load media files");
+//     msgBox.setInformativeText("Do you want to load the playlist from the database or select a directory?");
+//     msgBox.setStandardButtons(QMessageBox::Cancel | QMessageBox::Open | QMessageBox::Save);
+//     msgBox.setDefaultButton(QMessageBox::Open);
+//     int ret = msgBox.exec();
 
-    switch (ret) {
-    case QMessageBox::Open: {
-        QString dirPath = QFileDialog::getExistingDirectory(nullptr, "Select Media Directory");
-        if (dirPath.isEmpty()) {
-            std::cerr << "No directory selected." << std::endl;
-            exit(-1);
-        }
-        QDir dir(dirPath);
-        QStringList filters;
-        filters << "*.mp3" << "*.mp4" << "*.wav" << "*.avi";
-        files = dir.entryList(filters, QDir::Files);
-        for (QString &file : files) {
-            file = dir.absoluteFilePath(file);
-        }
-        break;
-    }
-    case QMessageBox::Save: {
-        if (database.open()) {
-            std::vector<QString> playlist;
-            database.loadPlaylist(playlist);
-            database.close();
-            for (const auto &file : playlist) {
-                files.append(file);
-            }
-        }
-        break;
-    }
-    case QMessageBox::Cancel:
-    default:
-        std::cerr << "Operation cancelled." << std::endl;
-        exit(-1);
-    }
+//     switch (ret) {
+//     case QMessageBox::Open: {
+//         QString dirPath = QFileDialog::getExistingDirectory(nullptr, "Select Media Directory");
+//         if (dirPath.isEmpty()) {
+//             std::cerr << "No directory selected." << std::endl;
+//             exit(-1);
+//         }
+//         QDir dir(dirPath);
+//         QStringList filters;
+//         filters << "*.mp3" << "*.mp4" << "*.wav" << "*.avi";
+//         files = dir.entryList(filters, QDir::Files);
+//         for (QString &file : files) {
+//             file = dir.absoluteFilePath(file);
+//         }
+//         break;
+//     }
+//     case QMessageBox::Save: {
+//         if (database.open()) {
+//             std::vector<QString> playlist;
+//             database.loadPlaylist(playlist);
+//             database.close();
+//             for (const auto &file : playlist) {
+//                 files.append(file);
+//             }
+//         }
+//         break;
+//     }
+//     case QMessageBox::Cancel:
+//     default:
+//         std::cerr << "Operation cancelled." << std::endl;
+//         exit(-1);
+//     }
 
-    return files;
-}
+//     return files;
+// }
 
 void MediaController::addFolderToPlaylist(const QString &folderPath) {
     QDir dir(folderPath);

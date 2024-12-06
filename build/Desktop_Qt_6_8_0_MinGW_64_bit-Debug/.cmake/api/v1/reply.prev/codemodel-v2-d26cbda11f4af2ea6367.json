@@ -7,7 +7,7 @@
 				{
 					"build" : ".",
 					"hasInstallRule" : true,
-					"jsonFile" : "directory-.-Debug-c21faab3b1816f3168f7.json",
+					"jsonFile" : "directory-.-Debug-6585017a2337ad78de0d.json",
 					"minimumCMakeVersion" : 
 					{
 						"string" : "3.16"
@@ -44,7 +44,7 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "Musikspieler::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-Musikspieler-Debug-7b90830fd43138572503.json",
+					"jsonFile" : "target-Musikspieler-Debug-79397185cf372acc04c7.json",
 					"name" : "Musikspieler",
 					"projectIndex" : 0
 				},

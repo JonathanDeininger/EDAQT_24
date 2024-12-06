@@ -8,7 +8,6 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
     , playList()
     , mediaController(playList)
-    , dataBase("C:/Users/enigm/Documents/Musicplayer_2")
 {
     ui->setupUi(this);
     // Typischerweise: Initialisierung der UI-Elemente
@@ -17,8 +16,6 @@ MainWindow::MainWindow(QWidget *parent)
     // choosePlaylistButton = new QPushButton(this);
     //mediaController = new MediaController(std::vector<QString>);
     progressTimer = new QTimer(this);
-
-
     connect(ui->Playlist, &QListWidget::itemClicked, this, &MainWindow::onPlaylistItemClicked);
     connect(ui->ChoosePlaylistButton, &QPushButton::clicked, this, &MainWindow::onChoosePlaylistButtonClicked);
     connect(ui->Play,&QPushButton::clicked, this, &MainWindow::onPlayButtonPressed);

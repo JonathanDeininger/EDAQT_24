@@ -26,6 +26,8 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         mediacontroller.h mediacontroller.cpp
         database.h database.cpp
         playlist.h playlist.cpp
+
+        installerdialog.h installerdialog.cpp installerdialog.ui
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET Musikspieler APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
