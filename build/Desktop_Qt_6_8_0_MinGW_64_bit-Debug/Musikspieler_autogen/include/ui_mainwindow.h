@@ -10,8 +10,10 @@
 #define UI_MAINWINDOW_H
 
 #include <QtCore/QVariant>
+#include <QtGui/QIcon>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QLabel>
+#include <QtWidgets/QLineEdit>
 #include <QtWidgets/QListWidget>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenuBar>
@@ -39,6 +41,9 @@ public:
     QPushButton *nextPushButton;
     QSlider *Fortschrittslider;
     QLabel *currentSongDurationLabel;
+    QPushButton *Random;
+    QPushButton *Repeat;
+    QLineEdit *searchBar;
     QMenuBar *menubar;
     QStatusBar *statusbar;
 
@@ -90,6 +95,19 @@ public:
         currentSongDurationLabel = new QLabel(centralwidget);
         currentSongDurationLabel->setObjectName("currentSongDurationLabel");
         currentSongDurationLabel->setGeometry(QRect(760, 490, 71, 21));
+        Random = new QPushButton(centralwidget);
+        Random->setObjectName("Random");
+        Random->setGeometry(QRect(280, 450, 80, 24));
+        QIcon icon(QIcon::fromTheme(QIcon::ThemeIcon::MediaPlaylistShuffle));
+        Random->setIcon(icon);
+        Repeat = new QPushButton(centralwidget);
+        Repeat->setObjectName("Repeat");
+        Repeat->setGeometry(QRect(770, 450, 80, 24));
+        QIcon icon1(QIcon::fromTheme(QIcon::ThemeIcon::MediaPlaylistRepeat));
+        Repeat->setIcon(icon1);
+        searchBar = new QLineEdit(centralwidget);
+        searchBar->setObjectName("searchBar");
+        searchBar->setGeometry(QRect(300, 20, 561, 24));
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName("menubar");
@@ -116,6 +134,8 @@ public:
         previousPushButton->setText(QCoreApplication::translate("MainWindow", "previous", nullptr));
         nextPushButton->setText(QCoreApplication::translate("MainWindow", "next", nullptr));
         currentSongDurationLabel->setText(QString());
+        Random->setText(QString());
+        Repeat->setText(QString());
     } // retranslateUi
 
 };

@@ -22,6 +22,9 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->Fortschrittslider, &QSlider::sliderPressed, this, &MainWindow::onSliderPressed);
     connect(mediaController, &MediaController::positionChanged,this, &MainWindow::updateProgressBar);
     connect(mediaController, &MediaController::currentTrackChanged, this, &MainWindow::updateCurrentTrackInfo);
+    connect(ui->searchBar, &QLineEdit::textChanged, this, &MainWindow::onSearchTextChanged);
+    connect(ui->Random,&QPushButton::clicked, this, &MainWindow::onRandomButtonPressed);
+    connect(ui->Repeat,&QPushButton::clicked, this, &MainWindow::onRepeatButtonPressed);
     // Load tracks from the database
     loadTracksFromDatabase();
 }
@@ -82,6 +85,7 @@ void MainWindow::setCurrentSongDuration(Track currentTrack)
             .arg(seconds, 2, 10, QChar('0'))
         );
 }
+
 void MainWindow::onPlayButtonPressed() {
     mediaController->playCurrent();
 }
@@ -117,6 +121,7 @@ void MainWindow::onNextButtonPressed() {
     ui->Playlist->setCurrentRow(mediaController->getCurrentIndex());
     setProgressBarAndSongDurationLabel();
 }
+
 void MainWindow::updateCurrentTrackInfo(int index, const QString &title) {
     // Setze den aktuellen Songtitel
     ui->currentSongLabel->setText(title);
@@ -141,6 +146,7 @@ void MainWindow::updateProgressBar(qint64 currentSongPosition) {
     // Aktualisiert den Slider nur, wenn der Benutzer nicht mit ihm interagiert
     ui->Fortschrittslider->setValue(currentSongPosition);
 }
+
 void MainWindow::onSliderPressed() {
     // Setzt das Flag, wenn der Benutzer den Slider drückt
     sliderBeingDragged = true;
@@ -156,6 +162,7 @@ void MainWindow::onSliderReleased() {
     mediaController->setCurrentSongPosition(currentPosition);
     ui->Fortschrittslider->setValue(currentPosition);
 }
+
 void MainWindow::setProgressBarAndSongDurationLabel()
 {
     Track currentTrack = mediaController->getCurrentTrack();
@@ -212,4 +219,65 @@ void MainWindow::loadTracksFromDatabase() {
     db.close();
 }
 
+void MainWindow::randomizePlaylist()
+{
+    // Hole alle Items aus der Playlist
 
+    QList<QListWidgetItem*> items;
+    for (int i = 0; i < ui->Playlist->count(); ++i) {
+        items.append(ui->Playlist->takeItem(i));
+    }
+    // items.append(mediaController->getCurrentPlaylist());
+    // Zufällig mischen
+    std::random_shuffle(items.begin(), items.end());
+
+    // Füge die gemischten Items wieder hinzu
+    for (QListWidgetItem* item : items) {
+        ui->Playlist->addItem(item);
+    }
+
+    // Synchronisiere die gemischte Reihenfolge mit der internen Playlist
+    QVector<QString> randomizedFilePaths;
+    for (int i = 0; i < ui->Playlist->count(); ++i) {
+        randomizedFilePaths.append(ui->Playlist->item(i)->data(Qt::UserRole).toString());
+    }
+    // mediaController->setPlaylist(randomizedFilePaths);
+}
+
+void MainWindow::onRandomButtonPressed()
+{
+    // Wechsel des Shuffle-Status
+    isShuffleActive = !isShuffleActive;
+
+    // Ändere die Farbe des Buttons basierend auf dem Status
+    if (isShuffleActive) {
+        // Shuffle aktiv: Button grün färben
+        ui->Random->setStyleSheet("background-color: green; color: white;");
+        qDebug() << "Shuffle mode activated.";
+
+        // Randomisiere die Playlist
+        randomizePlaylist();
+
+        // Starte mit der zufälligen Wiedergabe
+        mediaController->setCurrentIndex(0); // Erster Track in der zufälligen Reihenfolge
+        mediaController->playCurrent();
+    } else {
+        // Shuffle deaktiviert: Button rot färben
+        ui->Random->setStyleSheet("background-color: red; color: white;");
+        qDebug() << "Shuffle mode deactivated.";
+    }
+}
+
+void MainWindow::onRepeatButtonPressed()
+{
+    return;
+}
+
+void MainWindow::onSearchTextChanged(const QString &text)
+{
+    for (int i = 0; i < ui->Playlist->count(); ++i) {
+        QListWidgetItem *item = ui->Playlist->item(i);
+        bool match = item->text().contains(text, Qt::CaseInsensitive);
+        item->setHidden(!match);
+    }
+}

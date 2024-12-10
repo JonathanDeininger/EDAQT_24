@@ -33,6 +33,7 @@ public:
     void updateCurrentSongDuration(qint64 duration);
     Track getCurrentTrack();
     int getCurrentIndex();
+    std::vector<Track> getCurrentPlaylist();
 signals:
     void currentTrackChanged(int index, const QString &title);
     void positionChanged(int position);

@@ -196,3 +196,8 @@ int MediaController::getCurrentIndex()
 {
     return currentIndex;
 }
+
+std::vector<Track> MediaController::getCurrentPlaylist()
+{
+    return playlist.getTracks();
+}
