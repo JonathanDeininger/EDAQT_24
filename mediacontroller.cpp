@@ -11,8 +11,9 @@ MediaController::MediaController(QListWidget *playlistWidget, Playlist &playlist
 
 void MediaController::initializePlayer() {
     player.setAudioOutput(&audioOutput);
-    connect(&player, &QMediaPlayer::positionChanged, [](qint64 position) {
-        qDebug() << "Position changed:" << position;
+    connect(&player, &QMediaPlayer::positionChanged, [this](qint64 position) {
+
+    emit positionChanged(position/1000);
     });
     connect(&player, &QMediaPlayer::mediaStatusChanged, [](QMediaPlayer::MediaStatus status) {
         qDebug() << "Media status changed:" << status;
@@ -26,6 +27,8 @@ void MediaController::initializePlayer() {
 
 void MediaController::playCurrent() {
     if (currentIndex >= 0 && currentIndex < playlist.getLength()) {
+        currentTrack = playlist.getTracks()[currentIndex];
+
         QString newFile = playlist.getTracks()[currentIndex].getFilePath();
         qDebug() << "Attempting to play file:" << newFile;
         if (newFile != currentSource) {
@@ -48,6 +51,50 @@ void MediaController::playCurrent() {
         qDebug() << "Invalid index:" << currentIndex;
     }
 }
+
+void MediaController::playPlaylist() {
+    if (playlist.getLength() == 0) {
+        qDebug() << "Playlist is empty. Cannot play.";
+        return;
+    }
+
+    // Setze den aktuellen Index auf den ersten Track, falls noch nicht gesetzt
+    if (currentIndex < 0 || currentIndex >= playlist.getLength()) {
+        currentIndex = 0;
+    }
+
+    // Spiele den aktuellen Track
+    playCurrent();
+
+    // Verbinde das Signal, um automatisch den nächsten Track zu spielen
+    connect(&player, &QMediaPlayer::mediaStatusChanged, this, &MediaController::onMediaStatusChanged);
+}
+
+void MediaController::onMediaStatusChanged(QMediaPlayer::MediaStatus status) {
+    // Prüfe, ob der aktuelle Track fertig abgespielt wurde
+    if (status == QMediaPlayer::EndOfMedia) {
+        // Gehe zum nächsten Track
+        currentIndex++;
+
+        // Wenn das Ende der Playlist erreicht ist, stoppe oder starte erneut (je nach gewünschtem Verhalten)
+        if (currentIndex >= playlist.getLength()) {
+            qDebug() << "Reached the end of the playlist.";
+            currentIndex = 0; // Optional: Zurück zum Anfang der Playlist
+            return;           // Oder: return, um die Wiedergabe zu stoppen
+        }
+
+        // Spiele den nächsten Track
+        playCurrent();
+
+        // Hole den aktuellen Track
+        Track currentTrack = getCurrentTrack();
+        QString currentTitle = currentTrack.getTitle();
+
+        // Aktualisiere die UI (über ein Signal an MainWindow)
+        emit currentTrackChanged(currentIndex, currentTitle);
+    }
+}
+
 
 void MediaController::pauseCurrent() {
     player.pause();
@@ -140,3 +187,12 @@ QAudioOutput* MediaController::getAudioOutput() {
     return &audioOutput;
 }
 
+Track MediaController::getCurrentTrack()
+{
+    return currentTrack;
+}
+
+int MediaController::getCurrentIndex()
+{
+    return currentIndex;
+}

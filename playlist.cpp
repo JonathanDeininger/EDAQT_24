@@ -1,6 +1,7 @@
 #include "Playlist.h"
 #include <iostream>
 
+// von Sam ertgboinregjnerghojkgres
 void Playlist::addFile(const QString &filePath) {
     tracks.emplace_back(filePath);
 }
