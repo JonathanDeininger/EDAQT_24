@@ -7,8 +7,7 @@
 class Track {
 public:
     Track();
-    Track(const QString &filePath); // Add this constructor
-    Track(const QString &basePath, const QString &fileName); // Update constructor to accept base path and file name
+    Track(const QString &filePath); // Update this constructor to handle both cases
     QString getFilePath() const;
     QString getArtist() const;
     QString getAlbum() const;
@@ -16,8 +15,8 @@ public:
     int getDuration() const;
     int getSampleRate() const;
     int getSampleCount() const;
-    QByteArray getHash() const; // Add this method to get the hash
-    int getTrackID() const; // Add this method to get the track ID
+    QByteArray getHash() const;
+    int getTrackID() const;
 
 private:
     void computeHash();
@@ -30,7 +29,7 @@ private:
     int sampleRate;
     int sampleCount;
     QByteArray hash;
-    int trackID; // Add this member to store the track ID
+    int trackID;
 };
 
 #endif // TRACK_H

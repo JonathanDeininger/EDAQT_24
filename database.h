@@ -7,20 +7,24 @@
 #include <QString>
 #include <QStringList>
 #include <QDir>
-// #include <vector>
 
 class DataBase {
 public:
     DataBase();
     ~DataBase();
     bool createTableMediathek();
-    bool createTableOptionen();
+    bool createTablePathlist(); // Update this method
+    bool createTablePlaylists();
+    bool createTablePlaylistTracks();
     bool insertData(const QString &filePath, const QString &interpret, const QString &album, const QString &titel, int spielzeit, int sampleRate, int sampleCount, const QByteArray &hash);
-    bool insertOptions(const QList<QPair<float, QString>> &options);
+    bool insertPath(const QString &path); // Update this method
+    bool insertPlaylist(const QString &playlistName);
+    bool insertPlaylistTrack(int playlistID, int trackID);
+    bool tableExists(const QString &tableName); // Add this method
     void queryData();
     bool open();
     void close();
-    QSqlDatabase& getDatabase(); // Add this method to access the database
+    QSqlDatabase& getDatabase();
 
 private:
     QSqlDatabase db;

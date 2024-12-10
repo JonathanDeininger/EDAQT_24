@@ -58,20 +58,55 @@ bool DataBase::createTableMediathek() {
     return success;
 }
 
-bool DataBase::createTableOptionen() {
+bool DataBase::createTablePathlist() {
     if (!db.isOpen()) {
         qDebug() << "Datenbankverbindung konnte nicht geöffnet werden.";
         return false;
     }
     QSqlQuery query(db); // Use the correct database connection
-    bool success = query.exec("CREATE TABLE IF NOT EXISTS OPTIONEN ("
-                              "ID SERIAL PRIMARY KEY," // Change Index to ID
-                              "Lautstaerke FLOAT,"
+    bool success = query.exec("CREATE TABLE IF NOT EXISTS Pathlist ("
+                              "ID INTEGER PRIMARY KEY AUTOINCREMENT," // Change Index to ID and ensure auto-increment
                               "MusikPfad TEXT)");
     if (!success) {
-        qDebug() << "Fehler beim Erstellen der Tabelle:" << query.lastError();
+        qDebug() << "Fehler beim Erstellen der Tabelle 'Pathlist':" << query.lastError();
     } else {
-        qDebug() << "Tabelle 'OPTIONEN' wurde erfolgreich erstellt oder existiert bereits.";
+        qDebug() << "Tabelle 'Pathlist' wurde erfolgreich erstellt oder existiert bereits.";
+    }
+    return success;
+}
+
+bool DataBase::createTablePlaylists() {
+    if (!db.isOpen()) {
+        qDebug() << "Datenbankverbindung konnte nicht geöffnet werden.";
+        return false;
+    }
+    QSqlQuery query(db); // Use the correct database connection
+    bool success = query.exec("CREATE TABLE IF NOT EXISTS Playlists ("
+                              "PlaylistID INTEGER PRIMARY KEY AUTOINCREMENT, "
+                              "Name TEXT)");
+    if (!success) {
+        qDebug() << "Fehler beim Erstellen der Tabelle 'Playlists':" << query.lastError();
+    } else {
+        qDebug() << "Tabelle 'Playlists' wurde erfolgreich erstellt oder existiert bereits.";
+    }
+    return success;
+}
+
+bool DataBase::createTablePlaylistTracks() {
+    if (!db.isOpen()) {
+        qDebug() << "Datenbankverbindung konnte nicht geöffnet werden.";
+        return false;
+    }
+    QSqlQuery query(db); // Use the correct database connection
+    bool success = query.exec("CREATE TABLE IF NOT EXISTS PlaylistTracks ("
+                              "PlaylistID INTEGER, "
+                              "TrackID INTEGER, "
+                              "FOREIGN KEY (PlaylistID) REFERENCES Playlists(PlaylistID), "
+                              "FOREIGN KEY (TrackID) REFERENCES Mediathek(TrackID))");
+    if (!success) {
+        qDebug() << "Fehler beim Erstellen der Tabelle 'PlaylistTracks':" << query.lastError();
+    } else {
+        qDebug() << "Tabelle 'PlaylistTracks' wurde erfolgreich erstellt oder existiert bereits.";
     }
     return success;
 }
@@ -106,27 +141,86 @@ bool DataBase::insertData(const QString &filePath, const QString &interpret, con
     return true;
 }
 
-bool DataBase::insertOptions(const QList<QPair<float, QString>> &options) {
+bool DataBase::insertPath(const QString &path) {
+    if (!db.isOpen()) {
+        qDebug() << "Datenbankverbindung konnte nicht geöffnet werden.";
+        return false;
+    }
+
+    if (!QSqlDatabase::isDriverAvailable("QSQLITE")) {
+        qDebug() << "SQLite-Treiber ist nicht verfügbar.";
+        return false;
+    }
+
+    QSqlQuery query(db); // Use the correct database connection
+
+    query.prepare("INSERT INTO Pathlist (MusikPfad) VALUES (:MusikPfad)");
+    query.bindValue(":MusikPfad", path);
+
+    qDebug() << "SQL Query:" << query.executedQuery();
+    qDebug() << "Bound Values:" << query.boundValues();
+
+    if (!query.exec()) {
+        qDebug() << "Fehler beim Einfügen von Daten in Pathlist:" << query.lastError();
+        return false;
+    }
+
+    qDebug() << "Pfad erfolgreich in Pathlist eingefügt!";
+    return true;
+}
+
+bool DataBase::insertPlaylist(const QString &playlistName) {
     if (!db.isOpen()) {
         qDebug() << "Datenbankverbindung konnte nicht geöffnet werden.";
         return false;
     }
     QSqlQuery query(db); // Use the correct database connection
 
-    query.prepare("INSERT INTO OPTIONEN (Lautstaerke, MusikPfad) VALUES (:Lautstaerke, :MusikPfad)");
+    query.prepare("INSERT INTO Playlists (Name) VALUES (:name)");
+    query.bindValue(":name", playlistName);
 
-    for (const auto &option : options) {
-        query.bindValue(":Lautstaerke", option.first);
-        query.bindValue(":MusikPfad", option.second);
-
-        if (!query.exec()) {
-            qDebug() << "Fehler beim Einfügen von Daten in OPTIONEN:" << query.lastError();
-            return false;
-        }
+    if (!query.exec()) {
+        qDebug() << "Fehler beim Einfügen von Daten in Playlists:" << query.lastError();
+        return false;
     }
 
-    qDebug() << "Daten erfolgreich in OPTIONEN eingefügt!";
+    qDebug() << "Playlist erfolgreich eingefügt!";
     return true;
+}
+
+bool DataBase::insertPlaylistTrack(int playlistID, int trackID) {
+    if (!db.isOpen()) {
+        qDebug() << "Datenbankverbindung konnte nicht geöffnet werden.";
+        return false;
+    }
+    QSqlQuery query(db); // Use the correct database connection
+
+    query.prepare("INSERT INTO PlaylistTracks (PlaylistID, TrackID) VALUES (:playlistID, :trackID)");
+    query.bindValue(":playlistID", playlistID);
+    query.bindValue(":trackID", trackID);
+
+    if (!query.exec()) {
+        qDebug() << "Fehler beim Einfügen von Daten in PlaylistTracks:" << query.lastError();
+        return false;
+    }
+
+    qDebug() << "Track erfolgreich zur Playlist hinzugefügt!";
+    return true;
+}
+
+bool DataBase::tableExists(const QString &tableName) {
+    if (!db.isOpen()) {
+        qDebug() << "Datenbankverbindung konnte nicht geöffnet werden.";
+        return false;
+    }
+    QSqlQuery query(db);
+    query.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name=:tableName");
+    query.bindValue(":tableName", tableName);
+    if (!query.exec()) {
+        qDebug() << "Fehler beim Überprüfen der Tabelle:" << query.lastError();
+        return false;
+    }
+    return query.next();
 }
 
 void DataBase::queryData() {

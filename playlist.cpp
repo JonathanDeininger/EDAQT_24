@@ -1,7 +1,6 @@
 #include "Playlist.h"
 #include <iostream>
 
-//lol rofl
 void Playlist::addFile(const QString &filePath) {
     tracks.emplace_back(filePath);
 }

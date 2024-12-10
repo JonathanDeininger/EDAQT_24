@@ -6,33 +6,26 @@
 #include <QSqlQuery>
 
 bool tablesExist(DataBase &db) {
-    QSqlQuery query(db.getDatabase());
-    query.exec("SELECT name FROM sqlite_master WHERE type='table' AND name='Mediathek'");
-    if (!query.next()) {
-        return false;
-    }
-    query.exec("SELECT name FROM sqlite_master WHERE type='table' AND name='OPTIONEN'");
-    return query.next();
+    return db.tableExists("Mediathek") && db.tableExists("Pathlist") && db.tableExists("Playlists") && db.tableExists("PlaylistTracks");
 }
 
 int main(int argc, char *argv[]) {
-    qDebug() << "Hello World";
     QApplication a(argc, argv);
     DataBase db;
 
-    bool successOpenDB = db.open();
-    if (successOpenDB) {
-        if (!tablesExist(db)) {
-            qDebug() << "Database tables do not exist. Running installer.";
-            InstallerDialog installerDialog;
-            installerDialog.exec();
-        } else {
-            qDebug() << "Database tables exist.";
+    // Check if the database file exists
+    QString dbPath = "MusicPlayerSQLDB.db";
+    bool showInstaller = !QFile::exists(dbPath) || !db.open() || !tablesExist(db);
+
+    if (showInstaller) {
+        // Show the installer dialog if the database does not exist or tables are missing
+        InstallerDialog installerDialog;
+        if (installerDialog.exec() != QDialog::Accepted) {
+            return 0; // Exit the application if the installer dialog is not accepted
         }
-    } else {
-        qDebug() << "Failed to open the database.";
     }
 
+    // Proceed to the main application
     MainWindow w;
     w.show();
     return a.exec();

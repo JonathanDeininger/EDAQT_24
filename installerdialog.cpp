@@ -18,6 +18,28 @@ InstallerDialog::InstallerDialog(QWidget *parent)
     if (!dataBase.open()) {
         qDebug() << "Failed to open the database in InstallerDialog constructor.";
     }
+
+    // Check if the necessary tables already exist
+    if (!dataBase.tableExists("Mediathek")) {
+        if (!dataBase.createTableMediathek()) {
+            qDebug() << "Failed to create the Mediathek table.";
+        }
+    }
+    if (!dataBase.tableExists("Pathlist")) {
+        if (!dataBase.createTablePathlist()) {
+            qDebug() << "Failed to create the Pathlist table.";
+        }
+    }
+    if (!dataBase.tableExists("Playlists")) {
+        if (!dataBase.createTablePlaylists()) {
+            qDebug() << "Failed to create the Playlists table.";
+        }
+    }
+    if (!dataBase.tableExists("PlaylistTracks")) {
+        if (!dataBase.createTablePlaylistTracks()) {
+            qDebug() << "Failed to create the PlaylistTracks table.";
+        }
+    }
 }
 
 InstallerDialog::~InstallerDialog()
@@ -28,7 +50,7 @@ InstallerDialog::~InstallerDialog()
 
 void processFiles(DataBase &dataBase, const QString &basePath, const QStringList &fileList) {
     foreach (const QString &fileName, fileList) {
-        Track track(basePath, fileName);
+        Track track(QDir(basePath).absoluteFilePath(fileName));
         qDebug() << "Processing file:" << fileName;
         qDebug() << "File path:" << track.getFilePath();
         qDebug() << "Artist:" << track.getArtist();
@@ -66,18 +88,10 @@ void InstallerDialog::onNextButtonClicked() {
         return;
     }
 
-    bool successMediathek = dataBase.createTableMediathek();
-    if (successMediathek) {
-        bool successOptions = dataBase.createTableOptionen();
-        if (successOptions) {
-            processFiles(dataBase, directory.absolutePath(), audioFiles);
-            QList<QPair<float, QString>> options;
-            options.append(qMakePair(0.0f, directory.absolutePath()));
-            bool successInsertOptions = dataBase.insertOptions(options);
-            if (successInsertOptions) {
-                close();
-            }
-        }
+    processFiles(dataBase, directory.absolutePath(), audioFiles);
+    bool successInsertPath = dataBase.insertPath(directory.absolutePath());
+    if (successInsertPath) {
+        accept(); // Close the dialog and return QDialog::Accepted
     }
 }
 
@@ -90,14 +104,9 @@ void InstallerDialog::onChooseMusicFolderClicked() {
 
     // Save the base path to the database
     qDebug() << "Attempting to insert path into database:" << folderPath;
-    QList<QPair<float, QString>> options;
-    options.append(qMakePair(0.5f, folderPath));
-    if (!dataBase.insertOptions(options)) {
+    if (!dataBase.insertPath(folderPath)) {
         qDebug() << "Failed to insert path into database.";
         QMessageBox::warning(this, tr("Fehler"), tr("Der Pfad konnte nicht in die Datenbank geschrieben werden."));
         return;
     }
-
-    // Process the base directory and its subdirectories
-    processDirectory(dataBase, QDir(folderPath));
 }
