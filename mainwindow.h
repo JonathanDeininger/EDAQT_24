@@ -32,18 +32,22 @@ private slots:
     void onVolumeChanged(float value);
     void onPauseButtonPressed();
     void onNextButtonPressed();
+    void onSliderPressed();
     void onPreviousButtonPressed();
-    void updateProgressBar();
-    void onSliderMoved();
+    void updateProgressBar(qint64 currentSongPosition);
+    void onSliderReleased();
     void loadTracksFromDatabase(); // Add this method to load tracks from the database
-
+    void setProgressBarAndSongDurationLabel();
+    void setCurrentSongDuration(Track currentTrack);
+    void updateCurrentTrackInfo(int index, const QString &title);
 private:
     Ui::MainWindow *ui;
     Playlist playList; // Add a Playlist member
-    MediaController mediaController;
+    MediaController *mediaController;
     QTimer *progressTimer;
     int SliderPosition;
     DataBase db; // Add a database member
+    bool sliderBeingDragged = false;
 };
 
 #endif // MAINWINDOW_H
