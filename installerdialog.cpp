@@ -3,7 +3,6 @@
 #include "track.h"
 #include <QMediaPlayer>
 #include <QMediaMetaData>
-#include <iostream>
 #include <qdebug.h>
 
 InstallerDialog::InstallerDialog(QWidget *parent)
