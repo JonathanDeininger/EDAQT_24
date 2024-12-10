@@ -1,6 +1,10 @@
 #include "installerdialog.h"
 #include "ui_installerdialog.h"
-
+#include "track.h"
+#include <QMediaPlayer>
+#include <QMediaMetaData>
+#include <iostream>
+#include <qdebug.h>
 
 InstallerDialog::InstallerDialog(QWidget *parent)
     : QDialog(parent)
@@ -10,81 +14,91 @@ InstallerDialog::InstallerDialog(QWidget *parent)
     ui->setupUi(this);
     connect(ui->ChoosePath, &QPushButton::clicked, this, &InstallerDialog::onChooseMusicFolderClicked);
     connect(ui->NextButton, &QPushButton::clicked, this, &InstallerDialog::onNextButtonClicked);
+
+    // Ensure the database is opened in the constructor
+    if (!dataBase.open()) {
+        qDebug() << "Failed to open the database in InstallerDialog constructor.";
+    }
 }
 
 InstallerDialog::~InstallerDialog()
 {
+    dataBase.close();
     delete ui;
 }
 
-void processFiles(DataBase &dataBase, const QStringList &fileList) {
+void processFiles(DataBase &dataBase, const QString &basePath, const QStringList &fileList) {
     foreach (const QString &fileName, fileList) {
-        // Entfernen der ".mp3"-Endung
-        QString name = fileName;
-        name.chop(4);  // Entfernt ".mp3"
-
-        // Aufteilen des Dateinamens an den Unterstrichen "_"
-        QStringList parts = name.split('_');
-
-        // Interpret, Album und Titel extrahieren
-        QString interpret = parts.value(0);
-        QString album = parts.value(1, "");  // Wenn kein Album vorhanden, leeren String verwenden
-        QString titel = parts.value(2);
-
-        // Optional: Leerzeichen durch Bindestriche ersetzen
-        interpret.replace(" ", "-");
-        album.replace(" ", "-");
-        titel.replace(" ", "-");
-
-        // Spielzeit hier als Platzhalter 0 (muss später angepasst werden)
-        int spielzeit = 0;  // Hier müsste eine Funktion zum Ermitteln der Spielzeit aufgerufen werden
+        Track track(basePath, fileName);
+        qDebug() << "Processing file:" << fileName;
+        qDebug() << "File path:" << track.getFilePath();
+        qDebug() << "Artist:" << track.getArtist();
+        qDebug() << "Album:" << track.getAlbum();
+        qDebug() << "Title:" << track.getTitle();
+        qDebug() << "Duration:" << track.getDuration();
+        qDebug() << "Sample Rate:" << track.getSampleRate();
+        qDebug() << "Sample Count:" << track.getSampleCount();
+        qDebug() << "Hash:" << track.getHash();
 
         // Daten in die Datenbank einfügen
-        if (!dataBase.insertData(interpret, album, titel, spielzeit)) {
+        if (!dataBase.insertData(track.getFilePath(), track.getArtist(), track.getAlbum(), track.getTitle(), track.getDuration(), track.getSampleRate(), track.getSampleCount(), track.getHash())) {
             qDebug() << "Fehler beim Einfügen von Daten für" << fileName;
         }
-
     }
 }
 
-void InstallerDialog::onNextButtonClicked()
-{
-    bool successOpenDB = false;
-    bool successMediathek = false;
-    bool successOptions = false;
-    bool successInsertOptions = false;
-    successOpenDB = dataBase.open();
-    if (successOpenDB)
-    {
-        QDir directory(QString(ui->MusicPath->toPlainText()));
-        QString userName = QProcessEnvironment::systemEnvironment().value("USERNAME");
-        QStringList audioFiles = directory.entryList(QStringList() << "*.mp3" << "*.wav" << "*.flac" << "*.aac", QDir::Files);
-        if (audioFiles.isEmpty()) {
-            QMessageBox::information(this, tr("Keine Dateien gefunden"), tr("Der ausgewählte Ordner enthält keine unterstützten Audiodateien."));
-            return;
-        }
+void processDirectory(DataBase &dataBase, const QDir &directory) {
+    QStringList audioFiles = directory.entryList(QStringList() << "*.mp3" << "*.wav" << "*.flac" << "*.aac", QDir::Files);
+    processFiles(dataBase, directory.absolutePath(), audioFiles);
 
-        successMediathek = dataBase.createTableMediathek();
-        if (successMediathek)
-            successOptions = dataBase.createTableOptionen();
-        if (successOptions)
-            processFiles(dataBase,audioFiles);
-        successInsertOptions = dataBase.insertDataIntoOptions(0,directory,userName);
-        dataBase.close();
-        if (successInsertOptions){
-            close();
+    QStringList subDirs = directory.entryList(QDir::Dirs | QDir::NoDotAndDotDot);
+    foreach (const QString &subDir, subDirs) {
+        QDir subDirectory(directory.absoluteFilePath(subDir));
+        processDirectory(dataBase, subDirectory);
+    }
+}
+
+void InstallerDialog::onNextButtonClicked() {
+    QDir directory(QString(ui->MusicPath->toPlainText()));
+    QStringList audioFiles = directory.entryList(QStringList() << "*.mp3" << "*.wav" << "*.flac" << "*.aac", QDir::Files);
+
+    if (audioFiles.isEmpty()) {
+        QMessageBox::information(this, tr("Keine Dateien gefunden"), tr("Der ausgewählte Ordner enthält keine unterstützten Audiodateien."));
+        return;
+    }
+
+    bool successMediathek = dataBase.createTableMediathek();
+    if (successMediathek) {
+        bool successOptions = dataBase.createTableOptionen();
+        if (successOptions) {
+            processFiles(dataBase, directory.absolutePath(), audioFiles);
+            QList<QPair<float, QString>> options;
+            options.append(qMakePair(0.0f, directory.absolutePath()));
+            bool successInsertOptions = dataBase.insertOptions(options);
+            if (successInsertOptions) {
+                close();
+            }
         }
     }
 }
 
-void InstallerDialog::onChooseMusicFolderClicked()
-{
-    // Öffnet Windows-Explorer um den Ordner mit den Songs zu finden wird keiner ausgewählt verlässt er die Funktion
+void InstallerDialog::onChooseMusicFolderClicked() {
     QString folderPath = QFileDialog::getExistingDirectory(this, tr("Wähle einen Ordner"), QDir::homePath());
-    if (folderPath.isEmpty()){
+    if (folderPath.isEmpty()) {
         return;
     }
     ui->MusicPath->setText(folderPath);
-    // Sucht alle unterstützten Audiodateien raus, wenn es keine gibt verlässt er die Funktion
 
+    // Save the base path to the database
+    qDebug() << "Attempting to insert path into database:" << folderPath;
+    QList<QPair<float, QString>> options;
+    options.append(qMakePair(0.5f, folderPath));
+    if (!dataBase.insertOptions(options)) {
+        qDebug() << "Failed to insert path into database.";
+        QMessageBox::warning(this, tr("Fehler"), tr("Der Pfad konnte nicht in die Datenbank geschrieben werden."));
+        return;
+    }
+
+    // Process the base directory and its subdirectories
+    processDirectory(dataBase, QDir(folderPath));
 }

@@ -1,6 +1,7 @@
 #include "DataBase.h"
 #include <QDebug>
 #include <QDir>
+#include <qdebug.h>
 
 DataBase::DataBase() {
     qDebug() << "Datenbank Konstruktor gestartet";
@@ -28,21 +29,26 @@ DataBase::~DataBase() {
 }
 
 bool DataBase::createTableMediathek() {
-    if (!db.open()) {
+    if (!db.isOpen()) {
         qDebug() << "Datenbankverbindung konnte nicht geöffnet werden.";
         return false;
     }
+
     if (!QSqlDatabase::isDriverAvailable("QSQLITE")) {
         qDebug() << "SQLite-Treiber ist nicht verfügbar.";
     }
-    QSqlQuery query;
+    QSqlQuery query(db); // Use the correct database connection
 
     bool success = query.prepare("CREATE TABLE IF NOT EXISTS Mediathek ("
-               "TrackID SERIAL PRIMARY KEY, "
+               "TrackID INTEGER PRIMARY KEY AUTOINCREMENT, " // Ensure TrackID is auto-incremented
+               "FilePath TEXT, "
                "Interpret TEXT, "
                "Titel TEXT, "
                "Album TEXT, "
-               "Spielzeit TEXT");
+               "Spielzeit INT, "
+               "SampleRate INT, "
+               "SampleCount INT, "
+               "Hash TEXT)");
     query.exec();
     if (!success) {
         qDebug() << "Fehler beim Erstellen der Tabelle:" << query.lastError();
@@ -51,33 +57,45 @@ bool DataBase::createTableMediathek() {
     }
     return success;
 }
+
 bool DataBase::createTableOptionen() {
-    QSqlQuery query;
+    if (!db.isOpen()) {
+        qDebug() << "Datenbankverbindung konnte nicht geöffnet werden.";
+        return false;
+    }
+    QSqlQuery query(db); // Use the correct database connection
     bool success = query.exec("CREATE TABLE IF NOT EXISTS OPTIONEN ("
-                              "Index SERIAL PRIMARY KEY,"
+                              "ID SERIAL PRIMARY KEY," // Change Index to ID
                               "Lautstaerke FLOAT,"
-                              "MusikPfad TEXT,"
-                              "NutzerName TEXT,");
+                              "MusikPfad TEXT)");
     if (!success) {
         qDebug() << "Fehler beim Erstellen der Tabelle:" << query.lastError();
     } else {
-        qDebug() << "Tabelle 'Mediathek' wurde erfolgreich erstellt oder existiert bereits.";
+        qDebug() << "Tabelle 'OPTIONEN' wurde erfolgreich erstellt oder existiert bereits.";
     }
     return success;
 }
 
-bool DataBase::insertData(const QString &interpret, const QString &album, const QString &titel, int spielzeit) {
-    QSqlQuery query;
+bool DataBase::insertData(const QString &filePath, const QString &interpret, const QString &album, const QString &titel, int spielzeit, int sampleRate, int sampleCount, const QByteArray &hash) {
+    if (!db.isOpen()) {
+        qDebug() << "Datenbankverbindung konnte nicht geöffnet werden.";
+        return false;
+    }
+    QSqlQuery query(db); // Use the correct database connection
 
     // SQL-Befehl zum Einfügen von Daten
-    query.prepare("INSERT INTO Mediathek (Interpret, Album, Titel, Spielzeit) "
-                  "VALUES (:interpret, :album, :titel, :spielzeit)");
+    query.prepare("INSERT INTO Mediathek (FilePath, Interpret, Album, Titel, Spielzeit, SampleRate, SampleCount, Hash) "
+                  "VALUES (:filePath, :interpret, :album, :titel, :spielzeit, :sampleRate, :sampleCount, :hash)");
 
     // Bindung der Werte
+    query.bindValue(":filePath", filePath);
     query.bindValue(":interpret", interpret);
     query.bindValue(":album", album);
     query.bindValue(":titel", titel);
-    query.bindValue(":spielzeit", QString::number(spielzeit)); // Spielzeit als TEXT speichern (Umwandlung in QString)
+    query.bindValue(":spielzeit", spielzeit);
+    query.bindValue(":sampleRate", sampleRate);
+    query.bindValue(":sampleCount", sampleCount);
+    query.bindValue(":hash", hash);
     // Ausführen der Abfrage und Überprüfen auf Fehler
     if (!query.exec()) {
         qDebug() << "Fehler beim Einfügen von Daten:" << query.lastError();
@@ -87,22 +105,24 @@ bool DataBase::insertData(const QString &interpret, const QString &album, const 
     qDebug() << "Daten erfolgreich eingefügt!";
     return true;
 }
-bool DataBase::insertDataIntoOptions(const float &LautStaerke, QDir &MusikPfad, QString &userName)
-{
-    QSqlQuery query;
 
-    // SQL-Befehl zum Einfügen von Daten
-    query.prepare("INSERT INTO OPTIONEN (Lautstaerke, MusikPfad,NutzerName) "
-                  "VALUES (:LautStaerke, :MusikPfad, :NutzerName)");
-
-    // Bindung der Werte
-    query.bindValue(":LautStaerke", LautStaerke);
-    query.bindValue(":MusikPfad", MusikPfad.absolutePath());
-    query.bindValue(":NutzerName",userName);
-    // Ausführen der Abfrage und Überprüfen auf Fehler
-    if (!query.exec()) {
-        qDebug() << "Fehler beim Einfügen von Daten in OPTIONEN:" << query.lastError();
+bool DataBase::insertOptions(const QList<QPair<float, QString>> &options) {
+    if (!db.isOpen()) {
+        qDebug() << "Datenbankverbindung konnte nicht geöffnet werden.";
         return false;
+    }
+    QSqlQuery query(db); // Use the correct database connection
+
+    query.prepare("INSERT INTO OPTIONEN (Lautstaerke, MusikPfad) VALUES (:Lautstaerke, :MusikPfad)");
+
+    for (const auto &option : options) {
+        query.bindValue(":Lautstaerke", option.first);
+        query.bindValue(":MusikPfad", option.second);
+
+        if (!query.exec()) {
+            qDebug() << "Fehler beim Einfügen von Daten in OPTIONEN:" << query.lastError();
+            return false;
+        }
     }
 
     qDebug() << "Daten erfolgreich in OPTIONEN eingefügt!";
@@ -110,6 +130,10 @@ bool DataBase::insertDataIntoOptions(const float &LautStaerke, QDir &MusikPfad, 
 }
 
 void DataBase::queryData() {
+    if (!db.isOpen()) {
+        qDebug() << "Datenbankverbindung konnte nicht geöffnet werden.";
+        return;
+    }
     QSqlQuery query("SELECT * FROM Mediathek");
 
     while (query.next()) {
@@ -120,29 +144,7 @@ void DataBase::queryData() {
         qDebug() << "Interpret:" << interpret << ", Album:" << album << ", Titel:" << titel << ", Spielzeit:" << spielzeit;
     }
 }
-bool DataBase::doesUserNameExists(const QString &userName)
-{
-    // Bereite die SQL-Abfrage vor
-    QSqlQuery query;
-    query.prepare("SELECT COUNT(*) FROM OPTIONEN WHERE NutzerName = :userName");
 
-    // Binde den Benutzernamen an die Abfrage
-    query.bindValue(":userName", userName);
-
-    // Führe die Abfrage aus
-    if (!query.exec()) {
-        qWarning() << "Fehler beim Ausführen der Abfrage:" << query.lastError().text();
-        return false;
-    }
-
-    // Hole das Ergebnis der Abfrage (Anzahl der Datensätze)
-    if (query.next()) {
-        int count = query.value(0).toInt();
-        return count > 0;  // Gibt true zurück, wenn der Benutzername existiert, sonst false
-    }
-
-    return false;  // Falls kein Ergebnis vorhanden ist
-}
 bool DataBase::open() {
     if (!db.open()) {
         qDebug() << "Error: connection with database failed";
@@ -157,34 +159,7 @@ void DataBase::close() {
     db.close();
 }
 
-// bool DataBase::savePlaylist(const std::vector<QString> &playlist) {
-//     QSqlQuery query;
-//     query.prepare("INSERT INTO playlists (name) VALUES (?)");
-//     for (const QString &file : playlist) {
-//         query.addBindValue(file);
-//         if (!query.exec()) {
-//             qDebug() << "Error: failed to insert data -" << query.lastError();
-//             return false;
-//         }
-//     }
-//     return true;
-// }
+QSqlDatabase& DataBase::getDatabase() {
+    return db;
+}
 
-// bool DataBase::loadPlaylist(std::vector<QString> &playlist) {
-//     QSqlQuery query("SELECT name FROM playlists");
-//     while (query.next()) {
-//         QString name = query.value(0).toString();
-//         playlist.push_back(name);
-//     }
-//     return true;
-// }
-
-// bool DataBase::initialize() {
-//     QSqlQuery query;
-//     query.prepare("CREATE TABLE IF NOT EXISTS playlists (id INTEGER PRIMARY KEY, name TEXT)");
-//     if (!query.exec()) {
-//         qDebug() << "Error: failed to create table -" << query.lastError();
-//         return false;
-//     }
-//     return true;
-// }

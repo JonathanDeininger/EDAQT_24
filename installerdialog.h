@@ -7,7 +7,6 @@
 #include <QTimer>
 #include <QDir>
 #include <QListWidgetItem>
-#include <iostream>
 #include <QMessageBox>
 #include <QProcessEnvironment>
 // #include "mediacontroller.h"

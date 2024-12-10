@@ -1,112 +1,82 @@
 #include "MediaController.h"
-// #include "DataBase.h"
-#include "Playlist.h"
 #include <QFileDialog>
 #include <QDir>
 #include <iostream>
 #include <QMessageBox>
 
-MediaController::MediaController(Playlist &playlist)
-    : playlist(playlist), currentIndex(0) {
+MediaController::MediaController(QListWidget *playlistWidget, Playlist &playlist)
+    : playlistWidget(playlistWidget), playlist(playlist), currentIndex(0), currentTrack() {
     initializePlayer();
 }
 
 void MediaController::initializePlayer() {
     player.setAudioOutput(&audioOutput);
     connect(&player, &QMediaPlayer::positionChanged, [](qint64 position) {
-        // Handle position changed
+        qDebug() << "Position changed:" << position;
     });
     connect(&player, &QMediaPlayer::mediaStatusChanged, [](QMediaPlayer::MediaStatus status) {
-        // Handle media status changed
+        qDebug() << "Media status changed:" << status;
     });
     connect(&player, &QMediaPlayer::errorOccurred, [](QMediaPlayer::Error error, const QString &errorString) {
-        // Handle error occurred
+        qDebug() << "Error occurred:" << error << errorString;
     });
-    connect(&player,&QMediaPlayer::durationChanged, this, &MediaController::updateCurrentSongDuration);
-    audioOutput.setVolume(0);
+    connect(&player, &QMediaPlayer::durationChanged, this, &MediaController::updateCurrentSongDuration);
+    audioOutput.setVolume(0.5); // Set a default volume
 }
 
 void MediaController::playCurrent() {
-    const auto &files = playlist.getFiles();
-    if (currentIndex >= 0 && currentIndex < files.size()) {
-        QString newFile = files[currentIndex];
-        // std::cout << "Playing: " << currentFile.toStdString() << std::endl;
-        // hab eine if Abfrage hinzugefügt, welche prüft ob das aktuelle lied bereits ausgewählt ist.
-        // ohne if Abfrage würde der player nach jedem pausieren und abspielen dasselbe lied wieder auf Anfang setzen
-        if (newFile != currentSource){
+    if (currentIndex >= 0 && currentIndex < playlist.getLength()) {
+        QString newFile = playlist.getTracks()[currentIndex].getFilePath();
+        qDebug() << "Attempting to play file:" << newFile;
+        if (newFile != currentSource) {
             currentSource = newFile;
             player.setSource(QUrl::fromLocalFile(newFile));
+            qDebug() << "Setting source to:" << newFile;
+        }
+        QFile file(newFile);
+        if (!file.exists()) {
+            qDebug() << "File does not exist:" << newFile;
+        } else if (!file.open(QIODevice::ReadOnly)) {
+            qDebug() << "File cannot be opened:" << newFile;
+        } else {
+            qDebug() << "File is accessible:" << newFile;
+            file.close();
         }
         player.play();
+        qDebug() << "Playing:" << newFile;
+    } else {
+        qDebug() << "Invalid index:" << currentIndex;
     }
 }
 
 void MediaController::pauseCurrent() {
-    const auto &files = playlist.getFiles();
-    if (currentIndex >= 0 && currentIndex < files.size()) {
-        player.pause();
-    }
+    player.pause();
+    qDebug() << "Paused";
 }
 
 void MediaController::next() {
-    const auto &files = playlist.getFiles();
-    if (currentIndex < files.size() - 1) {
+    qDebug() << "Current index before next:" << currentIndex;
+    if (currentIndex < playlist.getLength() - 1) {
         currentIndex++;
+        qDebug() << "Current index after increment:" << currentIndex;
         playCurrent();
+        qDebug() << "Next track:" << currentIndex;
+    } else {
+        qDebug() << "No next track available";
     }
 }
 
 void MediaController::prev() {
+    qDebug() << "Current index before prev:" << currentIndex;
     if (currentIndex > 0) {
         currentIndex--;
+        qDebug() << "Current index after decrement:" << currentIndex;
         playCurrent();
+        qDebug() << "Previous track:" << currentIndex;
+    } else {
+        qDebug() << "No previous track available";
     }
 }
-
-// QStringList MediaController::selectMediaFiles(DataBase &database) {
-//     QStringList files;
-//     QMessageBox msgBox;
-//     msgBox.setText("Load media files");
-//     msgBox.setInformativeText("Do you want to load the playlist from the database or select a directory?");
-//     msgBox.setStandardButtons(QMessageBox::Cancel | QMessageBox::Open | QMessageBox::Save);
-//     msgBox.setDefaultButton(QMessageBox::Open);
-//     int ret = msgBox.exec();
-
-//     switch (ret) {
-//     case QMessageBox::Open: {
-//         QString dirPath = QFileDialog::getExistingDirectory(nullptr, "Select Media Directory");
-//         if (dirPath.isEmpty()) {
-//             std::cerr << "No directory selected." << std::endl;
-//             exit(-1);
-//         }
-//         QDir dir(dirPath);
-//         QStringList filters;
-//         filters << "*.mp3" << "*.mp4" << "*.wav" << "*.avi";
-//         files = dir.entryList(filters, QDir::Files);
-//         for (QString &file : files) {
-//             file = dir.absoluteFilePath(file);
-//         }
-//         break;
-//     }
-//     case QMessageBox::Save: {
-//         if (database.open()) {
-//             std::vector<QString> playlist;
-//             database.loadPlaylist(playlist);
-//             database.close();
-//             for (const auto &file : playlist) {
-//                 files.append(file);
-//             }
-//         }
-//         break;
-//     }
-//     case QMessageBox::Cancel:
-//     default:
-//         std::cerr << "Operation cancelled." << std::endl;
-//         exit(-1);
-//     }
-
-//     return files;
-// }
 
 void MediaController::addFolderToPlaylist(const QString &folderPath) {
     QDir dir(folderPath);
@@ -120,6 +90,9 @@ void MediaController::addFolderToPlaylist(const QString &folderPath) {
     QStringList files = dir.entryList(filters, QDir::Files);
     for (QString &file : files) {
         file = dir.absoluteFilePath(file);
+        QListWidgetItem *item = new QListWidgetItem(file);
+        item->setData(Qt::UserRole, file);
+        playlistWidget->addItem(item);
         playlist.addFile(file);
     }
 
@@ -130,27 +103,40 @@ void MediaController::addFolderToPlaylist(const QString &folderPath) {
     }
 }
 
-void MediaController::setCurrentIndex(int index){
-    if (index >= 0 && index < playlist.getFiles().size()){
+void MediaController::setCurrentIndex(int index) {
+    qDebug() << "Setting current index to:" << index;
+    if (index >= 0 && index < playlist.getLength()) {
         currentIndex = index;
+        qDebug() << "Current index set to:" << currentIndex;
     } else {
-        std::cerr << "Wie?" << std::endl;
+        std::cerr << "Invalid index" << std::endl;
     }
 }
 
 void MediaController::updateCurrentSongDuration(qint64 duration) {
     // Aktualisiere die Songdauer in Sekunden
     songDuration = duration / 1000;
+    qDebug() << "Song duration updated to:" << songDuration;
 }
 
 qint64 MediaController::getCurrentSongDuration() {
     return songDuration;
 }
 
-void MediaController::setCurrentSongPosition(int position){
-    currentSongPosition = position;
+void MediaController::setCurrentSongPosition(int position) {
+    player.setPosition(position * 1000); // Set position in milliseconds
+    qDebug() << "Current song position set to:" << position;
 }
-int MediaController::getCurrentSongPosition(){
-    return currentSongPosition;
+
+int MediaController::getCurrentSongPosition() {
+    return player.position() / 1000; // Return position in seconds
+}
+
+QMediaPlayer* MediaController::getPlayer() {
+    return &player;
+}
+
+QAudioOutput* MediaController::getAudioOutput() {
+    return &audioOutput;
 }
 

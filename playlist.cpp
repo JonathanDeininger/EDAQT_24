@@ -1,31 +1,37 @@
 #include "Playlist.h"
-#include "MediaController.h"
-#include "DataBase.h"
+#include <iostream>
 
-// void Playlist::addFilesFromArgs(const QStringList &args, MediaController &mediaController, DataBase &database) {
-//     if (args.isEmpty()) {
-//         QStringList files = mediaController.selectMediaFiles(database);
-//         for (const QString &file : files) {
-//             addFile(file);
-//         }
-//     } else {
-//         QFileInfo fileInfo(args.first());
-//         if (fileInfo.isDir()) {
-//             QDir dir(args.first());
-//             QStringList filters;
-//             filters << "*.mp3" << "*.mp4" << "*.wav" << "*.avi";
-//             QStringList files = dir.entryList(filters, QDir::Files);
-//             for (QString &file : files) {
-//                 file = dir.absoluteFilePath(file);
-//                 addFile(file);
-//             }
-//         } else {
-//             addFile(args.first());
-//         }
-//     }
+void Playlist::addFile(const QString &filePath) {
+    tracks.emplace_back(filePath);
+}
 
-//     if (getFiles().empty()) {
-//         std::cerr << "No media files found." << std::endl;
-//         exit(-1);
-//     }
-// }
+std::vector<Track> Playlist::getTracks() const {
+    return tracks;
+}
+
+void Playlist::setFiles(const std::vector<QString> &newFiles) {
+    files = newFiles;
+}
+
+void Playlist::print() const {
+    std::cout << "Number of files: " << files.size() << std::endl;
+    for (const auto &file : files) {
+        std::cout << QFileInfo(file).fileName().toStdString() << std::endl;
+    }
+}
+
+const std::vector<QString>& Playlist::getFiles() const {
+    return files;
+}
+
+void Playlist::setName(const QString &name) {
+    this->name = name;
+}
+
+QString Playlist::getName() const {
+    return name;
+}
+
+int Playlist::getLength() const {
+    return tracks.size();
+}

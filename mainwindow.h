@@ -8,6 +8,8 @@
 #include <QListWidgetItem>
 #include <QMessageBox>
 #include "mediacontroller.h"
+#include "database.h" // Include the database header
+#include "Playlist.h" // Include the Playlist header
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -21,37 +23,27 @@ class MainWindow : public QMainWindow
 
 public:
     MainWindow(QWidget *parent = nullptr);
-
     ~MainWindow();
 
 private slots:
-
     void onChoosePlaylistButtonClicked();
-
     void onPlaylistItemClicked(QListWidgetItem *item);
-
     void onPlayButtonPressed();
-
     void onVolumeChanged(float value);
-
     void onPauseButtonPressed();
-
     void onNextButtonPressed();
-
     void onPreviousButtonPressed();
-
     void updateProgressBar();
-
     void onSliderMoved();
+    void loadTracksFromDatabase(); // Add this method to load tracks from the database
+
 private:
     Ui::MainWindow *ui;
-    Playlist playList;
+    Playlist playList; // Add a Playlist member
     MediaController mediaController;
     QTimer *progressTimer;
     int SliderPosition;
-    // Hier als Beispiel, wenn ich nicht mit dem ui tool arbeiten würde, wäre dass hier die klassische Deklaration der einzelnen Elemente
-    // QLabel *currentSongLabel;
-    // QListWidget *Playlist;
-    // QPushButton *choosePlaylistButton;
+    DataBase db; // Add a database member
 };
+
 #endif // MAINWINDOW_H

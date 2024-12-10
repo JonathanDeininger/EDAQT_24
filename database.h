@@ -15,15 +15,12 @@ public:
     ~DataBase();
     bool createTableMediathek();
     bool createTableOptionen();
-    bool insertData(const QString &interpret, const QString &album, const QString &titel, int spielzeit);
-    bool insertDataIntoOptions(const float &LautStaerke, QDir &MusikPfad, QString &NutzerName);
-    bool doesUserNameExists(const QString &NutzerName);
+    bool insertData(const QString &filePath, const QString &interpret, const QString &album, const QString &titel, int spielzeit, int sampleRate, int sampleCount, const QByteArray &hash);
+    bool insertOptions(const QList<QPair<float, QString>> &options);
     void queryData();
     bool open();
     void close();
-    // bool savePlaylist(const std::vector<QString> &playlist);
-    // bool loadPlaylist(std::vector<QString> &playlist);
-    // bool initialize();
+    QSqlDatabase& getDatabase(); // Add this method to access the database
 
 private:
     QSqlDatabase db;

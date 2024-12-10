@@ -5,8 +5,8 @@
 #include <QStringList>
 #include <QFileInfo>
 #include <QDir>
-#include <iostream>
 #include <vector>
+#include "track.h"
 
 // Vorwärtsdeklaration der MediaController-Klasse
 class MediaController;
@@ -14,29 +14,26 @@ class DataBase;
 
 class Playlist {
 public:
-    void addFile(const QString &file) {
-        files.push_back(file);
-    }
+    void addFile(const QString &filePath);
+    std::vector<Track> getTracks() const;
 
     void addFilesFromArgs(const QStringList &args, MediaController &mediaController, DataBase &database);
 
-    void setFiles(const std::vector<QString> &newFiles) {
-        files = newFiles;
-    }
+    void setFiles(const std::vector<QString> &newFiles);
 
-    void print() const {
-        std::cout << "Number of files: " << files.size() << std::endl;
-        for (const auto &file : files) {
-            std::cout << QFileInfo(file).fileName().toStdString() << std::endl;
-        }
-    }
+    void print() const;
 
-    const std::vector<QString>& getFiles() const {
-        return files;
-    }
+    const std::vector<QString>& getFiles() const;
+
+    void setName(const QString &name);
+    QString getName() const;
+
+    int getLength() const;
 
 private:
+    std::vector<Track> tracks;
     std::vector<QString> files;
+    QString name;
 };
 
 #endif // PLAYLIST_H

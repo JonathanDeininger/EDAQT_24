@@ -5,14 +5,16 @@
 #include <QAudioOutput>
 #include <QObject>
 #include <QStringList>
-#include "Playlist.h"
+#include <QListWidget>
 #include "DataBase.h"
+#include "track.h" // Include the Track header
+#include "Playlist.h" // Include the Playlist header
 
 class MediaController : public QObject {
     Q_OBJECT
 
 public:
-    MediaController(Playlist &playlist);
+    MediaController(QListWidget *playlistWidget, Playlist &playlist);
     void initializePlayer();
     void playCurrent();
     void pauseCurrent();
@@ -20,25 +22,24 @@ public:
     void prev();
     void setCurrentIndex(int index);
     QStringList selectMediaFiles(DataBase &database);
-    Playlist& getPlaylist() { return playlist; } // Add this method
     void addFolderToPlaylist(const QString &folderPath);
-    QMediaPlayer* getPlayer() { return &player; }
-    QAudioOutput* getAudioOutput() { return &audioOutput; }
-    // Slider und Timer für
+    QMediaPlayer* getPlayer();
+    QAudioOutput* getAudioOutput();
     int getCurrentSongPosition();
     void setCurrentSongPosition(int position);
     qint64 getCurrentSongDuration();
     void updateCurrentSongDuration(qint64 duration);
-private:
 
+private:
+    QListWidget *playlistWidget;
     Playlist &playlist;
     QMediaPlayer player;
     QAudioOutput audioOutput;
     QString currentSource;
-
     qint64 songDuration = 0;
     int currentSongPosition = 0;
-    int currentIndex;
+    int currentIndex = 0;
+    Track currentTrack;
 };
 
 #endif // MEDIACONTROLLER_H
