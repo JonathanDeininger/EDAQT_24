@@ -1,0 +1,14 @@
+# ninja log v6
+900	3956	7555536575355133	CMakeFiles/Musikspieler.dir/Debug/playlist.cpp.obj	a186ee7006627e2f
+28	677	7555541464262359	C:/_Code/c++qt/EDAQT_24/build/Musikspieler_autogen/timestamp_Debug	c4ce4db7d447005f
+28	677	7555541464262359	Musikspieler_autogen/timestamp_Debug	c4ce4db7d447005f
+28	677	7555541464262359	Musikspieler_autogen/mocs_compilation_Debug.cpp	c4ce4db7d447005f
+28	677	7555541464262359	C:/_Code/c++qt/EDAQT_24/build/Musikspieler_autogen/mocs_compilation_Debug.cpp	c4ce4db7d447005f
+911	4075	7555536575465415	CMakeFiles/Musikspieler.dir/Debug/track.cpp.obj	26b0d443cbc65b66
+682	3601	7555541465108694	CMakeFiles/Musikspieler.dir/Debug/main.cpp.obj	af346a1b0da3d733
+896	4144	7555536575315322	CMakeFiles/Musikspieler.dir/Debug/database.cpp.obj	949f608bffe46ef1
+678	3681	7555541465078556	CMakeFiles/Musikspieler.dir/Debug/Musikspieler_autogen/mocs_compilation_Debug.cpp.obj	791f9cdf7e39a7d0
+893	5196	7555536575283623	CMakeFiles/Musikspieler.dir/Debug/mediacontroller.cpp.obj	6d3f358a0878438e
+686	3933	7555541465151151	CMakeFiles/Musikspieler.dir/Debug/mainwindow.cpp.obj	1eb3d9867c1f7d8e
+690	3965	7555541465188236	CMakeFiles/Musikspieler.dir/Debug/installerdialog.cpp.obj	49a88afc817551f4
+3965	4422	7555541497941057	Debug/Musikspieler.exe	ed51933907bd2323
