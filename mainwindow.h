@@ -8,8 +8,8 @@
 #include <QListWidgetItem>
 #include <QMessageBox>
 #include "mediacontroller.h"
-#include "database.h" // Include the database header
-#include "Playlist.h" // Include the Playlist header
+#include "database.h"
+#include "playlist.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -35,15 +35,17 @@ private slots:
     void onPreviousButtonPressed();
     void updateProgressBar();
     void onSliderMoved();
-    void loadTracksFromDatabase(); // Add this method to load tracks from the database
 
 private:
     Ui::MainWindow *ui;
-    Playlist playList; // Add a Playlist member
+    Playlist playList;
     MediaController mediaController;
     QTimer *progressTimer;
     int SliderPosition;
-    DataBase db; // Add a database member
+    DataBase db;
+
+    void loadPlaylists();
+    void loadPlaylist(const QString &name);
 };
 
 #endif // MAINWINDOW_H

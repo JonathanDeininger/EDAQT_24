@@ -79,16 +79,32 @@ void processDirectory(DataBase &dataBase, const QDir &directory) {
     }
 }
 
+bool hasAudioFiles(const QDir &directory) {
+    QStringList audioFiles = directory.entryList(QStringList() << "*.mp3" << "*.wav" << "*.flac" << "*.aac", QDir::Files);
+    if (!audioFiles.isEmpty()) {
+        return true;
+    }
+
+    QStringList subDirs = directory.entryList(QDir::Dirs | QDir::NoDotAndDotDot);
+    foreach (const QString &subDir, subDirs) {
+        QDir subDirectory(directory.absoluteFilePath(subDir));
+        if (hasAudioFiles(subDirectory)) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 void InstallerDialog::onNextButtonClicked() {
     QDir directory(QString(ui->MusicPath->toPlainText()));
-    QStringList audioFiles = directory.entryList(QStringList() << "*.mp3" << "*.wav" << "*.flac" << "*.aac", QDir::Files);
 
-    if (audioFiles.isEmpty()) {
+    if (!hasAudioFiles(directory)) {
         QMessageBox::information(this, tr("Keine Dateien gefunden"), tr("Der ausgewählte Ordner enthält keine unterstützten Audiodateien."));
         return;
     }
 
-    processFiles(dataBase, directory.absolutePath(), audioFiles);
+    processDirectory(dataBase, directory); // Process the base directory and its subdirectories
     bool successInsertPath = dataBase.insertPath(directory.absolutePath());
     if (successInsertPath) {
         accept(); // Close the dialog and return QDialog::Accepted

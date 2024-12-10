@@ -2,6 +2,9 @@
 #include "Playlist.h"
 #include "mediacontroller.h"
 #include "./ui_mainwindow.h"
+#include <QSqlQuery>
+#include <QSqlRecord>
+#include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -21,11 +24,17 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->Fortschrittslider, &QSlider::sliderMoved, this, &MainWindow::onSliderMoved);
     connect(progressTimer, &QTimer::timeout, this, &MainWindow::updateProgressBar);
 
-    // Load tracks from the database
-    loadTracksFromDatabase();
+    // Ensure the database is opened
+    if (!db.open()) {
+        qDebug() << "Failed to open the database in MainWindow constructor.";
+    }
+
+    // Load playlists into the PlaylistSammlung
+    loadPlaylists();
 }
 
 MainWindow::~MainWindow() {
+    db.close();
     delete ui;
 }
 
@@ -112,41 +121,27 @@ void MainWindow::onSliderMoved() {
     ui->Fortschrittslider->setValue(currentPosition);
 }
 
-void MainWindow::loadTracksFromDatabase() {
-    if (!db.open()) {
-        qDebug() << "Failed to open the database.";
-        return;
+void MainWindow::loadPlaylists() {
+    // Clear the PlaylistSammlung
+    ui->PlaylistSammlung->clear();
+
+    // Add the special playlist "alle Songs"
+    QListWidgetItem *allSongsItem = new QListWidgetItem("alle Songs");
+    ui->PlaylistSammlung->addItem(allSongsItem);
+
+    // Retrieve all playlists from the database
+    std::vector<QString> playlists = db.getAllPlaylists();
+    for (const auto &playlistName : playlists) {
+        QListWidgetItem *item = new QListWidgetItem(playlistName);
+        ui->PlaylistSammlung->addItem(item);
     }
+}
 
-    QSqlQuery query(db.getDatabase());
-    query.exec("SELECT FilePath, Interpret, Titel, Album, Spielzeit, SampleRate, SampleCount, Hash FROM Mediathek");
+void MainWindow::loadPlaylist(const QString &name) {
+    Playlist playlist = db.getPlaylist(name);
 
-    while (query.next()) {
-        QString filePath = query.value(0).toString();
-        QString interpret = query.value(1).toString();
-        QString titel = query.value(2).toString();
-        QString album = query.value(3).toString();
-        int spielzeit = query.value(4).toInt();
-        int sampleRate = query.value(5).toInt();
-        int sampleCount = query.value(6).toInt();
-        QByteArray hash = query.value(7).toByteArray();
-
-        qDebug() << "Loaded track from database:";
-        qDebug() << "File path:" << filePath;
-        qDebug() << "Artist:" << interpret;
-        qDebug() << "Album:" << album;
-        qDebug() << "Title:" << titel;
-        qDebug() << "Duration:" << spielzeit;
-        qDebug() << "Sample Rate:" << sampleRate;
-        qDebug() << "Sample Count:" << sampleCount;
-        qDebug() << "Hash:" << hash;
-
-        // Add the track to the UI playlist
-        QListWidgetItem *item = new QListWidgetItem(titel.isEmpty() ? QFileInfo(filePath).fileName() : titel);
-        item->setData(Qt::UserRole, filePath);  // Speichert den vollständigen Pfad
-        ui->Playlist->addItem(item);
-        playList.addFile(filePath);
+    ui->Playlist->clear(); // Use the correct QListWidget
+    for (const auto &track : playlist.getTracks()) {
+        ui->Playlist->addItem(track.getTitle()); // Use the correct QListWidget
     }
-
-    db.close();
 }

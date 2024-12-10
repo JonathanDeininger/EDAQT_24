@@ -257,3 +257,107 @@ QSqlDatabase& DataBase::getDatabase() {
     return db;
 }
 
+bool DataBase::createPlaylist(const QString &name, const std::vector<Track> &tracks) {
+    if (name.isEmpty()) {
+        qDebug() << "Playlist name is empty.";
+        return false;
+    }
+
+    // Insert the playlist into the database
+    if (!insertPlaylist(name)) {
+        qDebug() << "Failed to insert playlist into database.";
+        return false;
+    }
+
+    // Get the ID of the newly created playlist
+    QSqlQuery query(db);
+    query.prepare("SELECT PlaylistID FROM Playlists WHERE Name = :name");
+    query.bindValue(":name", name);
+    if (!query.exec() || !query.next()) {
+        qDebug() << "Failed to retrieve playlist ID from database.";
+        return false;
+    }
+    int playlistID = query.value(0).toInt();
+
+    // Insert the tracks into the PlaylistTracks table
+    for (const auto &track : tracks) {
+        int trackID = track.getTrackID();
+        if (!insertPlaylistTrack(playlistID, trackID)) {
+            qDebug() << "Failed to insert track into PlaylistTracks table.";
+            return false;
+        }
+    }
+
+    qDebug() << "Playlist created successfully.";
+    return true;
+}
+
+bool DataBase::addSongToPlaylist(const QString &playlistName, const Track &track) {
+    // Get the ID of the playlist
+    QSqlQuery query(db);
+    query.prepare("SELECT PlaylistID FROM Playlists WHERE Name = :name");
+    query.bindValue(":name", playlistName);
+    if (!query.exec() || !query.next()) {
+        qDebug() << "Failed to retrieve playlist ID from database.";
+        return false;
+    }
+    int playlistID = query.value(0).toInt();
+
+    // Insert the track into the PlaylistTracks table
+    int trackID = track.getTrackID();
+    if (!insertPlaylistTrack(playlistID, trackID)) {
+        qDebug() << "Failed to insert track into PlaylistTracks table.";
+        return false;
+    }
+
+    qDebug() << "Song added to playlist successfully.";
+    return true;
+}
+
+Playlist DataBase::getPlaylist(const QString &name) {
+    Playlist playlist;
+    playlist.setName(name);
+
+    QSqlQuery query(db);
+    query.prepare("SELECT TrackID FROM PlaylistTracks "
+                  "JOIN Playlists ON PlaylistTracks.PlaylistID = Playlists.PlaylistID "
+                  "WHERE Playlists.Name = :name");
+    query.bindValue(":name", name);
+
+    if (!query.exec()) {
+        qDebug() << "Failed to retrieve playlist tracks from database:" << query.lastError();
+        return playlist;
+    }
+
+    while (query.next()) {
+        int trackID = query.value(0).toInt();
+        QSqlQuery trackQuery(db);
+        trackQuery.prepare("SELECT FilePath FROM Mediathek WHERE TrackID = :trackID");
+        trackQuery.bindValue(":trackID", trackID);
+
+        if (trackQuery.exec() && trackQuery.next()) {
+            QString filePath = trackQuery.value(0).toString();
+            playlist.addFile(filePath);
+        }
+    }
+
+    return playlist;
+}
+
+std::vector<QString> DataBase::getAllPlaylists() {
+    std::vector<QString> playlists;
+
+    QSqlQuery query(db);
+    query.prepare("SELECT Name FROM Playlists");
+    if (!query.exec()) {
+        qDebug() << "Failed to retrieve playlists from database:" << query.lastError();
+        return playlists;
+    }
+
+    while (query.next()) {
+        playlists.push_back(query.value(0).toString());
+    }
+
+    return playlists;
+}
+
