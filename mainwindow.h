@@ -40,6 +40,10 @@ private slots:
     void setProgressBarAndSongDurationLabel();
     void setCurrentSongDuration(Track currentTrack);
     void updateCurrentTrackInfo(int index, const QString &title);
+    void onRandomButtonPressed();
+    void onRepeatButtonPressed();
+    void randomizePlaylist();
+    void onSearchTextChanged(const QString &text);
 private:
     Ui::MainWindow *ui;
     Playlist playList; // Add a Playlist member
@@ -48,6 +52,7 @@ private:
     int SliderPosition;
     DataBase db; // Add a database member
     bool sliderBeingDragged = false;
+    bool isShuffleActive = false;
 };
 
 #endif // MAINWINDOW_H
