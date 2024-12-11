@@ -1,7 +1,6 @@
 #include "DataBase.h"
 #include <QDebug>
 #include <QDir>
-#include <qdebug.h>
 
 DataBase::DataBase() {
     qDebug() << "Datenbank Konstruktor gestartet";
@@ -28,8 +27,23 @@ DataBase::~DataBase() {
     db.close();
 }
 
-bool DataBase::createTableMediathek() {
+bool DataBase::open() {
     if (!db.isOpen()) {
+        if (!db.open()) {
+            qDebug() << "Error: connection with database failed:" << db.lastError();
+            return false;
+        }
+    }
+    qDebug() << "Database: connection ok";
+    return true;
+}
+
+void DataBase::close() {
+    db.close();
+}
+
+bool DataBase::createTableMediathek() {
+    if (!open()) {
         qDebug() << "Datenbankverbindung konnte nicht geöffnet werden.";
         return false;
     }
@@ -59,7 +73,7 @@ bool DataBase::createTableMediathek() {
 }
 
 bool DataBase::createTablePathlist() {
-    if (!db.isOpen()) {
+    if (!open()) {
         qDebug() << "Datenbankverbindung konnte nicht geöffnet werden.";
         return false;
     }
@@ -76,7 +90,7 @@ bool DataBase::createTablePathlist() {
 }
 
 bool DataBase::createTablePlaylists() {
-    if (!db.isOpen()) {
+    if (!open()) {
         qDebug() << "Datenbankverbindung konnte nicht geöffnet werden.";
         return false;
     }
@@ -93,7 +107,7 @@ bool DataBase::createTablePlaylists() {
 }
 
 bool DataBase::createTablePlaylistTracks() {
-    if (!db.isOpen()) {
+    if (!open()) {
         qDebug() << "Datenbankverbindung konnte nicht geöffnet werden.";
         return false;
     }
@@ -112,7 +126,7 @@ bool DataBase::createTablePlaylistTracks() {
 }
 
 bool DataBase::insertData(const QString &filePath, const QString &interpret, const QString &album, const QString &titel, int spielzeit, int sampleRate, int sampleCount, const QByteArray &hash) {
-    if (!db.isOpen()) {
+    if (!open()) {
         qDebug() << "Datenbankverbindung konnte nicht geöffnet werden.";
         return false;
     }
@@ -142,7 +156,7 @@ bool DataBase::insertData(const QString &filePath, const QString &interpret, con
 }
 
 bool DataBase::insertPath(const QString &path) {
-    if (!db.isOpen()) {
+    if (!open()) {
         qDebug() << "Datenbankverbindung konnte nicht geöffnet werden.";
         return false;
     }
@@ -170,7 +184,7 @@ bool DataBase::insertPath(const QString &path) {
 }
 
 bool DataBase::insertPlaylist(const QString &playlistName) {
-    if (!db.isOpen()) {
+    if (!open()) {
         qDebug() << "Datenbankverbindung konnte nicht geöffnet werden.";
         return false;
     }
@@ -189,7 +203,7 @@ bool DataBase::insertPlaylist(const QString &playlistName) {
 }
 
 bool DataBase::insertPlaylistTrack(int playlistID, int trackID) {
-    if (!db.isOpen()) {
+    if (!open()) {
         qDebug() << "Datenbankverbindung konnte nicht geöffnet werden.";
         return false;
     }
@@ -209,7 +223,7 @@ bool DataBase::insertPlaylistTrack(int playlistID, int trackID) {
 }
 
 bool DataBase::tableExists(const QString &tableName) {
-    if (!db.isOpen()) {
+    if (!open()) {
         qDebug() << "Datenbankverbindung konnte nicht geöffnet werden.";
         return false;
     }
@@ -223,100 +237,18 @@ bool DataBase::tableExists(const QString &tableName) {
     return query.next();
 }
 
-void DataBase::queryData() {
-    if (!db.isOpen()) {
-        qDebug() << "Datenbankverbindung konnte nicht geöffnet werden.";
-        return;
-    }
-    QSqlQuery query("SELECT * FROM Mediathek");
-
-    while (query.next()) {
-        QString interpret = query.value(0).toString();
-        QString album = query.value(1).toString();
-        QString titel = query.value(2).toString();
-        int spielzeit = query.value(3).toInt();
-        qDebug() << "Interpret:" << interpret << ", Album:" << album << ", Titel:" << titel << ", Spielzeit:" << spielzeit;
-    }
-}
-
-bool DataBase::open() {
-    if (!db.open()) {
-        qDebug() << "Error: connection with database failed";
-        return false;
-    } else {
-        qDebug() << "Database: connection ok";
-        return true;
-    }
-}
-
-void DataBase::close() {
-    db.close();
-}
-
 QSqlDatabase& DataBase::getDatabase() {
     return db;
-}
-
-bool DataBase::createPlaylist(const QString &name, const std::vector<Track> &tracks) {
-    if (name.isEmpty()) {
-        qDebug() << "Playlist name is empty.";
-        return false;
-    }
-
-    // Insert the playlist into the database
-    if (!insertPlaylist(name)) {
-        qDebug() << "Failed to insert playlist into database.";
-        return false;
-    }
-
-    // Get the ID of the newly created playlist
-    QSqlQuery query(db);
-    query.prepare("SELECT PlaylistID FROM Playlists WHERE Name = :name");
-    query.bindValue(":name", name);
-    if (!query.exec() || !query.next()) {
-        qDebug() << "Failed to retrieve playlist ID from database.";
-        return false;
-    }
-    int playlistID = query.value(0).toInt();
-
-    // Insert the tracks into the PlaylistTracks table
-    for (const auto &track : tracks) {
-        int trackID = track.getTrackID();
-        if (!insertPlaylistTrack(playlistID, trackID)) {
-            qDebug() << "Failed to insert track into PlaylistTracks table.";
-            return false;
-        }
-    }
-
-    qDebug() << "Playlist created successfully.";
-    return true;
-}
-
-bool DataBase::addSongToPlaylist(const QString &playlistName, const Track &track) {
-    // Get the ID of the playlist
-    QSqlQuery query(db);
-    query.prepare("SELECT PlaylistID FROM Playlists WHERE Name = :name");
-    query.bindValue(":name", playlistName);
-    if (!query.exec() || !query.next()) {
-        qDebug() << "Failed to retrieve playlist ID from database.";
-        return false;
-    }
-    int playlistID = query.value(0).toInt();
-
-    // Insert the track into the PlaylistTracks table
-    int trackID = track.getTrackID();
-    if (!insertPlaylistTrack(playlistID, trackID)) {
-        qDebug() << "Failed to insert track into PlaylistTracks table.";
-        return false;
-    }
-
-    qDebug() << "Song added to playlist successfully.";
-    return true;
 }
 
 Playlist DataBase::getPlaylist(const QString &name) {
     Playlist playlist;
     playlist.setName(name);
+
+    if (!open()) {
+        qDebug() << "Datenbankverbindung konnte nicht geöffnet werden.";
+        return playlist;
+    }
 
     QSqlQuery query(db);
     query.prepare("SELECT TrackID FROM PlaylistTracks "
@@ -347,6 +279,11 @@ Playlist DataBase::getPlaylist(const QString &name) {
 std::vector<QString> DataBase::getAllPlaylists() {
     std::vector<QString> playlists;
 
+    if (!open()) {
+        qDebug() << "Datenbankverbindung konnte nicht geöffnet werden.";
+        return playlists;
+    }
+
     QSqlQuery query(db);
     query.prepare("SELECT Name FROM Playlists");
     if (!query.exec()) {
@@ -359,5 +296,32 @@ std::vector<QString> DataBase::getAllPlaylists() {
     }
 
     return playlists;
+}
+
+bool DataBase::removePlaylist(const QString &playlistName) {
+    if (!open()) {
+        qDebug() << "Datenbankverbindung konnte nicht geöffnet werden.";
+        return false;
+    }
+
+    QSqlQuery query(db);
+    query.prepare("DELETE FROM Playlists WHERE Name = :name");
+    query.bindValue(":name", playlistName);
+
+    if (!query.exec()) {
+        qDebug() << "Fehler beim Löschen der Playlist:" << query.lastError();
+        return false;
+    }
+
+    query.prepare("DELETE FROM PlaylistTracks WHERE PlaylistID = (SELECT PlaylistID FROM Playlists WHERE Name = :name)");
+    query.bindValue(":name", playlistName);
+
+    if (!query.exec()) {
+        qDebug() << "Fehler beim Löschen der Playlist-Tracks:" << query.lastError();
+        return false;
+    }
+
+    qDebug() << "Playlist erfolgreich gelöscht!";
+    return true;
 }
 

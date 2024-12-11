@@ -4,6 +4,7 @@
 #include <QMediaPlayer>
 #include <QMediaMetaData>
 #include <qdebug.h>
+#include "database.h"
 
 InstallerDialog::InstallerDialog(QWidget *parent)
     : QDialog(parent)
@@ -125,4 +126,35 @@ void InstallerDialog::onChooseMusicFolderClicked() {
         QMessageBox::warning(this, tr("Fehler"), tr("Der Pfad konnte nicht in die Datenbank geschrieben werden."));
         return;
     }
+}
+
+void InstallerDialog::addAllSongsToPlaylist() {
+    DataBase db;
+    if (!db.open()) {
+        qDebug() << "Failed to open the database.";
+        return;
+    }
+
+    // Create the "Alle Songs" playlist if it doesn't exist
+    if (!db.insertPlaylist("Alle Songs")) {
+        qDebug() << "Failed to create 'Alle Songs' playlist or it already exists.";
+    }
+
+    QSqlQuery query(db.getDatabase());
+    query.exec("SELECT TrackID FROM Mediathek");
+
+    while (query.next()) {
+        int trackID = query.value(0).toInt();
+        db.insertPlaylistTrack(1, trackID); // Assuming "Alle Songs" has PlaylistID 1
+    }
+
+    db.close();
+}
+
+// Modify the method where songs are loaded into the database to call addAllSongsToPlaylist
+void InstallerDialog::loadSongsIntoDatabase() {
+    // ...existing code to load songs into the database...
+
+    // After loading all songs, add them to the "Alle Songs" playlist
+    addAllSongsToPlaylist();
 }

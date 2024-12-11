@@ -25,14 +25,12 @@ public:
     bool insertPlaylist(const QString &playlistName);
     bool insertPlaylistTrack(int playlistID, int trackID);
     bool tableExists(const QString &tableName);
-    void queryData();
     bool open();
     void close();
     QSqlDatabase& getDatabase();
-    bool createPlaylist(const QString &name, const std::vector<Track> &tracks);
-    bool addSongToPlaylist(const QString &playlistName, const Track &track);
     Playlist getPlaylist(const QString &name);
-    std::vector<QString> getAllPlaylists(); // Add this method
+    std::vector<QString> getAllPlaylists();
+    bool removePlaylist(const QString &playlistName);
 
 private:
     QSqlDatabase db;

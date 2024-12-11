@@ -44,7 +44,17 @@ private slots:
     void onRepeatButtonPressed();
     void randomizePlaylist();
     void onSearchTextChanged(const QString &text);
+    void onAddPlaylistButtonClicked();
+    void onRemovePlaylistButtonClicked();
+    void onAddTrackButtonClicked();
+    void onRemoveTrackButtonClicked();
+    void onPlaylistSammlungItemClicked(QListWidgetItem *item);
+    void loadPlaylistsFromDatabase(); // Add this method to load playlists from the database
+
 private:
+    // ...existing code...
+    void loadPlaylist(const QString &playlistName); // Add this method declaration
+    // ...existing code...
     Ui::MainWindow *ui;
     Playlist playList; // Add a Playlist member
     MediaController *mediaController;

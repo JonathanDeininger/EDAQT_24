@@ -50,24 +50,24 @@
      </rect>
     </property>
    </widget>
-   <widget class="QPushButton" name="AddTrack">
+   <widget class="QPushButton" name="AddTrackButton">
     <property name="geometry">
      <rect>
       <x>960</x>
-      <y>150</y>
+      <y>240</y>
       <width>101</width>
       <height>24</height>
      </rect>
     </property>
     <property name="text">
-     <string>AddTrack</string>
+     <string>Add Track</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="RemoveTrack">
+   <widget class="QPushButton" name="RemoveTrackButton">
     <property name="geometry">
      <rect>
       <x>960</x>
-      <y>190</y>
+      <y>280</y>
       <width>101</width>
       <height>24</height>
      </rect>
@@ -76,7 +76,7 @@
      <string>RemoveTrack</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="ChoosePlaylistButton">
+   <widget class="QPushButton" name="AddPlaylistButton">
     <property name="geometry">
      <rect>
       <x>960</x>
@@ -86,7 +86,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>ChoosePlaylist</string>
+     <string>Add Playlist</string>
     </property>
    </widget>
    <widget class="QLabel" name="currentSongLabel">
@@ -118,7 +118,7 @@
    <widget class="QListWidget" name="PlaylistSammlung">
     <property name="geometry">
      <rect>
-      <x>10</x>
+      <x>40</x>
       <y>60</y>
       <width>221</width>
       <height>361</height>
@@ -212,11 +212,24 @@
    <widget class="QLineEdit" name="searchBar">
     <property name="geometry">
      <rect>
-      <x>300</x>
+      <x>320</x>
       <y>20</y>
-      <width>561</width>
+      <width>521</width>
       <height>24</height>
      </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="RemovePlaylistButton">
+    <property name="geometry">
+     <rect>
+      <x>960</x>
+      <y>150</y>
+      <width>101</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>RemovePlaylist</string>
     </property>
    </widget>
   </widget>
@@ -226,7 +239,7 @@
      <x>0</x>
      <y>0</y>
      <width>1144</width>
-     <height>21</height>
+     <height>33</height>
     </rect>
    </property>
   </widget>
