@@ -43,7 +43,6 @@ private slots:
     void onPreviousButtonPressed();
     void updateProgressBar(qint64 currentSongPosition);
     void onSliderReleased();
-    void loadTracksFromDatabase(); // Add this method to load tracks from the database
     void setProgressBarAndSongDurationLabel();
     void setCurrentSongDuration(Track currentTrack);
     void updateCurrentTrackInfo(int index, const QString &title);

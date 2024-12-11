@@ -47,8 +47,6 @@ MainWindow::MainWindow(QWidget *parent)
         installerDialog.exec();
     }
 
-    // Load tracks from the database
-    loadTracksFromDatabase();
     // Load playlists from the database
     loadPlaylistsFromDatabase();
     // Load the "Alle Songs" playlist
@@ -195,51 +193,6 @@ void MainWindow::setProgressBarAndSongDurationLabel() {
     qDebug() << "Duration von aktuellen Track: " << currentTrack.getDuration();
     ui->Fortschrittslider->setRange(0, currentTrack.getDuration());
     setCurrentSongDuration(currentTrack);
-}
-
-void MainWindow::loadTracksFromDatabase() {
-    if (!db.open()) {
-        qDebug() << "Failed to open the database.";
-        return;
-    }
-
-    QSqlQuery query(db.getDatabase());
-    query.exec("SELECT FilePath, Interpret, Titel, Album, Spielzeit, SampleRate, SampleCount, Hash FROM Mediathek");
-
-    while (query.next()) {
-        QString filePath = query.value(0).toString();
-        QString interpret = query.value(1).toString();
-        QString titel = query.value(2).toString();
-        QString album = query.value(3).toString();
-        int spielzeit = query.value(4).toInt();
-        int sampleRate = query.value(5).toInt();
-        int sampleCount = query.value(6).toInt();
-        QByteArray hash = query.value(7).toByteArray();
-
-        qDebug() << "Loaded track from database:";
-        qDebug() << "File path:" << filePath;
-        qDebug() << "Artist:" << interpret;
-        qDebug() << "Album:" << album;
-        qDebug() << "Title:" << titel;
-        qDebug() << "Duration:" << spielzeit;
-        qDebug() << "Sample Rate:" << sampleRate;
-        qDebug() << "Sample Count:" << sampleCount;
-        qDebug() << "Hash:" << hash;
-
-        // Formatieren des Anzeigetexts für die Liste
-        QString displayText = interpret + " | " + titel;
-        if (!album.isEmpty()) {
-            displayText += " | " + album;
-        }
-
-        // Erstelle das QListWidgetItem
-        QListWidgetItem *item = new QListWidgetItem(displayText);
-        item->setData(Qt::UserRole, filePath);  // Speichert den vollständigen Pfad als User-Daten
-        ui->Playlist->addItem(item);
-        playList.addFile(filePath);
-    }
-
-    db.close();
 }
 
 void MainWindow::randomizePlaylist()

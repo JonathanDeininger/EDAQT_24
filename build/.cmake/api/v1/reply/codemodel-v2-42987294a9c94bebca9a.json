@@ -1,0 +1,205 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-Debug-b5039daf2bafecd6d729.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.16"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "Musikspieler",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "Musikspieler::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-Musikspieler-Debug-3780d70fbdfa13c48b08.json",
+					"name" : "Musikspieler",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "Musikspieler_autogen::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-Musikspieler_autogen-Debug-bcec2a1be380d0e75240.json",
+					"name" : "Musikspieler_autogen",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "Musikspieler_autogen_timestamp_deps::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-Musikspieler_autogen_timestamp_deps-Debug-5ffcc06ed5d5588de733.json",
+					"name" : "Musikspieler_autogen_timestamp_deps",
+					"projectIndex" : 0
+				}
+			]
+		},
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-Release-3a7527dfd501787f1314.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.16"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"name" : "Release",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "Musikspieler",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "Musikspieler::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-Musikspieler-Release-b75e6cbc4aa0d63daa54.json",
+					"name" : "Musikspieler",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "Musikspieler_autogen::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-Musikspieler_autogen-Release-c4e66e5d08b59bff62be.json",
+					"name" : "Musikspieler_autogen",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "Musikspieler_autogen_timestamp_deps::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-Musikspieler_autogen_timestamp_deps-Release-5ffcc06ed5d5588de733.json",
+					"name" : "Musikspieler_autogen_timestamp_deps",
+					"projectIndex" : 0
+				}
+			]
+		},
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-RelWithDebInfo-0d42b2ad54e46b7e4a95.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.16"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"name" : "RelWithDebInfo",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "Musikspieler",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "Musikspieler::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-Musikspieler-RelWithDebInfo-635d3c5e0b07aeecbbfd.json",
+					"name" : "Musikspieler",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "Musikspieler_autogen::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-Musikspieler_autogen-RelWithDebInfo-668d3053d02657582909.json",
+					"name" : "Musikspieler_autogen",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "Musikspieler_autogen_timestamp_deps::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-Musikspieler_autogen_timestamp_deps-RelWithDebInfo-5ffcc06ed5d5588de733.json",
+					"name" : "Musikspieler_autogen_timestamp_deps",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "C:/_Code/c++qt/EDAQT_24/build",
+		"source" : "C:/_Code/c++qt/EDAQT_24"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 7
+	}
+}
