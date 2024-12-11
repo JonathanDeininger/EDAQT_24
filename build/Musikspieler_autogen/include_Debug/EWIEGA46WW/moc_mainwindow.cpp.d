@@ -3,6 +3,7 @@ C:/_Code/c++qt/EDAQT_24/build/Musikspieler_autogen/include_Debug/EWIEGA46WW/moc_
   C:/Qt/6.8.0/mingw_64/include/QtCore/QCryptographicHash \
   C:/Qt/6.8.0/mingw_64/include/QtCore/QDir \
   C:/Qt/6.8.0/mingw_64/include/QtCore/QFileInfo \
+  C:/Qt/6.8.0/mingw_64/include/QtCore/QMimeData \
   C:/Qt/6.8.0/mingw_64/include/QtCore/QObject \
   C:/Qt/6.8.0/mingw_64/include/QtCore/QString \
   C:/Qt/6.8.0/mingw_64/include/QtCore/QStringList \
@@ -79,6 +80,7 @@ C:/_Code/c++qt/EDAQT_24/build/Musikspieler_autogen/include_Debug/EWIEGA46WW/moc_
   C:/Qt/6.8.0/mingw_64/include/QtCore/qmetacontainer.h \
   C:/Qt/6.8.0/mingw_64/include/QtCore/qmetaobject.h \
   C:/Qt/6.8.0/mingw_64/include/QtCore/qmetatype.h \
+  C:/Qt/6.8.0/mingw_64/include/QtCore/qmimedata.h \
   C:/Qt/6.8.0/mingw_64/include/QtCore/qminmax.h \
   C:/Qt/6.8.0/mingw_64/include/QtCore/qnamespace.h \
   C:/Qt/6.8.0/mingw_64/include/QtCore/qnumeric.h \

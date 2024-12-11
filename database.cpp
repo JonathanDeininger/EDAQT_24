@@ -20,6 +20,12 @@ DataBase::DataBase() {
 
         qDebug() << "Datenbank erfolgreich geöffnet!";
     }
+
+    // Create necessary tables
+    createTableMediathek();
+    createTablePathlist();
+    createTablePlaylists();
+    createTablePlaylistTracks();
 }
 
 DataBase::~DataBase() {
@@ -264,12 +270,35 @@ Playlist DataBase::getPlaylist(const QString &name) {
     while (query.next()) {
         int trackID = query.value(0).toInt();
         QSqlQuery trackQuery(db);
-        trackQuery.prepare("SELECT FilePath FROM Mediathek WHERE TrackID = :trackID");
+        trackQuery.prepare("SELECT FilePath, Interpret, Titel, Album, Spielzeit, SampleRate, SampleCount, Hash FROM Mediathek WHERE TrackID = :trackID");
         trackQuery.bindValue(":trackID", trackID);
 
         if (trackQuery.exec() && trackQuery.next()) {
-            QString filePath = trackQuery.value(0).toString();
-            playlist.addFile(filePath);
+            Track track;
+            track.setFilePath(trackQuery.value(0).toString());
+            track.setArtist(trackQuery.value(1).toString());
+            track.setTitle(trackQuery.value(2).toString());
+            track.setAlbum(trackQuery.value(3).toString());
+            track.setDuration(trackQuery.value(4).toInt());
+            track.setSampleRate(trackQuery.value(5).toInt());
+            track.setSampleCount(trackQuery.value(6).toInt());
+            track.setHash(trackQuery.value(7).toByteArray());
+            track.setTrackID(trackID);
+            playlist.addTrack(track); // Add the track to the playlist
+
+            // Debug: Ausgabe der geladenen Track-Daten
+            qDebug() << "Loaded track from database:";
+            qDebug() << "File path:" << track.getFilePath();
+            qDebug() << "Artist:" << track.getArtist();
+            qDebug() << "Album:" << track.getAlbum();
+            qDebug() << "Title:" << track.getTitle();
+            qDebug() << "Duration:" << track.getDuration();
+            qDebug() << "Sample Rate:" << track.getSampleRate();
+            qDebug() << "Sample Count:" << track.getSampleCount();
+            qDebug() << "Hash:" << track.getHash();
+            qDebug() << "Track ID:" << track.getTrackID();
+        } else {
+            qDebug() << "Failed to retrieve track details from database:" << trackQuery.lastError();
         }
     }
 
@@ -323,5 +352,62 @@ bool DataBase::removePlaylist(const QString &playlistName) {
 
     qDebug() << "Playlist erfolgreich gelöscht!";
     return true;
+}
+
+bool DataBase::createAllSongsPlaylist() {
+    if (!insertPlaylist("Alle Songs")) {
+        qDebug() << "Failed to create 'Alle Songs' playlist or it already exists.";
+        return false;
+    }
+
+    QSqlQuery query(db);
+    query.exec("SELECT TrackID FROM Mediathek");
+
+    while (query.next()) {
+        int trackID = query.value(0).toInt();
+        if (!insertPlaylistTrack(1, trackID)) { // Assuming "Alle Songs" has PlaylistID 1
+            qDebug() << "Failed to add track to 'Alle Songs' playlist.";
+            return false;
+        }
+    }
+
+    qDebug() << "'Alle Songs' playlist created successfully.";
+    return true;
+}
+
+int DataBase::getPlaylistID(const QString &playlistName) {
+    if (!open()) {
+        qDebug() << "Datenbankverbindung konnte nicht geöffnet werden.";
+        return -1;
+    }
+
+    QSqlQuery query(db);
+    query.prepare("SELECT PlaylistID FROM Playlists WHERE Name = :name");
+    query.bindValue(":name", playlistName);
+
+    if (!query.exec() || !query.next()) {
+        qDebug() << "Failed to retrieve playlist ID from database:" << query.lastError();
+        return -1;
+    }
+
+    return query.value(0).toInt();
+}
+
+int DataBase::getTrackID(const QString &filePath) {
+    if (!open()) {
+        qDebug() << "Datenbankverbindung konnte nicht geöffnet werden.";
+        return -1;
+    }
+
+    QSqlQuery query(db);
+    query.prepare("SELECT TrackID FROM Mediathek WHERE FilePath = :filePath");
+    query.bindValue(":filePath", filePath);
+
+    if (!query.exec() || !query.next()) {
+        qDebug() << "Failed to retrieve track ID from database:" << query.lastError();
+        return -1;
+    }
+
+    return query.value(0).toInt();
 }
 

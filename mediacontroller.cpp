@@ -12,8 +12,7 @@ MediaController::MediaController(QListWidget *playlistWidget, Playlist &playlist
 void MediaController::initializePlayer() {
     player.setAudioOutput(&audioOutput);
     connect(&player, &QMediaPlayer::positionChanged, [this](qint64 position) {
-
-    emit positionChanged(position/1000);
+        emit positionChanged(position / 1000);
     });
     connect(&player, &QMediaPlayer::mediaStatusChanged, [](QMediaPlayer::MediaStatus status) {
         qDebug() << "Media status changed:" << status;
@@ -23,6 +22,12 @@ void MediaController::initializePlayer() {
     });
     connect(&player, &QMediaPlayer::durationChanged, this, &MediaController::updateCurrentSongDuration);
     audioOutput.setVolume(0.5); // Set a default volume
+}
+
+void MediaController::setPlaylist(const Playlist &playlist) {
+    this->playlist = playlist;
+    currentIndex = 0; // Initialize currentIndex
+    qDebug() << "MediaController playlist set with" << playlist.getFiles().size() << "tracks.";
 }
 
 void MediaController::playCurrent() {
@@ -95,7 +100,6 @@ void MediaController::onMediaStatusChanged(QMediaPlayer::MediaStatus status) {
     }
 }
 
-
 void MediaController::pauseCurrent() {
     player.pause();
     qDebug() << "Paused";
@@ -163,6 +167,7 @@ void MediaController::setCurrentIndex(int index) {
 void MediaController::updateCurrentSongDuration(qint64 duration) {
     // Aktualisiere die Songdauer in Sekunden
     songDuration = duration / 1000;
+    currentTrack.setDuration(songDuration); // Update the current track's duration
     qDebug() << "Song duration updated to:" << songDuration;
 }
 

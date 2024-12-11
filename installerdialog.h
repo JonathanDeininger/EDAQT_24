@@ -24,6 +24,7 @@ public:
     void onChooseInstallFolderClicked();
     void onChooseMusicFolderClicked();
     void onNextButtonClicked();
+    bool isDatabaseEmpty(); // Add this method declaration
 
 private:
     Ui::InstallerDialog *ui;

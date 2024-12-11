@@ -108,6 +108,8 @@ void InstallerDialog::onNextButtonClicked() {
     processDirectory(dataBase, directory); // Process the base directory and its subdirectories
     bool successInsertPath = dataBase.insertPath(directory.absolutePath());
     if (successInsertPath) {
+        // Create the "Alle Songs" playlist after inserting all tracks
+        dataBase.createAllSongsPlaylist();
         accept(); // Close the dialog and return QDialog::Accepted
     }
 }
@@ -157,4 +159,14 @@ void InstallerDialog::loadSongsIntoDatabase() {
 
     // After loading all songs, add them to the "Alle Songs" playlist
     addAllSongsToPlaylist();
+}
+
+bool InstallerDialog::isDatabaseEmpty() {
+    QSqlQuery query(dataBase.getDatabase());
+    query.exec("SELECT COUNT(*) FROM Mediathek");
+    if (query.next()) {
+        int count = query.value(0).toInt();
+        return count == 0;
+    }
+    return true;
 }

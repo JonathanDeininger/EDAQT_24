@@ -6,6 +6,7 @@ C:/_Code/c++qt/EDAQT_24/mainwindow.h
  mdp:C:/Qt/6.8.0/mingw_64/include/QtCore/QCryptographicHash
  mdp:C:/Qt/6.8.0/mingw_64/include/QtCore/QDir
  mdp:C:/Qt/6.8.0/mingw_64/include/QtCore/QFileInfo
+ mdp:C:/Qt/6.8.0/mingw_64/include/QtCore/QMimeData
  mdp:C:/Qt/6.8.0/mingw_64/include/QtCore/QObject
  mdp:C:/Qt/6.8.0/mingw_64/include/QtCore/QString
  mdp:C:/Qt/6.8.0/mingw_64/include/QtCore/QStringList
@@ -82,6 +83,7 @@ C:/_Code/c++qt/EDAQT_24/mainwindow.h
  mdp:C:/Qt/6.8.0/mingw_64/include/QtCore/qmetacontainer.h
  mdp:C:/Qt/6.8.0/mingw_64/include/QtCore/qmetaobject.h
  mdp:C:/Qt/6.8.0/mingw_64/include/QtCore/qmetatype.h
+ mdp:C:/Qt/6.8.0/mingw_64/include/QtCore/qmimedata.h
  mdp:C:/Qt/6.8.0/mingw_64/include/QtCore/qminmax.h
  mdp:C:/Qt/6.8.0/mingw_64/include/QtCore/qnamespace.h
  mdp:C:/Qt/6.8.0/mingw_64/include/QtCore/qnumeric.h

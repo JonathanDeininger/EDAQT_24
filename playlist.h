@@ -15,18 +15,20 @@ class DataBase;
 class Playlist {
 public:
     void addFile(const QString &filePath);
+    void addTrack(const Track &track); // Add this method declaration
     std::vector<Track> getTracks() const;
     void addFilesFromArgs(const QStringList &args, MediaController &mediaController, DataBase &database);
-    void setFiles(const std::vector<QString> &newFiles);
+    void setFiles(const QVector<QString> &newFiles);
     void print() const;
-    const std::vector<QString>& getFiles() const;
+    const QVector<QString>& getFiles() const;
     void setName(const QString &name);
     QString getName() const;
     int getLength() const;
 
+    std::vector<Track> tracks; // Make the tracks vector public
+
 private:
-    std::vector<Track> tracks;
-    std::vector<QString> files;
+    QVector<QString> files;
     QString name;
 };
 

@@ -17,6 +17,15 @@ public:
     int getSampleCount() const;
     QByteArray getHash() const;
     int getTrackID() const;
+    void setFilePath(const QString &filePath); // Add this method declaration
+    void setArtist(const QString &artist); // Add this method declaration
+    void setAlbum(const QString &album); // Add this method declaration
+    void setTitle(const QString &title); // Add this method declaration
+    void setDuration(int duration); // Add this method declaration
+    void setSampleRate(int sampleRate); // Add this method declaration
+    void setSampleCount(int sampleCount); // Add this method declaration
+    void setHash(const QByteArray &hash); // Add this method declaration
+    void setTrackID(int trackID); // Add this method declaration
 
 private:
     void computeHash();

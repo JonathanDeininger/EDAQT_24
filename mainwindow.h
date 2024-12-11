@@ -7,6 +7,9 @@
 #include <QDir>
 #include <QListWidgetItem>
 #include <QMessageBox>
+// #include <QDragEnterEvent> // Remove the QDragEnterEvent header
+// #include <QDropEvent> // Remove the QDropEvent header
+#include <QMimeData> // Include the QMimeData header
 #include "mediacontroller.h"
 #include "database.h" // Include the database header
 #include "Playlist.h" // Include the Playlist header
@@ -24,6 +27,10 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+
+protected:
+    // void dragEnterEvent(QDragEnterEvent *event) override; // Remove this method declaration
+    // void dropEvent(QDropEvent *event) override; // Remove this method declaration
 
 private slots:
     void onChoosePlaylistButtonClicked();
@@ -46,7 +53,7 @@ private slots:
     void onSearchTextChanged(const QString &text);
     void onAddPlaylistButtonClicked();
     void onRemovePlaylistButtonClicked();
-    void onAddTrackButtonClicked();
+    void onAddTrackButtonClicked(); // Add this method declaration
     void onRemoveTrackButtonClicked();
     void onPlaylistSammlungItemClicked(QListWidgetItem *item);
     void loadPlaylistsFromDatabase(); // Add this method to load playlists from the database

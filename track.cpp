@@ -47,6 +47,10 @@ Track::Track(const QString &filePath) : duration(0), sampleRate(0), sampleCount(
     computeHash();
 }
 
+void Track::setFilePath(const QString &filePath) {
+    this->filePath = filePath;
+}
+
 QString Track::getFilePath() const {
     return filePath;
 }
@@ -55,32 +59,64 @@ QString Track::getArtist() const {
     return artist;
 }
 
+void Track::setArtist(const QString &artist) {
+    this->artist = artist;
+}
+
 QString Track::getAlbum() const {
     return album;
+}
+
+void Track::setAlbum(const QString &album) {
+    this->album = album;
 }
 
 QString Track::getTitle() const {
     return title;
 }
 
+void Track::setTitle(const QString &title) {
+    this->title = title;
+}
+
 int Track::getDuration() const {
     return duration;
+}
+
+void Track::setDuration(int duration) {
+    this->duration = duration;
 }
 
 int Track::getSampleRate() const {
     return sampleRate;
 }
 
+void Track::setSampleRate(int sampleRate) {
+    this->sampleRate = sampleRate;
+}
+
 int Track::getSampleCount() const {
     return sampleCount;
+}
+
+void Track::setSampleCount(int sampleCount) {
+    this->sampleCount = sampleCount;
 }
 
 QByteArray Track::getHash() const {
     return hash;
 }
 
+void Track::setHash(const QByteArray &hash) {
+    this->hash = hash;
+}
+
 int Track::getTrackID() const {
     return trackID;
+}
+
+void Track::setTrackID(int trackID) {
+    this->trackID = trackID;
 }
 
 void Track::computeHash() {

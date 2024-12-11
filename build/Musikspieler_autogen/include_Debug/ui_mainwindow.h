@@ -30,7 +30,6 @@ public:
     QWidget *centralwidget;
     QPushButton *Play;
     QPushButton *Pause;
-    QListWidget *Playlist;
     QPushButton *AddTrackButton;
     QPushButton *RemoveTrackButton;
     QPushButton *AddPlaylistButton;
@@ -45,6 +44,7 @@ public:
     QPushButton *Repeat;
     QLineEdit *searchBar;
     QPushButton *RemovePlaylistButton;
+    QListWidget *Playlist;
     QMenuBar *menubar;
     QStatusBar *statusbar;
 
@@ -61,9 +61,6 @@ public:
         Pause = new QPushButton(centralwidget);
         Pause->setObjectName("Pause");
         Pause->setGeometry(QRect(570, 520, 80, 24));
-        Playlist = new QListWidget(centralwidget);
-        Playlist->setObjectName("Playlist");
-        Playlist->setGeometry(QRect(320, 60, 521, 361));
         AddTrackButton = new QPushButton(centralwidget);
         AddTrackButton->setObjectName("AddTrackButton");
         AddTrackButton->setGeometry(QRect(960, 240, 101, 24));
@@ -83,6 +80,11 @@ public:
         PlaylistSammlung = new QListWidget(centralwidget);
         PlaylistSammlung->setObjectName("PlaylistSammlung");
         PlaylistSammlung->setGeometry(QRect(40, 60, 221, 361));
+        PlaylistSammlung->setAcceptDrops(false);
+        PlaylistSammlung->setDragDropOverwriteMode(true);
+        PlaylistSammlung->setDragDropMode(QAbstractItemView::DragDropMode::NoDragDrop);
+        PlaylistSammlung->setDefaultDropAction(Qt::DropAction::MoveAction);
+        PlaylistSammlung->setProperty("dropIndicatorShown", QVariant(false));
         previousPushButton = new QPushButton(centralwidget);
         previousPushButton->setObjectName("previousPushButton");
         previousPushButton->setGeometry(QRect(380, 520, 80, 24));
@@ -112,6 +114,9 @@ public:
         RemovePlaylistButton = new QPushButton(centralwidget);
         RemovePlaylistButton->setObjectName("RemovePlaylistButton");
         RemovePlaylistButton->setGeometry(QRect(960, 150, 101, 24));
+        Playlist = new QListWidget(centralwidget);
+        Playlist->setObjectName("Playlist");
+        Playlist->setGeometry(QRect(320, 60, 521, 361));
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName("menubar");

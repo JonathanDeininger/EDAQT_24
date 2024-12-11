@@ -28,9 +28,12 @@ public:
     bool open();
     void close();
     QSqlDatabase& getDatabase();
-    Playlist getPlaylist(const QString &name);
+    Playlist getPlaylist(const QString &playlistName); // Only declaration here
     std::vector<QString> getAllPlaylists();
     bool removePlaylist(const QString &playlistName);
+    bool createAllSongsPlaylist(); // Add this method to create the "Alle Songs" playlist
+    int getPlaylistID(const QString &playlistName); // Add this method declaration
+    int getTrackID(const QString &filePath); // Add this method declaration
 
 private:
     QSqlDatabase db;

@@ -40,16 +40,6 @@
      <string>Pause</string>
     </property>
    </widget>
-   <widget class="QListWidget" name="Playlist">
-    <property name="geometry">
-     <rect>
-      <x>320</x>
-      <y>60</y>
-      <width>521</width>
-      <height>361</height>
-     </rect>
-    </property>
-   </widget>
    <widget class="QPushButton" name="AddTrackButton">
     <property name="geometry">
      <rect>
@@ -123,6 +113,21 @@
       <width>221</width>
       <height>361</height>
      </rect>
+    </property>
+    <property name="acceptDrops">
+     <bool>false</bool>
+    </property>
+    <property name="dragDropOverwriteMode">
+     <bool>true</bool>
+    </property>
+    <property name="dragDropMode">
+     <enum>QAbstractItemView::DragDropMode::NoDragDrop</enum>
+    </property>
+    <property name="defaultDropAction">
+     <enum>Qt::DropAction::MoveAction</enum>
+    </property>
+    <property name="dropIndicatorShown" stdset="0">
+     <bool>false</bool>
     </property>
    </widget>
    <widget class="QPushButton" name="previousPushButton">
@@ -230,6 +235,16 @@
     </property>
     <property name="text">
      <string>RemovePlaylist</string>
+    </property>
+   </widget>
+   <widget class="QListWidget" name="Playlist">
+    <property name="geometry">
+     <rect>
+      <x>320</x>
+      <y>60</y>
+      <width>521</width>
+      <height>361</height>
+     </rect>
     </property>
    </widget>
   </widget>

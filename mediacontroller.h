@@ -25,6 +25,7 @@ public:
     void addFolderToPlaylist(const QString &folderPath);
     void onMediaStatusChanged(QMediaPlayer::MediaStatus status);
     void playPlaylist();
+    void setPlaylist(const Playlist &playlist); // Add this method declaration
     QMediaPlayer* getPlayer();
     QAudioOutput* getAudioOutput();
     int getCurrentSongPosition();
@@ -46,7 +47,6 @@ private:
     int currentSongPosition = 0;
     int currentIndex = 0;
     Track currentTrack;
-
 };
 
 #endif // MEDIACONTROLLER_H

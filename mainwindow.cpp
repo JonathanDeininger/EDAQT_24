@@ -2,6 +2,7 @@
 #include "Playlist.h"
 #include "mediacontroller.h"
 #include "./ui_mainwindow.h"
+#include "installerdialog.h" // Include InstallerDialog header
 #include <QInputDialog> // Include QInputDialog header
 
 MainWindow::MainWindow(QWidget *parent)
@@ -32,6 +33,20 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->AddTrackButton, &QPushButton::clicked, this, &MainWindow::onAddTrackButtonClicked);
     connect(ui->RemoveTrackButton, &QPushButton::clicked, this, &MainWindow::onRemoveTrackButtonClicked);
     connect(ui->PlaylistSammlung, &QListWidget::itemClicked, this, &MainWindow::onPlaylistSammlungItemClicked);
+
+    // Enable drag and drop
+    ui->Playlist->setDragEnabled(true);
+    ui->Playlist->setAcceptDrops(false);
+    ui->Playlist->setDropIndicatorShown(true);
+    ui->PlaylistSammlung->setAcceptDrops(true);
+    ui->PlaylistSammlung->setDropIndicatorShown(true);
+
+    // Show InstallerDialog if the database is empty
+    InstallerDialog installerDialog;
+    if (installerDialog.isDatabaseEmpty()) {
+        installerDialog.exec();
+    }
+
     // Load tracks from the database
     loadTracksFromDatabase();
     // Load playlists from the database
@@ -151,8 +166,8 @@ void MainWindow::updateProgressBar(qint64 currentSongPosition) {
     }
 
     Track currentTrack = mediaController->getCurrentTrack();
-    qDebug() << "SampleCount von aktuellen Track: " << currentTrack.getSampleCount();
-    qDebug() << "Position changed saertzh:" << currentSongPosition;
+    // qDebug() << "SampleCount von aktuellen Track: " << currentTrack.getSampleCount();
+    // qDebug() << "Position changed saertzh:" << currentSongPosition;
 
     // Aktualisiert den Slider nur, wenn der Benutzer nicht mit ihm interagiert
     ui->Fortschrittslider->setValue(currentSongPosition);
@@ -174,15 +189,12 @@ void MainWindow::onSliderReleased() {
     ui->Fortschrittslider->setValue(currentPosition);
 }
 
-void MainWindow::setProgressBarAndSongDurationLabel()
-{
+void MainWindow::setProgressBarAndSongDurationLabel() {
     Track currentTrack = mediaController->getCurrentTrack();
-    qDebug() << "FilePath von aktuellen Track: "<< currentTrack.getFilePath();
-    qDebug() << "SampleCount von aktuellen Track: "<<currentTrack.getDuration();
+    qDebug() << "FilePath von aktuellen Track: " << currentTrack.getFilePath();
+    qDebug() << "Duration von aktuellen Track: " << currentTrack.getDuration();
     ui->Fortschrittslider->setRange(0, currentTrack.getDuration());
     setCurrentSongDuration(currentTrack);
-    // ui->Fortschrittslider->setMinimum(0);
-    // ui->Fortschrittslider->setMaximum(currentTrack.getSampleCount()*1000);
 }
 
 void MainWindow::loadTracksFromDatabase() {
@@ -320,8 +332,26 @@ void MainWindow::onRemovePlaylistButtonClicked() {
 }
 
 void MainWindow::onAddTrackButtonClicked() {
-    // Implement the logic to add a new track to the selected playlist
-    // ...
+    // Öffnet einen Dateidialog, um eine Audiodatei auszuwählen
+    QString filePath = QFileDialog::getOpenFileName(this, tr("Wähle eine Audiodatei"), QDir::homePath(), tr("Audio Files (*.mp3 *.wav *.flac *.aac)"));
+    if (filePath.isEmpty()) {
+        return;
+    }
+
+    // Füge die ausgewählte Datei zur aktuellen Playlist hinzu
+    QListWidgetItem *item = new QListWidgetItem(QFileInfo(filePath).fileName());
+    item->setData(Qt::UserRole, filePath);
+    ui->Playlist->addItem(item);
+
+    // Erstelle ein Track-Objekt und füge es zur Playlist hinzu
+    Track track;
+    track.setFilePath(filePath);
+    playList.addTrack(track);
+
+    // Optional: Füge den Track auch zur Datenbank hinzu
+    // db.insertData(filePath, track.getArtist(), track.getAlbum(), track.getTitle(), track.getDuration(), track.getSampleRate(), track.getSampleCount(), track.getHash());
+
+    qDebug() << "Track added to playlist:" << filePath;
 }
 
 void MainWindow::onRemoveTrackButtonClicked() {
@@ -332,12 +362,13 @@ void MainWindow::onRemoveTrackButtonClicked() {
 void MainWindow::onPlaylistSammlungItemClicked(QListWidgetItem *item) {
     // Load the tracks of the selected playlist
     QString playlistName = item->text();
-    Playlist playlist = db.getPlaylist(playlistName);
-    ui->Playlist->clear();
-    for (const auto &filePath : playlist.getFiles()) {
-        QListWidgetItem *trackItem = new QListWidgetItem(QFileInfo(filePath).fileName());
-        trackItem->setData(Qt::UserRole, filePath);
-        ui->Playlist->addItem(trackItem);
+    loadPlaylist(playlistName);
+
+    // Debug: Ausgabe der geladenen Tracks
+    qDebug() << "Playlist clicked:" << playlistName;
+    for (int i = 0; i < ui->Playlist->count(); ++i) {
+        QListWidgetItem *trackItem = ui->Playlist->item(i);
+        qDebug() << "Track" << i << ":" << trackItem->text() << "Path:" << trackItem->data(Qt::UserRole).toString();
     }
 }
 
@@ -352,9 +383,30 @@ void MainWindow::loadPlaylistsFromDatabase() {
 void MainWindow::loadPlaylist(const QString &playlistName) {
     Playlist playlist = db.getPlaylist(playlistName);
     ui->Playlist->clear();
+    playList.setFiles(playlist.getFiles()); // Update the playList member
+    qDebug() << "Loading playlist:" << playlistName;
+    qDebug() << "Number of tracks in playlist:" << playlist.getFiles().size();
     for (const auto &filePath : playlist.getFiles()) {
+        qDebug() << "Adding track to playlist:" << filePath;
         QListWidgetItem *trackItem = new QListWidgetItem(QFileInfo(filePath).fileName());
         trackItem->setData(Qt::UserRole, filePath);
         ui->Playlist->addItem(trackItem);
+    }
+    mediaController->setPlaylist(playList); // Ensure MediaController gets the updated playlist
+    qDebug() << "Playlist set in MediaController with" << playList.getFiles().size() << "tracks.";
+
+    // Debug: Ausgabe des ersten geladenen Tracks
+    if (!playlist.getTracks().empty()) {
+        Track firstTrack = playlist.getTracks().front();
+        qDebug() << "First track details:";
+        qDebug() << "File path:" << firstTrack.getFilePath();
+        qDebug() << "Artist:" << firstTrack.getArtist();
+        qDebug() << "Album:" << firstTrack.getAlbum();
+        qDebug() << "Title:" << firstTrack.getTitle();
+        qDebug() << "Duration:" << firstTrack.getDuration();
+        qDebug() << "Sample Rate:" << firstTrack.getSampleRate();
+        qDebug() << "Sample Count:" << firstTrack.getSampleCount();
+        qDebug() << "Hash:" << firstTrack.getHash();
+        qDebug() << "Track ID:" << firstTrack.getTrackID();
     }
 }
