@@ -12,5 +12,10 @@ TO DO
 
 - Shuffle und Repeat Buttons überarbeiten
 - z.b. array mit indices 
-- media controller umschreiben, dass der die indices    abspielt
+- media controller umschreiben, dass der die indices abspielt
 - shuffle und repeat buttons umschreiben, dass die die indices verändern
+
+
+Zeitplan
+
+- nächstes Treffen mittwoch - dann mal weiterschauen
