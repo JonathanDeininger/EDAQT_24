@@ -4,7 +4,13 @@ TO DO
 - Intepret und so weiter ordentlich anzeigen
 
 - Hinzufügen von Songs zu playlist ermöglichen
-- Playlist speichern und laden (bei klicks)
+- Playlist laden (bei klicks)
 - Playlist löschen
+- Shongs Hinzufügen (direkt in die DB)
+- Playlists korrekt abspielen
 
-- 
+
+- Shuffle und Repeat Buttons überarbeiten
+- z.b. array mit indices 
+- media controller umschreiben, dass der die indices    abspielt
+- shuffle und repeat buttons umschreiben, dass die die indices verändern
