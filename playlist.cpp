@@ -4,28 +4,25 @@
 
 // von Sam ertgboinregjnerghojkgres
 void Playlist::addFile(const QString &filePath) {
+    qDebug() << "Adding file to playlist:" << filePath; // Debug statement
     files.append(filePath);
-    Track track(filePath);
-    tracks.push_back(track);
+    Track track;
+    track.setFilePath(filePath);
+    addTrack(track); // Ensure track is added when file is added
 }
 
 void Playlist::addTrack(const Track &track) {
-    files.append(track.getFilePath());
+    qDebug() << "Adding track to playlist:" << track.getTitle(); // Debug statement
     tracks.push_back(track);
-    qDebug() << "Track added to playlist:" << track.getFilePath();
 }
 
 std::vector<Track> Playlist::getTracks() const {
+    qDebug() << "Retrieving tracks from playlist. Number of tracks:" << tracks.size(); // Debug statement
     return tracks;
 }
 
 void Playlist::setFiles(const QVector<QString> &newFiles) {
     files = newFiles;
-    tracks.clear();
-    for (const auto &filePath : files) {
-        Track track(filePath);
-        tracks.push_back(track);
-    }
 }
 
 void Playlist::print() const {
@@ -48,5 +45,22 @@ QString Playlist::getName() const {
 }
 
 int Playlist::getLength() const {
-    return tracks.size(); // Return the correct number of tracks
+    return files.size();
+}
+
+void Playlist::randomize() {
+    std::random_shuffle(tracks.begin(), tracks.end());
+    files.clear();
+    for (const auto &track : tracks) {
+        files.append(track.getFilePath());
+    }
+    qDebug() << "Playlist randomized with" << tracks.size() << "tracks.";
+}
+
+int Playlist::getPlaylistID() const {
+    return playlistID;
+}
+
+void Playlist::setPlaylistID(int id) {
+    playlistID = id;
 }

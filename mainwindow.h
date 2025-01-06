@@ -7,12 +7,11 @@
 #include <QDir>
 #include <QListWidgetItem>
 #include <QMessageBox>
-// #include <QDragEnterEvent> // Remove the QDragEnterEvent header
-// #include <QDropEvent> // Remove the QDropEvent header
 #include <QMimeData> // Include the QMimeData header
 #include "mediacontroller.h"
 #include "database.h" // Include the database header
 #include "Playlist.h" // Include the Playlist header
+#include "selecttrackdialog.h" // Include the SelectTrackDialog header
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -48,7 +47,6 @@ private slots:
     void updateCurrentTrackInfo(int index, const QString &title);
     void onRandomButtonPressed();
     void onRepeatButtonPressed();
-    void randomizePlaylist();
     void onSearchTextChanged(const QString &text);
     void onAddPlaylistButtonClicked();
     void onRemovePlaylistButtonClicked();

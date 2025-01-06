@@ -25,6 +25,8 @@ int main(int argc, char *argv[]) {
         }
     }
 
+    // Create the "Alle Songs" playlist if it doesn't exist
+
     // Proceed to the main application
     MainWindow w;
     w.show();

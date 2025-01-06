@@ -3,6 +3,7 @@
 #include "mediacontroller.h"
 #include "./ui_mainwindow.h"
 #include "installerdialog.h" // Include InstallerDialog header
+#include "selecttrackdialog.h" // Include the SelectTrackDialog header
 #include <QInputDialog> // Include QInputDialog header
 
 MainWindow::MainWindow(QWidget *parent)
@@ -49,6 +50,13 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Load playlists from the database
     loadPlaylistsFromDatabase();
+
+    // Ensure "Alle Songs" playlist exists and is populated
+    if (!db.tableExists("Playlists") || db.getPlaylistID("Alle Songs") == -1) {
+        db.insertPlaylist("Alle Songs");
+        db.createAllSongsPlaylist();
+    }
+
     // Load the "Alle Songs" playlist
     loadPlaylist("Alle Songs");
 }
@@ -195,33 +203,8 @@ void MainWindow::setProgressBarAndSongDurationLabel() {
     setCurrentSongDuration(currentTrack);
 }
 
-void MainWindow::randomizePlaylist()
-{
-    // Hole alle Items aus der Playlist
 
-    QList<QListWidgetItem*> items;
-    for (int i = 0; i < ui->Playlist->count(); ++i) {
-        items.append(ui->Playlist->takeItem(i));
-    }
-    // items.append(mediaController->getCurrentPlaylist());
-    // Zufällig mischen
-    std::random_shuffle(items.begin(), items.end());
-
-    // Füge die gemischten Items wieder hinzu
-    for (QListWidgetItem* item : items) {
-        ui->Playlist->addItem(item);
-    }
-
-    // Synchronisiere die gemischte Reihenfolge mit der internen Playlist
-    QVector<QString> randomizedFilePaths;
-    for (int i = 0; i < ui->Playlist->count(); ++i) {
-        randomizedFilePaths.append(ui->Playlist->item(i)->data(Qt::UserRole).toString());
-    }
-    // mediaController->setPlaylist(randomizedFilePaths);
-}
-
-void MainWindow::onRandomButtonPressed()
-{
+void MainWindow::onRandomButtonPressed() {
     // Wechsel des Shuffle-Status
     isShuffleActive = !isShuffleActive;
 
@@ -232,7 +215,7 @@ void MainWindow::onRandomButtonPressed()
         qDebug() << "Shuffle mode activated.";
 
         // Randomisiere die Playlist
-        randomizePlaylist();
+        playList.randomize();
 
         // Starte mit der zufälligen Wiedergabe
         mediaController->setCurrentIndex(0); // Erster Track in der zufälligen Reihenfolge
@@ -285,26 +268,34 @@ void MainWindow::onRemovePlaylistButtonClicked() {
 }
 
 void MainWindow::onAddTrackButtonClicked() {
-    // Öffnet einen Dateidialog, um eine Audiodatei auszuwählen
-    QString filePath = QFileDialog::getOpenFileName(this, tr("Wähle eine Audiodatei"), QDir::homePath(), tr("Audio Files (*.mp3 *.wav *.flac *.aac)"));
-    if (filePath.isEmpty()) {
-        return;
+    // Lade die "Alle Songs"-Playlist
+    Playlist allSongsPlaylist = db.getPlaylist("Alle Songs");
+
+    // Zeige den Dialog mit den Tracks aus der "Alle Songs"-Playlist
+    SelectTrackDialog dialog(allSongsPlaylist.getTracks(), this);
+    if (dialog.exec() == QDialog::Accepted) {
+        QString filePath = dialog.getSelectedTrack();
+        if (!filePath.isEmpty()) {
+            // Füge die ausgewählte Datei zur aktuellen Playlist hinzu
+            QListWidgetItem *item = new QListWidgetItem(QFileInfo(filePath).fileName());
+            item->setData(Qt::UserRole, filePath);
+            ui->Playlist->addItem(item);
+
+            // Erstelle ein Track-Objekt und füge es zur Playlist hinzu
+            Track track;
+            track.setFilePath(filePath);
+            playList.addTrack(track);
+
+            // Füge den Track zur Datenbank hinzu
+            int trackID = db.getTrackID(filePath);
+            int playlistID = db.getPlaylistID(playList.getName());
+            if (trackID != -1 && playlistID != -1) {
+                db.insertPlaylistTrack(playlistID, trackID);
+            }
+
+            qDebug() << "Track added to playlist:" << filePath;
+        }
     }
-
-    // Füge die ausgewählte Datei zur aktuellen Playlist hinzu
-    QListWidgetItem *item = new QListWidgetItem(QFileInfo(filePath).fileName());
-    item->setData(Qt::UserRole, filePath);
-    ui->Playlist->addItem(item);
-
-    // Erstelle ein Track-Objekt und füge es zur Playlist hinzu
-    Track track;
-    track.setFilePath(filePath);
-    playList.addTrack(track);
-
-    // Optional: Füge den Track auch zur Datenbank hinzu
-    // db.insertData(filePath, track.getArtist(), track.getAlbum(), track.getTitle(), track.getDuration(), track.getSampleRate(), track.getSampleCount(), track.getHash());
-
-    qDebug() << "Track added to playlist:" << filePath;
 }
 
 void MainWindow::onRemoveTrackButtonClicked() {
@@ -334,9 +325,9 @@ void MainWindow::loadPlaylistsFromDatabase() {
 }
 
 void MainWindow::loadPlaylist(const QString &playlistName) {
-    Playlist playlist = db.getPlaylist(playlistName);
+    Playlist playlist = db.getPlaylist(playlistName); // Lade die Playlist aus der Datenbank
     ui->Playlist->clear();
-    playList.setFiles(playlist.getFiles()); // Update the playList member
+    playList.setFiles(playlist.getFiles()); // Aktualisiere das playList-Mitglied
     qDebug() << "Loading playlist:" << playlistName;
     qDebug() << "Number of tracks in playlist:" << playlist.getFiles().size();
     for (const auto &filePath : playlist.getFiles()) {
@@ -345,7 +336,7 @@ void MainWindow::loadPlaylist(const QString &playlistName) {
         trackItem->setData(Qt::UserRole, filePath);
         ui->Playlist->addItem(trackItem);
     }
-    mediaController->setPlaylist(playList); // Ensure MediaController gets the updated playlist
+    mediaController->setPlaylist(playList); // Stelle sicher, dass MediaController die aktualisierte Playlist erhält
     qDebug() << "Playlist set in MediaController with" << playList.getFiles().size() << "tracks.";
 
     // Debug: Ausgabe des ersten geladenen Tracks

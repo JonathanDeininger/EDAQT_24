@@ -28,10 +28,10 @@ public:
     bool open();
     void close();
     QSqlDatabase& getDatabase();
-    Playlist getPlaylist(const QString &playlistName); // Only declaration here
+    Playlist getPlaylist(const QString &playlistName); // Deklaration der Methode
     std::vector<QString> getAllPlaylists();
     bool removePlaylist(const QString &playlistName);
-    bool createAllSongsPlaylist(); // Add this method to create the "Alle Songs" playlist
+    bool createAllSongsPlaylist(); // Behalten Sie diese Methode
     int getPlaylistID(const QString &playlistName); // Add this method declaration
     int getTrackID(const QString &filePath); // Add this method declaration
 

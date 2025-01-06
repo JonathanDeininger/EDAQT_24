@@ -1,0 +1,10 @@
+TO DO
+
+- QListWidget zu Table machen
+- Intepret und so weiter ordentlich anzeigen
+
+- Hinzufügen von Songs zu playlist ermöglichen
+- Playlist speichern und laden (bei klicks)
+- Playlist löschen
+
+- 

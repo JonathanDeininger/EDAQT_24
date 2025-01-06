@@ -15,7 +15,7 @@ class DataBase;
 class Playlist {
 public:
     void addFile(const QString &filePath);
-    void addTrack(const Track &track); // Add this method declaration
+    void addTrack(const Track &track); // Ensure this method is public
     std::vector<Track> getTracks() const;
     void addFilesFromArgs(const QStringList &args, MediaController &mediaController, DataBase &database);
     void setFiles(const QVector<QString> &newFiles);
@@ -24,12 +24,15 @@ public:
     void setName(const QString &name);
     QString getName() const;
     int getLength() const;
-
-    std::vector<Track> tracks; // Make the tracks vector public
+    void randomize();
+    int getPlaylistID() const;
+    void setPlaylistID(int id);
 
 private:
     QVector<QString> files;
     QString name;
+    int playlistID;
+    std::vector<Track> tracks;
 };
 
 #endif // PLAYLIST_H

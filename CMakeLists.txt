@@ -24,6 +24,7 @@ set(PROJECT_SOURCES
     playlist.h playlist.cpp
     installerdialog.h installerdialog.cpp installerdialog.ui
     track.cpp
+    selecttrackdialog.cpp # Fügen Sie diese Zeile hinzu
 )
 
 # Define the target executable/library
