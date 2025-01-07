@@ -2,13 +2,13 @@
 #include "track.h"
 
 SelectTrackDialog::SelectTrackDialog(const std::vector<Track> &tracks, QWidget *parent)
-    : QDialog(parent), selectedTrack("") {
+    : QDialog(parent), selectedTrack() {
     QVBoxLayout *layout = new QVBoxLayout(this);
 
     trackListWidget = new QListWidget(this);
     for (const auto &track : tracks) {
         QListWidgetItem *item = new QListWidgetItem(track.getTitle(), trackListWidget);
-        item->setData(Qt::UserRole, track.getFilePath());
+        item->setData(Qt::UserRole, QVariant::fromValue(track));
     }
     layout->addWidget(trackListWidget);
 
@@ -18,14 +18,14 @@ SelectTrackDialog::SelectTrackDialog(const std::vector<Track> &tracks, QWidget *
     connect(selectButton, &QPushButton::clicked, this, &SelectTrackDialog::onTrackSelected);
 }
 
-QString SelectTrackDialog::getSelectedTrack() const {
+Track SelectTrackDialog::getSelectedTrack() const {
     return selectedTrack;
 }
 
 void SelectTrackDialog::onTrackSelected() {
     QListWidgetItem *item = trackListWidget->currentItem();
     if (item) {
-        selectedTrack = item->data(Qt::UserRole).toString();
+        selectedTrack = item->data(Qt::UserRole).value<Track>();
         accept();
     }
 }

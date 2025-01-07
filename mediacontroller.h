@@ -21,9 +21,6 @@ public:
     void next();
     void prev();
     void setCurrentIndex(int index);
-    QStringList selectMediaFiles(DataBase &database);
-    void addFolderToPlaylist(const QString &folderPath);
-    void onMediaStatusChanged(QMediaPlayer::MediaStatus status);
     void playPlaylist();
     void setPlaylist(const Playlist &playlist); // Add this method declaration
     QMediaPlayer* getPlayer();
@@ -37,6 +34,8 @@ public:
 signals:
     void currentTrackChanged(int index, const QString &title);
     void positionChanged(int position);
+private slots:
+    void onMediaStatusChanged(QMediaPlayer::MediaStatus status); // Add this method declaration
 private:
     QListWidget *playlistWidget;
     Playlist &playlist;

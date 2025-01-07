@@ -13,7 +13,7 @@ class SelectTrackDialog : public QDialog {
 public:
     explicit SelectTrackDialog(const std::vector<Track> &tracks, QWidget *parent = nullptr);
 
-    QString getSelectedTrack() const;
+    Track getSelectedTrack() const;
 
 private slots:
     void onTrackSelected();
@@ -21,7 +21,7 @@ private slots:
 private:
     QListWidget *trackListWidget;
     QPushButton *selectButton;
-    QString selectedTrack;
+    Track selectedTrack;
 };
 
 #endif // SELECTTRACKDIALOG_H

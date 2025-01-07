@@ -3,7 +3,6 @@
 #include "track.h"
 #include <QMediaPlayer>
 #include <QMediaMetaData>
-#include <qdebug.h>
 #include "database.h"
 
 InstallerDialog::InstallerDialog(QWidget *parent)
@@ -17,29 +16,34 @@ InstallerDialog::InstallerDialog(QWidget *parent)
 
     // Ensure the database is opened in the constructor
     if (!dataBase.open()) {
-        qDebug() << "Failed to open the database in InstallerDialog constructor.";
+        // Handle database open failure
     }
 
     // Check if the necessary tables already exist
     if (!dataBase.tableExists("Mediathek")) {
         if (!dataBase.createTableMediathek()) {
-            qDebug() << "Failed to create the Mediathek table.";
+            // Handle table creation failure
         }
     }
     if (!dataBase.tableExists("Pathlist")) {
         if (!dataBase.createTablePathlist()) {
-            qDebug() << "Failed to create the Pathlist table.";
+            // Handle table creation failure
         }
     }
     if (!dataBase.tableExists("Playlists")) {
         if (!dataBase.createTablePlaylists()) {
-            qDebug() << "Failed to create the Playlists table.";
+            // Handle table creation failure
         }
     }
     if (!dataBase.tableExists("PlaylistTracks")) {
         if (!dataBase.createTablePlaylistTracks()) {
-            qDebug() << "Failed to create the PlaylistTracks table.";
+            // Handle table creation failure
         }
+    }
+
+    // Create the "Alle Songs" playlist if it doesn't exist
+    if (dataBase.getPlaylistID("Alle Songs") == -1) {
+        dataBase.insertPlaylist("Alle Songs");
     }
 }
 
@@ -52,19 +56,9 @@ InstallerDialog::~InstallerDialog()
 void processFiles(DataBase &dataBase, const QString &basePath, const QStringList &fileList) {
     foreach (const QString &fileName, fileList) {
         Track track(QDir(basePath).absoluteFilePath(fileName));
-        qDebug() << "Processing file:" << fileName;
-        qDebug() << "File path:" << track.getFilePath();
-        qDebug() << "Artist:" << track.getArtist();
-        qDebug() << "Album:" << track.getAlbum();
-        qDebug() << "Title:" << track.getTitle();
-        qDebug() << "Duration:" << track.getDuration();
-        qDebug() << "Sample Rate:" << track.getSampleRate();
-        qDebug() << "Sample Count:" << track.getSampleCount();
-        qDebug() << "Hash:" << track.getHash();
-
         // Daten in die Datenbank einfügen
-        if (!dataBase.insertData(track.getFilePath(), track.getArtist(), track.getAlbum(), track.getTitle(), track.getDuration(), track.getSampleRate(), track.getSampleCount(), track.getHash())) {
-            qDebug() << "Fehler beim Einfügen von Daten für" << fileName;
+        if (!dataBase.insertData(track.getFilePath(), track.getArtist(), track.getAlbum(), track.getTitle(), track.getDuration(), track.getSampleRate(), track.getSampleCount())) {
+            // Handle data insertion failure
         }
     }
 }
@@ -122,9 +116,7 @@ void InstallerDialog::onChooseMusicFolderClicked() {
     ui->MusicPath->setText(folderPath);
 
     // Save the base path to the database
-    qDebug() << "Attempting to insert path into database:" << folderPath;
     if (!dataBase.insertPath(folderPath)) {
-        qDebug() << "Failed to insert path into database.";
         QMessageBox::warning(this, tr("Fehler"), tr("Der Pfad konnte nicht in die Datenbank geschrieben werden."));
         return;
     }
@@ -133,13 +125,13 @@ void InstallerDialog::onChooseMusicFolderClicked() {
 void InstallerDialog::addAllSongsToPlaylist() {
     DataBase db;
     if (!db.open()) {
-        qDebug() << "Failed to open the database.";
+        // Handle database open failure
         return;
     }
 
     // Create the "Alle Songs" playlist if it doesn't exist
     if (!db.insertPlaylist("Alle Songs")) {
-        qDebug() << "Failed to create 'Alle Songs' playlist or it already exists.";
+        // Handle playlist creation failure
     }
 
     QSqlQuery query(db.getDatabase());

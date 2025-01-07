@@ -1,4 +1,3 @@
-#include <QDebug>
 #include "installerdialog.h"
 #include "mainwindow.h"
 #include <QApplication>

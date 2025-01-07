@@ -27,12 +27,9 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-protected:
-    // void dragEnterEvent(QDragEnterEvent *event) override; // Remove this method declaration
-    // void dropEvent(QDropEvent *event) override; // Remove this method declaration
 
 private slots:
-    void onChoosePlaylistButtonClicked();
+    // void onChoosePlaylistButtonClicked();
     void onPlaylistItemClicked(QListWidgetItem *item);
     void onPlayButtonPressed();
     void onVolumeChanged(float value);
@@ -49,9 +46,7 @@ private slots:
     void onRepeatButtonPressed();
     void onSearchTextChanged(const QString &text);
     void onAddPlaylistButtonClicked();
-    void onRemovePlaylistButtonClicked();
     void onAddTrackButtonClicked(); // Add this method declaration
-    void onRemoveTrackButtonClicked();
     void onPlaylistSammlungItemClicked(QListWidgetItem *item);
     void loadPlaylistsFromDatabase(); // Add this method to load playlists from the database
 

@@ -10,74 +10,49 @@ MediaController::MediaController(QListWidget *playlistWidget, Playlist &playlist
 }
 
 void MediaController::initializePlayer() {
-    qDebug() << "Initializing player"; // Debug statement
     player.setAudioOutput(&audioOutput);
     connect(&player, &QMediaPlayer::positionChanged, [this](qint64 position) {
         emit positionChanged(position / 1000);
     });
-    connect(&player, &QMediaPlayer::mediaStatusChanged, [](QMediaPlayer::MediaStatus status) {
-        qDebug() << "Media status changed:" << status;
-    });
+    connect(&player, &QMediaPlayer::mediaStatusChanged, this, &MediaController::onMediaStatusChanged);
     connect(&player, &QMediaPlayer::errorOccurred, [](QMediaPlayer::Error error, const QString &errorString) {
-        qDebug() << "Error occurred:" << error << errorString;
+        // Handle error
     });
     connect(&player, &QMediaPlayer::durationChanged, this, &MediaController::updateCurrentSongDuration);
     audioOutput.setVolume(0.5); // Set a default volume
-    qDebug() << "Player initialized"; // Debug statement
 }
 
 void MediaController::setPlaylist(const Playlist &playlist) {
     this->playlist = playlist;
     currentIndex = 0; // Initialize currentIndex
-    qDebug() << "MediaController playlist set with" << playlist.getFiles().size() << "tracks.";
-    qDebug() << "Number of tracks in playlist:" << playlist.getTracks().size(); // Debug statement
-
-    // Ensure tracks are added to the playlist
-    for (const QString &file : playlist.getFiles()) {
-        Track track;
-        track.setFilePath(file);
-        this->playlist.addTrack(track);
-    }
-    qDebug() << "Tracks added to playlist. Number of tracks:" << this->playlist.getTracks().size(); // Debug statement
 }
 
 void MediaController::playCurrent() {
-    qDebug() << "playCurrent() called"; // Debug statement
     if (currentIndex >= 0 && currentIndex < playlist.getLength()) {
-        qDebug() << "length okay";
-        qDebug() << "Number of tracks in playlist:" << playlist.getTracks().size(); // Debug statement
         currentTrack = playlist.getTracks()[currentIndex];
-        qDebug() << "Current track set to:" << currentTrack.getTitle(); // Debug statement
 
         QString newFile = playlist.getTracks()[currentIndex].getFilePath();
-        qDebug() << "Attempting to play file:" << newFile;
         if (newFile != currentSource) {
             currentSource = newFile;
-            qDebug() << "Setting source to:" << newFile;
             player.setSource(QUrl::fromLocalFile(newFile));
-            qDebug() << "Source set to:" << newFile;
         }
         QFile file(newFile);
         if (!file.exists()) {
-            qDebug() << "File does not exist:" << newFile;
+            // Handle file not existing
         } else if (!file.open(QIODevice::ReadOnly)) {
-            qDebug() << "File cannot be opened:" << newFile;
+            // Handle file not opening
         } else {
-            qDebug() << "File is accessible:" << newFile;
             file.close();
         }
-        qDebug() << "Calling player.play()"; // Debug statement
         player.play();
-        qDebug() << "Playing:" << newFile;
     } else {
-        qDebug() << "Invalid index:" << currentIndex;
+        // Handle invalid index
     }
 }
 
 void MediaController::playPlaylist() {
-    qDebug() << "playPlaylist() called"; // Debug statement
     if (playlist.getLength() == 0) {
-        qDebug() << "Playlist is empty. Cannot play.";
+        // Handle empty playlist
         return;
     }
 
@@ -91,7 +66,10 @@ void MediaController::playPlaylist() {
 }
 
 void MediaController::onMediaStatusChanged(QMediaPlayer::MediaStatus status) {
-    qDebug() << "onMediaStatusChanged() called with status:" << status; // Debug statement
+    if (status == QMediaPlayer::LoadedMedia) {
+        songDuration = player.duration();
+        emit currentTrackChanged(currentIndex, currentTrack.getTitle());
+    }
     // Prüfe, ob der aktuelle Track fertig abgespielt wurde
     if (status == QMediaPlayer::EndOfMedia) {
         // Gehe zum nächsten Track
@@ -99,7 +77,6 @@ void MediaController::onMediaStatusChanged(QMediaPlayer::MediaStatus status) {
 
         // Wenn das Ende der Playlist erreicht ist, stoppe oder starte erneut (je nach gewünschtem Verhalten)
         if (currentIndex >= playlist.getLength()) {
-            qDebug() << "Reached the end of the playlist.";
             currentIndex = 0; // Optional: Zurück zum Anfang der Playlist
             return;           // Oder: return, um die Wiedergabe zu stoppen
         }
@@ -118,63 +95,29 @@ void MediaController::onMediaStatusChanged(QMediaPlayer::MediaStatus status) {
 
 void MediaController::pauseCurrent() {
     player.pause();
-    qDebug() << "Paused";
 }
 
 void MediaController::next() {
-    qDebug() << "Current index before next:" << currentIndex;
     if (currentIndex < playlist.getLength() - 1) {
         currentIndex++;
-        qDebug() << "Current index after increment:" << currentIndex;
         playCurrent();
-        qDebug() << "Next track:" << currentIndex;
     } else {
-        qDebug() << "No next track available";
+        // Handle no next track available
     }
 }
 
 void MediaController::prev() {
-    qDebug() << "Current index before prev:" << currentIndex;
     if (currentIndex > 0) {
         currentIndex--;
-        qDebug() << "Current index after decrement:" << currentIndex;
         playCurrent();
-        qDebug() << "Previous track:" << currentIndex;
     } else {
-        qDebug() << "No previous track available";
-    }
-}
-
-void MediaController::addFolderToPlaylist(const QString &folderPath) {
-    QDir dir(folderPath);
-    if (!dir.exists()) {
-        std::cerr << "Directory does not exist: " << folderPath.toStdString() << std::endl;
-        return;
-    }
-
-    QStringList filters;
-    filters << "*.mp3" << "*.mp4" << "*.wav" << "*.avi";
-    QStringList files = dir.entryList(filters, QDir::Files);
-    for (QString &file : files) {
-        file = dir.absoluteFilePath(file);
-        QListWidgetItem *item = new QListWidgetItem(file);
-        item->setData(Qt::UserRole, file);
-        playlistWidget->addItem(item);
-        playlist.addFile(file);
-    }
-
-    if (files.isEmpty()) {
-        std::cerr << "No media files found in directory: " << folderPath.toStdString() << std::endl;
-    } else {
-        std::cout << "Added " << files.size() << " files to the playlist from directory: " << folderPath.toStdString() << std::endl;
+        // Handle no previous track available
     }
 }
 
 void MediaController::setCurrentIndex(int index) {
-    qDebug() << "Setting current index to:" << index;
     if (index >= 0 && index < playlist.getLength()) {
         currentIndex = index;
-        qDebug() << "Current index set to:" << currentIndex;
     } else {
         std::cerr << "Invalid index" << std::endl;
     }
@@ -184,7 +127,6 @@ void MediaController::updateCurrentSongDuration(qint64 duration) {
     // Aktualisiere die Songdauer in Sekunden
     songDuration = duration / 1000;
     currentTrack.setDuration(songDuration); // Update the current track's duration
-    qDebug() << "Song duration updated to:" << songDuration;
 }
 
 qint64 MediaController::getCurrentSongDuration() {
@@ -193,7 +135,6 @@ qint64 MediaController::getCurrentSongDuration() {
 
 void MediaController::setCurrentSongPosition(int position) {
     player.setPosition(position * 1000); // Set position in milliseconds
-    qDebug() << "Current song position set to:" << position;
 }
 
 int MediaController::getCurrentSongPosition() {
@@ -208,12 +149,10 @@ QAudioOutput* MediaController::getAudioOutput() {
     return &audioOutput;
 }
 
-Track MediaController::getCurrentTrack()
-{
+Track MediaController::getCurrentTrack() {
     return currentTrack;
 }
 
-int MediaController::getCurrentIndex()
-{
+int MediaController::getCurrentIndex() {
     return currentIndex;
 }

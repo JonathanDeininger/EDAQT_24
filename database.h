@@ -20,7 +20,7 @@ public:
     bool createTablePathlist();
     bool createTablePlaylists();
     bool createTablePlaylistTracks();
-    bool insertData(const QString &filePath, const QString &interpret, const QString &album, const QString &titel, int spielzeit, int sampleRate, int sampleCount, const QByteArray &hash);
+    bool insertData(const QString &filePath, const QString &interpret, const QString &album, const QString &titel, int spielzeit, int sampleRate, int sampleCount);
     bool insertPath(const QString &path);
     bool insertPlaylist(const QString &playlistName);
     bool insertPlaylistTrack(int playlistID, int trackID);
@@ -34,6 +34,7 @@ public:
     bool createAllSongsPlaylist(); // Behalten Sie diese Methode
     int getPlaylistID(const QString &playlistName); // Add this method declaration
     int getTrackID(const QString &filePath); // Add this method declaration
+    Track getTrack(const QString &filePath); // Add this method declaration
 
 private:
     QSqlDatabase db;
