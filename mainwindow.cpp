@@ -210,8 +210,6 @@ void MainWindow::onAddPlaylistButtonClicked() {
     if (!playlistName.isEmpty()) {
         if (db.insertPlaylist(playlistName)) {
             loadPlaylistsFromDatabase();
-            // Reload the list of playlists from the database
-            loadPlaylistsFromDatabase();
         } else {
             // Show an error message if the playlist could not be added
             QMessageBox::warning(this, tr("Error"), tr("Failed to add playlist."));
@@ -237,9 +235,6 @@ void MainWindow::onAddTrackButtonClicked() {
 
             // Aktualisiere die UI, um den neuen Track anzuzeigen
             loadPlaylist(playList.getName());
-
-            qDebug() << "Track added to playlist:" << track.getTitle();
-            qDebug() << "Playlist:" << playList.getName();
         }
     }
 }
@@ -250,10 +245,8 @@ void MainWindow::onPlaylistSammlungItemClicked(QListWidgetItem *item) {
     loadPlaylist(playlistName);
 
     // Debug: Ausgabe der geladenen Tracks
-    qDebug() << "Playlist clicked:" << playlistName;
     for (int i = 0; i < ui->Playlist->count(); ++i) {
         QListWidgetItem *trackItem = ui->Playlist->item(i);
-        qDebug() << "Track" << i << ":" << trackItem->text() << "Path:" << trackItem->data(Qt::UserRole).toString();
     }
     //load into PlayList object
     playList.setName(playlistName);
