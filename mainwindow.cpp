@@ -34,12 +34,6 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->AddTrackButton, &QPushButton::clicked, this, &MainWindow::onAddTrackButtonClicked);
     connect(ui->PlaylistSammlung, &QListWidget::itemClicked, this, &MainWindow::onPlaylistSammlungItemClicked);
 
-    // Enable drag and drop
-    ui->Playlist->setDragEnabled(true);
-    ui->Playlist->setAcceptDrops(false);
-    ui->Playlist->setDropIndicatorShown(true);
-    ui->PlaylistSammlung->setAcceptDrops(true);
-    ui->PlaylistSammlung->setDropIndicatorShown(true);
 
     // Show InstallerDialog if the database is empty
     InstallerDialog installerDialog;
@@ -97,27 +91,13 @@ void MainWindow::onPauseButtonPressed() {
 }
 
 void MainWindow::onPreviousButtonPressed() {
-    // Hole den aktuellen Index des Songs
     mediaController->prev();
-    Track currentTrack = mediaController->getCurrentTrack();
-
-    QString currentTitle = currentTrack.getTitle();
-    // Setze den Titel des vorherigen Songs als currentSongLabel
-    ui->currentSongLabel->setText(currentTitle);
-    ui->Playlist->setCurrentRow(mediaController->getCurrentIndex());
-    setProgressBarAndSongDurationLabel();
+    updateCurrentTrackDisplay();
 }
 
 void MainWindow::onNextButtonPressed() {
-    // Hole den aktuellen Index des Songs
     mediaController->next();
-    Track currentTrack = mediaController->getCurrentTrack();
-
-    QString currentTitle = currentTrack.getTitle();
-    // Setze den Titel des vorherigen Songs als currentSongLabel
-    ui->currentSongLabel->setText(currentTitle);
-    ui->Playlist->setCurrentRow(mediaController->getCurrentIndex());
-    setProgressBarAndSongDurationLabel();
+    updateCurrentTrackDisplay();
 }
 
 void MainWindow::updateCurrentTrackInfo(int index, const QString &title) {
@@ -204,6 +184,9 @@ void MainWindow::onSearchTextChanged(const QString &text)
     }
 }
 
+// Diese Methode wird aufgerufen, wenn der "Playlist hinzufügen"-Button geklickt wird und fügt eine neue Playlist hinzu
+// zur Datenbank und lädt die aktualisierte PlaylistSammlung
+
 void MainWindow::onAddPlaylistButtonClicked() {
     // Prompt the user to enter a name for the new playlist
     QString playlistName = QInputDialog::getText(this, tr("Add Playlist"), tr("Playlist Name:"));
@@ -216,7 +199,8 @@ void MainWindow::onAddPlaylistButtonClicked() {
         }
     }
 }
-
+// Diese Methode wird aufgerufen, wenn der "Track hinzufügen"-Button geklickt wird und fügt 
+// einen Track zur aktuellen Playlist hinzu
 void MainWindow::onAddTrackButtonClicked() {
     // Lade die "Alle Songs"-Playlist
     Playlist allSongsPlaylist = db.getPlaylist("Alle Songs");
@@ -227,10 +211,15 @@ void MainWindow::onAddTrackButtonClicked() {
         Track track = dialog.getSelectedTrack();
         if (!track.getFilePath().isEmpty()) {
             // Füge den Track zur Datenbank hinzu
-            int trackID = track.getTrackID();
-            int playlistID = db.getPlaylistID(playList.getName());
-            if (trackID != -1 && playlistID != -1) {
-                db.insertPlaylistTrack(playlistID, trackID);
+            QSqlQuery query(db.getDatabase());
+            query.prepare("SELECT PlaylistID FROM Playlists WHERE Name = :name");
+            query.bindValue(":name", playList.getName());
+            if (query.exec() && query.next()) {
+                int playlistID = query.value(0).toInt();
+                int trackID = track.getTrackID();
+                if (trackID != -1 && playlistID != -1) {
+                    db.insertPlaylistTrack(playlistID, trackID);
+                }
             }
 
             // Aktualisiere die UI, um den neuen Track anzuzeigen
@@ -238,22 +227,14 @@ void MainWindow::onAddTrackButtonClicked() {
         }
     }
 }
-
+// Diese Methode wird aufgerufen, wenn ein Element in der PlaylistSammlung geklickt wird und 
+// lädt die ausgewählte Playlist
 void MainWindow::onPlaylistSammlungItemClicked(QListWidgetItem *item) {
-    // Load the tracks of the selected playlist
     QString playlistName = item->text();
     loadPlaylist(playlistName);
-
-    // Debug: Ausgabe der geladenen Tracks
-    for (int i = 0; i < ui->Playlist->count(); ++i) {
-        QListWidgetItem *trackItem = ui->Playlist->item(i);
-    }
-    //load into PlayList object
-    playList.setName(playlistName);
-    playList.setTracks(db.getPlaylist(playlistName).getTracks());
-    
 }
 
+// Diese Methode lädt alle Playlists aus der Datenbank und fügt sie zur PlaylistSammlung hinzu (QListWidget)
 void MainWindow::loadPlaylistsFromDatabase() {
     ui->PlaylistSammlung->clear();
     std::vector<QString> playlists = db.getAllPlaylists();
@@ -262,21 +243,28 @@ void MainWindow::loadPlaylistsFromDatabase() {
     }
 }
 
+// Diese Methode lädt die Playlist mit dem angegebenen Namen aus der Datenbank 
+// und fügt die Tracks zur Playlist hinzu und zeigt sie in der QListWidget an
+
 void MainWindow::loadPlaylist(const QString &playlistName) {
-    DataBase db;
-    if (!db.open()) {
-        // Handle database open failure
-        return;
-    }
-
     Playlist playlist = db.getPlaylist(playlistName);
-    playList.setTracks(playlist.getTracks()); // Aktualisiere das playList-Mitglied
-
+    playList.setName(playlistName);
+    playList.setTracks(playlist.getTracks());
     ui->Playlist->clear();
     for (const auto &track : playlist.getTracks()) {
         QListWidgetItem *item = new QListWidgetItem(track.getTitle(), ui->Playlist);
         item->setData(Qt::UserRole, track.getFilePath());
     }
-
+    qDebug() << "Playlist:" << playList.getName();
     db.close();
+}
+
+// Diese Methode aktualisiert die Anzeige des aktuellen Tracks in der UI
+
+void MainWindow::updateCurrentTrackDisplay() {
+    Track currentTrack = mediaController->getCurrentTrack();
+    QString currentTitle = currentTrack.getTitle();
+    ui->currentSongLabel->setText(currentTitle);
+    ui->Playlist->setCurrentRow(mediaController->getCurrentIndex());
+    setProgressBarAndSongDurationLabel();
 }

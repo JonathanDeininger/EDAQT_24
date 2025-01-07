@@ -33,7 +33,7 @@ public:
     bool removePlaylist(const QString &playlistName);
     bool createAllSongsPlaylist(); // Behalten Sie diese Methode
     int getPlaylistID(const QString &playlistName); // Add this method declaration
-    int getTrackID(const QString &filePath); // Add this method declaration
+    // int getTrackID(const QString &filePath); // Add this method declaration
     Track getTrack(const QString &filePath); // Add this method declaration
 
 private:

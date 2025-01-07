@@ -4,16 +4,21 @@ TO DO
 - Intepret und so weiter ordentlich anzeigen
 
 - Hinzufügen von Songs zu playlist ermöglichen
-- Playlist laden (bei klicks)
+- Playlist laden (bei klicks) (done)
 - Playlist löschen
-- Shongs Hinzufügen (direkt in die DB)
+- Shongs Hinzufügen (direkt in die DB) (done)
 - Playlists korrekt abspielen
-
 
 - Shuffle und Repeat Buttons überarbeiten
 - z.b. array mit indices 
 - media controller umschreiben, dass der die indices abspielt
 - shuffle und repeat buttons umschreiben, dass die die indices verändern
+
+datenbank:
+- beim löschen von playlisten auch die playlisteinträge löschen aus der playlisttrack tabelle
+- beim löschen von playlisten die alle songs liste nicht löschen
+- aus der alle songs liste darf nicht gelöscht werden
+- beim einfügen in die playlisttrack liste abfragen, ob der track schon drin ist
 
 
 Zeitplan

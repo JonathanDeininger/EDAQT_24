@@ -41,8 +41,8 @@ InstallerDialog::InstallerDialog(QWidget *parent)
         }
     }
 
-    // Create the "Alle Songs" playlist if it doesn't exist
-    if (dataBase.getPlaylistID("Alle Songs") == -1) {
+    // Check if the "Alle Songs" playlist is empty
+    if (dataBase.getPlaylist("Alle Songs").getTracks().empty()) {
         dataBase.insertPlaylist("Alle Songs");
     }
 }

@@ -219,15 +219,17 @@ Playlist DataBase::getPlaylist(const QString &playlistName) {
         }
     }
 
-    int playlistID = getPlaylistID(playlistName);
-    if (playlistID == -1) {
+    QSqlQuery query(db);
+    query.prepare("SELECT PlaylistID FROM Playlists WHERE Name = :name");
+    query.bindValue(":name", playlistName);
+    if (!query.exec() || !query.next()) {
         return playlist;
     }
+    int playlistID = query.value(0).toInt();
 
     // Clear the playlist before adding tracks
     playlist.setTracks(std::vector<Track>());
 
-    QSqlQuery query(db);
     query.prepare("SELECT Mediathek.TrackID, Mediathek.FilePath, Mediathek.Interpret, Mediathek.Titel, Mediathek.Album, Mediathek.Spielzeit, Mediathek.SampleRate, Mediathek.SampleCount "
                   "FROM PlaylistTracks "
                   "JOIN Mediathek ON PlaylistTracks.TrackID = Mediathek.TrackID "
@@ -246,6 +248,9 @@ Playlist DataBase::getPlaylist(const QString &playlistName) {
             track.setSampleCount(query.value("SampleCount").toInt());
             playlist.addTrack(track);
         }
+    }
+    if (playlist.getTracks().empty()) {
+        qWarning() << "Playlist" << playlistName << "does not exist or has no tracks.";
     }
 
     return playlist;
@@ -326,26 +331,6 @@ bool DataBase::createAllSongsPlaylist() {
     return true;
 }
 
-int DataBase::getPlaylistID(const QString &playlistName) {
-    QSqlQuery query(db);
-    query.prepare("SELECT PlaylistID FROM Playlists WHERE Name = :name"); // Correct column name
-    query.bindValue(":name", playlistName);
-    if (query.exec() && query.next()) {
-        return query.value(0).toInt();
-    }
-    return -1; // Return -1 if not found
-}
-
-int DataBase::getTrackID(const QString &filePath) {
-    QSqlQuery query(db);
-    query.prepare("SELECT TrackID FROM Mediathek WHERE FilePath = :filePath");
-    query.bindValue(":filePath", filePath);
-    if (query.exec() && query.next()) {
-        return query.value(0).toInt();
-    }
-    return -1; // Return -1 if not found
-}
-
 Track DataBase::getTrack(const QString &filePath) {
     QSqlQuery query(db);
     query.prepare("SELECT TrackID, FilePath, Interpret, Titel, Album, Spielzeit, SampleRate, SampleCount FROM Mediathek WHERE FilePath = :filePath");
@@ -364,4 +349,5 @@ Track DataBase::getTrack(const QString &filePath) {
     }
     return Track(); // Return an empty Track object if not found
 }
+
 
