@@ -3,14 +3,19 @@
 #include <QMediaMetaData>
 #include <QEventLoop>
 #include <QFileInfo>
-#include <QDir> // Include QDir
-#include <qcryptographichash.h>
+#include <QDir>
 
-Track::Track() : duration(0), sampleRate(0), sampleCount(0), trackID(0) {}
+Track::Track() : duration(0), sampleRate(0), sampleCount(0), trackID(-1) {}
 
-Track::Track(const QString &filePath) : filePath(filePath), duration(0), sampleRate(0), sampleCount(0), trackID(0) {
+Track::Track(const QString &filePath) : filePath(filePath), duration(0), sampleRate(0), sampleCount(0), trackID(-1) {
+    if (QFileInfo(filePath).isRelative()) {
+        this->filePath = QDir::current().absoluteFilePath(filePath);
+    } else {
+        this->filePath = filePath;
+    }
+
     QMediaPlayer player;
-    player.setSource(QUrl::fromLocalFile(filePath));
+    player.setSource(QUrl::fromLocalFile(this->filePath));
 
     // Warten, bis die Metadaten verfügbar sind
     QEventLoop loop;
@@ -35,44 +40,8 @@ Track::Track(const QString &filePath) : filePath(filePath), duration(0), sampleR
         title = player.metaData().value(QMediaMetaData::Title).toString();
     } else {
         artist = "unbekannt";
-        title = QFileInfo(filePath).fileName();
+        title = QFileInfo(this->filePath).fileName();
     }
-
-    computeHash();
-}
-
-Track::Track(const QString &basePath, const QString &fileName) : duration(0), sampleRate(0), sampleCount(0), trackID(0) {
-    filePath = QDir(basePath).absoluteFilePath(fileName);
-    QMediaPlayer player;
-    player.setSource(QUrl::fromLocalFile(filePath));
-
-    // Warten, bis die Metadaten verfügbar sind
-    QEventLoop loop;
-    QObject::connect(&player, &QMediaPlayer::mediaStatusChanged, [&loop, &player](QMediaPlayer::MediaStatus status) {
-        if (status == QMediaPlayer::LoadedMedia || status == QMediaPlayer::InvalidMedia) {
-            loop.quit();
-        }
-    });
-    player.play();
-    loop.exec();
-
-    duration = player.duration() / 1000; // Dauer in Sekunden
-    sampleRate = player.metaData().value(QMediaMetaData::AudioBitRate).toInt();
-    if (sampleRate == 0) {
-        sampleRate = 44100; // Default sample rate if not available
-    }
-    sampleCount = sampleRate * duration;
-
-    if (!player.metaData().isEmpty()) {
-        artist = player.metaData().value(QMediaMetaData::AlbumArtist).toString();
-        album = player.metaData().value(QMediaMetaData::AlbumTitle).toString();
-        title = player.metaData().value(QMediaMetaData::Title).toString();
-    } else {
-        artist = "unbekannt";
-        title = QFileInfo(filePath).fileName();
-    }
-
-    computeHash();
 }
 
 QString Track::getFilePath() const {
@@ -103,20 +72,49 @@ int Track::getSampleCount() const {
     return sampleCount;
 }
 
-QByteArray Track::getHash() const {
-    return hash;
-}
-
 int Track::getTrackID() const {
     return trackID;
 }
 
-void Track::computeHash() {
-    QCryptographicHash crypto(QCryptographicHash::Sha256);
-    crypto.addData(filePath.toUtf8());
-    crypto.addData(artist.toUtf8());
-    crypto.addData(album.toUtf8());
-    crypto.addData(title.toUtf8());
-    crypto.addData(QString::number(duration).toUtf8());
-    hash = crypto.result();
+void Track::setFilePath(const QString &filePath) {
+    this->filePath = filePath;
+}
+
+void Track::setArtist(const QString &artist) {
+    this->artist = artist;
+}
+
+void Track::setAlbum(const QString &album) {
+    this->album = album;
+}
+
+void Track::setTitle(const QString &title) {
+    this->title = title;
+}
+
+void Track::setDuration(int duration) {
+    this->duration = duration;
+}
+
+void Track::setSampleRate(int sampleRate) {
+    this->sampleRate = sampleRate;
+}
+
+void Track::setSampleCount(int sampleCount) {
+    this->sampleCount = sampleCount;
+}
+
+void Track::setTrackID(int trackID) {
+    this->trackID = trackID;
+}
+
+QString Track::getSongDurationAsString() const {
+    int totalSeconds = this->duration;
+    int minutes = totalSeconds / 60;
+    int seconds = totalSeconds % 60;
+
+    // Rückgabe im Format hh:mm:ss
+    return  QString("%1:%2")
+            .arg(minutes, 2, 10, QChar('0'))
+            .arg(seconds, 2, 10, QChar('0'));
 }

@@ -441,4 +441,6 @@ C:/Users/enigm/Documents/Musicplayer_2/Musikspieler/build/Desktop_Qt_6_8_0_MinGW
   C:/Qt/Tools/mingw1310_64/x86_64-w64-mingw32/include/vadefs.h \
   C:/Qt/Tools/mingw1310_64/x86_64-w64-mingw32/include/wchar.h \
   C:/Qt/Tools/mingw1310_64/x86_64-w64-mingw32/include/wctype.h \
-  C:/Users/enigm/Documents/Musicplayer_2/Musikspieler/DataBase.h
+  C:/Users/enigm/Documents/Musicplayer_2/Musikspieler/DataBase.h \
+  C:/Users/enigm/Documents/Musicplayer_2/Musikspieler/playlist.h \
+  C:/Users/enigm/Documents/Musicplayer_2/Musikspieler/track.h

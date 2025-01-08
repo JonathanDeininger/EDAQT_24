@@ -1,28 +1,16 @@
 #include "Playlist.h"
-#include <iostream>
 
-// von Sam ertgboinregjnerghojkgres
-void Playlist::addFile(const QString &filePath) {
-    tracks.emplace_back(filePath);
+void Playlist::addTrack(const Track &track) {
+    tracks.push_back(track);
 }
 
 std::vector<Track> Playlist::getTracks() const {
     return tracks;
 }
 
-void Playlist::setFiles(const std::vector<QString> &newFiles) {
-    files = newFiles;
-}
-
-void Playlist::print() const {
-    std::cout << "Number of files: " << files.size() << std::endl;
-    for (const auto &file : files) {
-        std::cout << QFileInfo(file).fileName().toStdString() << std::endl;
-    }
-}
-
-const std::vector<QString>& Playlist::getFiles() const {
-    return files;
+void Playlist::setTracks(const std::vector<Track> &newTracks) {
+    tracks.clear(); // Clear the old tracks
+    tracks = newTracks;
 }
 
 void Playlist::setName(const QString &name) {
@@ -35,4 +23,12 @@ QString Playlist::getName() const {
 
 int Playlist::getLength() const {
     return tracks.size();
+}
+
+int Playlist::getPlaylistID() const {
+    return playlistID;
+}
+
+void Playlist::setPlaylistID(int id) {
+    playlistID = id;
 }

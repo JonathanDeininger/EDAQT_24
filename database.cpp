@@ -1,26 +1,25 @@
 #include "DataBase.h"
-#include <QDebug>
 #include <QDir>
-#include <qdebug.h>
+#include "playlist.h"
 
 DataBase::DataBase() {
-    qDebug() << "Datenbank Konstruktor gestartet";
-
     // Überprüfen, ob bereits eine Verbindung mit dem Namen "MusicPlayerConnection" existiert
     if (QSqlDatabase::contains("MusicPlayerConnection")) {
         db = QSqlDatabase::database("MusicPlayerConnection");  // Bestehende Verbindung verwenden
-        qDebug() << "Datenbankverbindung bereits vorhanden.";
     } else {
         db = QSqlDatabase::addDatabase("QSQLITE", "MusicPlayerConnection");  // Neue Verbindung erstellen
         db.setDatabaseName("MusicPlayerSQLDB.db");
 
         if (!db.open()) {
-            qDebug() << "Fehler beim Öffnen der Datenbank:" << db.lastError();
             return;
         }
-
-        qDebug() << "Datenbank erfolgreich geöffnet!";
     }
+
+    // Create necessary tables
+    createTableMediathek();
+    createTablePathlist();
+    createTablePlaylists();
+    createTablePlaylistTracks();
 }
 
 DataBase::~DataBase() {
@@ -28,64 +27,100 @@ DataBase::~DataBase() {
     db.close();
 }
 
-bool DataBase::createTableMediathek() {
+bool DataBase::open() {
     if (!db.isOpen()) {
-        qDebug() << "Datenbankverbindung konnte nicht geöffnet werden.";
+        if (!db.open()) {
+            return false;
+        }
+    }
+    return true;
+}
+
+void DataBase::close() {
+    db.close();
+}
+
+bool DataBase::createTableMediathek() {
+    if (!open()) {
         return false;
     }
 
     if (!QSqlDatabase::isDriverAvailable("QSQLITE")) {
-        qDebug() << "SQLite-Treiber ist nicht verfügbar.";
+        return false;
     }
     QSqlQuery query(db); // Use the correct database connection
 
     bool success = query.prepare("CREATE TABLE IF NOT EXISTS Mediathek ("
-               "TrackID INTEGER PRIMARY KEY AUTOINCREMENT, " // Ensure TrackID is auto-incremented
-               "FilePath TEXT, "
-               "Interpret TEXT, "
-               "Titel TEXT, "
-               "Album TEXT, "
-               "Spielzeit INT, "
-               "SampleRate INT, "
-               "SampleCount INT, "
-               "Hash TEXT)");
+                                 "TrackID INTEGER PRIMARY KEY AUTOINCREMENT, " // Ensure TrackID is auto-incremented
+                                 "FilePath TEXT, "
+                                 "Interpret TEXT, "
+                                 "Titel TEXT, "
+                                 "Album TEXT, "
+                                 "Spielzeit INT, "
+                                 "SampleRate INT, "
+                                 "SampleCount INT)");
     query.exec();
-    if (!success) {
-        qDebug() << "Fehler beim Erstellen der Tabelle:" << query.lastError();
-    } else {
-        qDebug() << "Tabelle 'Mediathek' wurde erfolgreich erstellt oder existiert bereits.";
-    }
     return success;
 }
 
-bool DataBase::createTableOptionen() {
-    if (!db.isOpen()) {
-        qDebug() << "Datenbankverbindung konnte nicht geöffnet werden.";
+bool DataBase::createTablePathlist() {
+    if (!open()) {
         return false;
     }
     QSqlQuery query(db); // Use the correct database connection
-    bool success = query.exec("CREATE TABLE IF NOT EXISTS OPTIONEN ("
-                              "ID SERIAL PRIMARY KEY," // Change Index to ID
-                              "Lautstaerke FLOAT,"
+    bool success = query.exec("CREATE TABLE IF NOT EXISTS Pathlist ("
+                              "ID INTEGER PRIMARY KEY AUTOINCREMENT," // Change Index to ID and ensure auto-increment
                               "MusikPfad TEXT)");
-    if (!success) {
-        qDebug() << "Fehler beim Erstellen der Tabelle:" << query.lastError();
+    return success;
+}
+
+bool DataBase::createTablePlaylists() {
+    if (!open()) {
+        return false;
+    }
+    QSqlQuery query(db); // Use the correct database connection
+    bool success = query.exec("CREATE TABLE IF NOT EXISTS Playlists ("
+                              "PlaylistID INTEGER PRIMARY KEY AUTOINCREMENT, "
+                              "Name TEXT)");
+    return success;
+}
+
+bool DataBase::createTablePlaylistTracks() {
+    if (!open()) {
+        return false;
+    }
+    QSqlQuery query(db); // Use the correct database connection
+    bool success = query.exec("CREATE TABLE IF NOT EXISTS PlaylistTracks ("
+                              "PlaylistID INTEGER, "
+                              "TrackID INTEGER, "
+                              "FOREIGN KEY (PlaylistID) REFERENCES Playlists(PlaylistID), "
+                              "FOREIGN KEY (TrackID) REFERENCES Mediathek(TrackID))");
+
+    //füge alle Songs aus der Mediathek in die Playlist "Alle Songs" ein
+    query.prepare("SELECT TrackID FROM Mediathek");
+    if (query.exec()) {
+        while (query.next()) {
+            query.prepare("INSERT INTO PlaylistTracks (PlaylistID, TrackID) VALUES (1, :trackID)");
+            query.bindValue(":trackID", query.value(0).toInt());
+            if (!query.exec()) {
+                return false;
+            }
+        }
     } else {
-        qDebug() << "Tabelle 'OPTIONEN' wurde erfolgreich erstellt oder existiert bereits.";
+        return false;
     }
     return success;
 }
 
-bool DataBase::insertData(const QString &filePath, const QString &interpret, const QString &album, const QString &titel, int spielzeit, int sampleRate, int sampleCount, const QByteArray &hash) {
-    if (!db.isOpen()) {
-        qDebug() << "Datenbankverbindung konnte nicht geöffnet werden.";
+bool DataBase::insertData(const QString &filePath, const QString &interpret, const QString &album, const QString &titel, int spielzeit, int sampleRate, int sampleCount) {
+    if (!open()) {
         return false;
     }
     QSqlQuery query(db); // Use the correct database connection
 
     // SQL-Befehl zum Einfügen von Daten
-    query.prepare("INSERT INTO Mediathek (FilePath, Interpret, Album, Titel, Spielzeit, SampleRate, SampleCount, Hash) "
-                  "VALUES (:filePath, :interpret, :album, :titel, :spielzeit, :sampleRate, :sampleCount, :hash)");
+    query.prepare("INSERT INTO Mediathek (FilePath, Interpret, Album, Titel, Spielzeit, SampleRate, SampleCount) "
+                  "VALUES (:filePath, :interpret, :album, :titel, :spielzeit, :sampleRate, :sampleCount)");
 
     // Bindung der Werte
     query.bindValue(":filePath", filePath);
@@ -95,71 +130,224 @@ bool DataBase::insertData(const QString &filePath, const QString &interpret, con
     query.bindValue(":spielzeit", spielzeit);
     query.bindValue(":sampleRate", sampleRate);
     query.bindValue(":sampleCount", sampleCount);
-    query.bindValue(":hash", hash);
     // Ausführen der Abfrage und Überprüfen auf Fehler
     if (!query.exec()) {
-        qDebug() << "Fehler beim Einfügen von Daten:" << query.lastError();
         return false;
     }
 
-    qDebug() << "Daten erfolgreich eingefügt!";
     return true;
 }
 
-bool DataBase::insertOptions(const QList<QPair<float, QString>> &options) {
-    if (!db.isOpen()) {
-        qDebug() << "Datenbankverbindung konnte nicht geöffnet werden.";
+bool DataBase::insertPath(const QString &path) {
+    if (!open()) {
+        return false;
+    }
+
+    if (!QSqlDatabase::isDriverAvailable("QSQLITE")) {
+        return false;
+    }
+
+    QSqlQuery query(db); // Use the correct database connection
+
+    query.prepare("INSERT INTO Pathlist (MusikPfad) VALUES (:MusikPfad)");
+    query.bindValue(":MusikPfad", path);
+
+    if (!query.exec()) {
+        return false;
+    }
+
+    return true;
+}
+
+bool DataBase::insertPlaylist(const QString &playlistName) {
+    if (!open()) {
         return false;
     }
     QSqlQuery query(db); // Use the correct database connection
 
-    query.prepare("INSERT INTO OPTIONEN (Lautstaerke, MusikPfad) VALUES (:Lautstaerke, :MusikPfad)");
+    query.prepare("INSERT INTO Playlists (Name) VALUES (:name)");
+    query.bindValue(":name", playlistName);
 
-    for (const auto &option : options) {
-        query.bindValue(":Lautstaerke", option.first);
-        query.bindValue(":MusikPfad", option.second);
-
-        if (!query.exec()) {
-            qDebug() << "Fehler beim Einfügen von Daten in OPTIONEN:" << query.lastError();
-            return false;
-        }
+    if (!query.exec()) {
+        return false;
     }
 
-    qDebug() << "Daten erfolgreich in OPTIONEN eingefügt!";
     return true;
 }
 
-void DataBase::queryData() {
-    if (!db.isOpen()) {
-        qDebug() << "Datenbankverbindung konnte nicht geöffnet werden.";
-        return;
-    }
-    QSqlQuery query("SELECT * FROM Mediathek");
-
-    while (query.next()) {
-        QString interpret = query.value(0).toString();
-        QString album = query.value(1).toString();
-        QString titel = query.value(2).toString();
-        int spielzeit = query.value(3).toInt();
-        qDebug() << "Interpret:" << interpret << ", Album:" << album << ", Titel:" << titel << ", Spielzeit:" << spielzeit;
-    }
-}
-
-bool DataBase::open() {
-    if (!db.open()) {
-        qDebug() << "Error: connection with database failed";
+bool DataBase::insertPlaylistTrack(int playlistID, int trackID) {
+    if (!open()) {
         return false;
-    } else {
-        qDebug() << "Database: connection ok";
-        return true;
     }
+    QSqlQuery query(db); // Use the correct database connection
+
+    query.prepare("INSERT INTO PlaylistTracks (PlaylistID, TrackID) VALUES (:playlistID, :trackID)");
+    query.bindValue(":playlistID", playlistID);
+    query.bindValue(":trackID", trackID);
+
+    if (!query.exec()) {
+        return false;
+    }
+
+    return true;
 }
 
-void DataBase::close() {
-    db.close();
+bool DataBase::tableExists(const QString &tableName) {
+    if (!open()) {
+        return false;
+    }
+    QSqlQuery query(db);
+    query.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name=:tableName");
+    query.bindValue(":tableName", tableName);
+    if (!query.exec()) {
+        return false;
+    }
+    return query.next();
 }
 
 QSqlDatabase& DataBase::getDatabase() {
     return db;
 }
+
+Playlist DataBase::getPlaylist(const QString &playlistName) {
+    Playlist playlist;
+    playlist.setName(playlistName);
+
+    if (!db.isOpen()) {
+        if (!open()) {
+            return playlist;
+        }
+    }
+
+    QSqlQuery query(db);
+    query.prepare("SELECT PlaylistID FROM Playlists WHERE Name = :name");
+    query.bindValue(":name", playlistName);
+    if (!query.exec() || !query.next()) {
+        return playlist;
+    }
+    int playlistID = query.value(0).toInt();
+
+    // Clear the playlist before adding tracks
+    playlist.setTracks(std::vector<Track>());
+
+    query.prepare("SELECT Mediathek.TrackID, Mediathek.FilePath, Mediathek.Interpret, Mediathek.Titel, Mediathek.Album, Mediathek.Spielzeit, Mediathek.SampleRate, Mediathek.SampleCount "
+                  "FROM PlaylistTracks "
+                  "JOIN Mediathek ON PlaylistTracks.TrackID = Mediathek.TrackID "
+                  "WHERE PlaylistTracks.PlaylistID = :playlistID");
+    query.bindValue(":playlistID", playlistID);
+    if (query.exec()) {
+        while (query.next()) {
+            Track track;
+            track.setTrackID(query.value("TrackID").toInt());
+            track.setFilePath(query.value("FilePath").toString());
+            track.setArtist(query.value("Interpret").toString());
+            track.setTitle(query.value("Titel").toString());
+            track.setAlbum(query.value("Album").toString());
+            track.setDuration(query.value("Spielzeit").toInt());
+            track.setSampleRate(query.value("SampleRate").toInt());
+            track.setSampleCount(query.value("SampleCount").toInt());
+            playlist.addTrack(track);
+        }
+    }
+    if (playlist.getTracks().empty()) {
+        qWarning() << "Playlist" << playlistName << "does not exist or has no tracks.";
+    }
+
+    return playlist;
+}
+
+std::vector<QString> DataBase::getAllPlaylists() {
+    std::vector<QString> playlists;
+
+    if (!open()) {
+        return playlists;
+    }
+
+    QSqlQuery query(db);
+    query.prepare("SELECT Name FROM Playlists");
+    if (!query.exec()) {
+        return playlists;
+    }
+
+    while (query.next()) {
+        playlists.push_back(query.value(0).toString());
+    }
+
+    return playlists;
+}
+
+bool DataBase::removePlaylist(const QString &playlistName) {
+    if (!open()) {
+        return false;
+    }
+
+    QSqlQuery query(db);
+    query.prepare("DELETE FROM Playlists WHERE Name = :name");
+    query.bindValue(":name", playlistName);
+
+    if (!query.exec()) {
+        return false;
+    }
+
+    query.prepare("DELETE FROM PlaylistTracks WHERE PlaylistID = (SELECT PlaylistID FROM Playlists WHERE Name = :name)");
+    query.bindValue(":name", playlistName);
+
+    if (!query.exec()) {
+        return false;
+    }
+
+    return true;
+}
+
+bool DataBase::createAllSongsPlaylist() {
+    if (!db.isOpen()) {
+        if (!open()) {
+            return false;
+        }
+    }
+
+    std::vector<int> songIDs;
+    QSqlQuery query(db);
+
+    // Retrieve all song IDs from Mediathek
+    query.prepare("SELECT TrackID FROM Mediathek");
+    if (query.exec()) {
+        while (query.next()) {
+            songIDs.push_back(query.value(0).toInt());
+        }
+    } else {
+        return false;
+    }
+
+    // Insert all song IDs into PlaylistTracks with PlaylistID = 1
+    query.prepare("INSERT INTO PlaylistTracks (PlaylistID, TrackID) VALUES (1, :trackID)");
+    for (int trackID : songIDs) {
+        query.bindValue(":trackID", trackID);
+        if (!query.exec()) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+Track DataBase::getTrack(const QString &filePath) {
+    QSqlQuery query(db);
+    query.prepare("SELECT TrackID, FilePath, Interpret, Titel, Album, Spielzeit, SampleRate, SampleCount FROM Mediathek WHERE FilePath = :filePath");
+    query.bindValue(":filePath", filePath);
+    if (query.exec() && query.next()) {
+        Track track;
+        track.setTrackID(query.value("TrackID").toInt());
+        track.setFilePath(query.value("FilePath").toString());
+        track.setArtist(query.value("Interpret").toString());
+        track.setTitle(query.value("Titel").toString());
+        track.setAlbum(query.value("Album").toString());
+        track.setDuration(query.value("Spielzeit").toInt());
+        track.setSampleRate(query.value("SampleRate").toInt());
+        track.setSampleCount(query.value("SampleCount").toInt());
+        return track;
+    }
+    return Track(); // Return an empty Track object if not found
+}
+
 

@@ -1,8 +1,6 @@
 C:/Users/enigm/Documents/Musicplayer_2/Musikspieler/build/Desktop_Qt_6_8_0_MinGW_64_bit-Debug/Musikspieler_autogen/EWIEGA46WW/moc_mediacontroller.cpp: C:/Users/enigm/Documents/Musicplayer_2/Musikspieler/mediacontroller.h \
   C:/Users/enigm/Documents/Musicplayer_2/Musikspieler/build/Desktop_Qt_6_8_0_MinGW_64_bit-Debug/Musikspieler_autogen/moc_predefs.h \
-  C:/Qt/6.8.0/mingw_64/include/QtCore/QCryptographicHash \
   C:/Qt/6.8.0/mingw_64/include/QtCore/QDir \
-  C:/Qt/6.8.0/mingw_64/include/QtCore/QFileInfo \
   C:/Qt/6.8.0/mingw_64/include/QtCore/QObject \
   C:/Qt/6.8.0/mingw_64/include/QtCore/QString \
   C:/Qt/6.8.0/mingw_64/include/QtCore/QStringList \
@@ -38,7 +36,6 @@ C:/Users/enigm/Documents/Musicplayer_2/Musikspieler/build/Desktop_Qt_6_8_0_MinGW
   C:/Qt/6.8.0/mingw_64/include/QtCore/qcontainerinfo.h \
   C:/Qt/6.8.0/mingw_64/include/QtCore/qcontainertools_impl.h \
   C:/Qt/6.8.0/mingw_64/include/QtCore/qcontiguouscache.h \
-  C:/Qt/6.8.0/mingw_64/include/QtCore/qcryptographichash.h \
   C:/Qt/6.8.0/mingw_64/include/QtCore/qdarwinhelpers.h \
   C:/Qt/6.8.0/mingw_64/include/QtCore/qdatastream.h \
   C:/Qt/6.8.0/mingw_64/include/QtCore/qdatetime.h \
@@ -444,4 +441,5 @@ C:/Users/enigm/Documents/Musicplayer_2/Musikspieler/build/Desktop_Qt_6_8_0_MinGW
   C:/Qt/Tools/mingw1310_64/x86_64-w64-mingw32/include/wctype.h \
   C:/Users/enigm/Documents/Musicplayer_2/Musikspieler/DataBase.h \
   C:/Users/enigm/Documents/Musicplayer_2/Musikspieler/Playlist.h \
+  C:/Users/enigm/Documents/Musicplayer_2/Musikspieler/playlist.h \
   C:/Users/enigm/Documents/Musicplayer_2/Musikspieler/track.h

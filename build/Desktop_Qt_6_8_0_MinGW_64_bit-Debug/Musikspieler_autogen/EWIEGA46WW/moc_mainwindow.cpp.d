@@ -1,8 +1,7 @@
 C:/Users/enigm/Documents/Musicplayer_2/Musikspieler/build/Desktop_Qt_6_8_0_MinGW_64_bit-Debug/Musikspieler_autogen/EWIEGA46WW/moc_mainwindow.cpp: C:/Users/enigm/Documents/Musicplayer_2/Musikspieler/mainwindow.h \
   C:/Users/enigm/Documents/Musicplayer_2/Musikspieler/build/Desktop_Qt_6_8_0_MinGW_64_bit-Debug/Musikspieler_autogen/moc_predefs.h \
-  C:/Qt/6.8.0/mingw_64/include/QtCore/QCryptographicHash \
   C:/Qt/6.8.0/mingw_64/include/QtCore/QDir \
-  C:/Qt/6.8.0/mingw_64/include/QtCore/QFileInfo \
+  C:/Qt/6.8.0/mingw_64/include/QtCore/QMimeData \
   C:/Qt/6.8.0/mingw_64/include/QtCore/QObject \
   C:/Qt/6.8.0/mingw_64/include/QtCore/QString \
   C:/Qt/6.8.0/mingw_64/include/QtCore/QStringList \
@@ -40,7 +39,6 @@ C:/Users/enigm/Documents/Musicplayer_2/Musikspieler/build/Desktop_Qt_6_8_0_MinGW
   C:/Qt/6.8.0/mingw_64/include/QtCore/qcontainerinfo.h \
   C:/Qt/6.8.0/mingw_64/include/QtCore/qcontainertools_impl.h \
   C:/Qt/6.8.0/mingw_64/include/QtCore/qcontiguouscache.h \
-  C:/Qt/6.8.0/mingw_64/include/QtCore/qcryptographichash.h \
   C:/Qt/6.8.0/mingw_64/include/QtCore/qdarwinhelpers.h \
   C:/Qt/6.8.0/mingw_64/include/QtCore/qdatastream.h \
   C:/Qt/6.8.0/mingw_64/include/QtCore/qdatetime.h \
@@ -79,6 +77,7 @@ C:/Users/enigm/Documents/Musicplayer_2/Musikspieler/build/Desktop_Qt_6_8_0_MinGW
   C:/Qt/6.8.0/mingw_64/include/QtCore/qmetacontainer.h \
   C:/Qt/6.8.0/mingw_64/include/QtCore/qmetaobject.h \
   C:/Qt/6.8.0/mingw_64/include/QtCore/qmetatype.h \
+  C:/Qt/6.8.0/mingw_64/include/QtCore/qmimedata.h \
   C:/Qt/6.8.0/mingw_64/include/QtCore/qminmax.h \
   C:/Qt/6.8.0/mingw_64/include/QtCore/qnamespace.h \
   C:/Qt/6.8.0/mingw_64/include/QtCore/qnumeric.h \
@@ -145,6 +144,7 @@ C:/Users/enigm/Documents/Musicplayer_2/Musikspieler/build/Desktop_Qt_6_8_0_MinGW
   C:/Qt/6.8.0/mingw_64/include/QtCore/qversiontagging.h \
   C:/Qt/6.8.0/mingw_64/include/QtCore/qxptype_traits.h \
   C:/Qt/6.8.0/mingw_64/include/QtCore/qyieldcpu.h \
+  C:/Qt/6.8.0/mingw_64/include/QtGui/QStandardItemModel \
   C:/Qt/6.8.0/mingw_64/include/QtGui/qaction.h \
   C:/Qt/6.8.0/mingw_64/include/QtGui/qbitmap.h \
   C:/Qt/6.8.0/mingw_64/include/QtGui/qbrush.h \
@@ -164,6 +164,7 @@ C:/Users/enigm/Documents/Musicplayer_2/Musikspieler/build/Desktop_Qt_6_8_0_MinGW
   C:/Qt/6.8.0/mingw_64/include/QtGui/qregion.h \
   C:/Qt/6.8.0/mingw_64/include/QtGui/qrgb.h \
   C:/Qt/6.8.0/mingw_64/include/QtGui/qrgba64.h \
+  C:/Qt/6.8.0/mingw_64/include/QtGui/qstandarditemmodel.h \
   C:/Qt/6.8.0/mingw_64/include/QtGui/qtgui-config.h \
   C:/Qt/6.8.0/mingw_64/include/QtGui/qtguiexports.h \
   C:/Qt/6.8.0/mingw_64/include/QtGui/qtguiglobal.h \
@@ -189,24 +190,33 @@ C:/Users/enigm/Documents/Musicplayer_2/Musikspieler/build/Desktop_Qt_6_8_0_MinGW
   C:/Qt/6.8.0/mingw_64/include/QtSql/qtsql-config.h \
   C:/Qt/6.8.0/mingw_64/include/QtSql/qtsqlexports.h \
   C:/Qt/6.8.0/mingw_64/include/QtSql/qtsqlglobal.h \
+  C:/Qt/6.8.0/mingw_64/include/QtWidgets/QDialog \
   C:/Qt/6.8.0/mingw_64/include/QtWidgets/QFileDialog \
   C:/Qt/6.8.0/mingw_64/include/QtWidgets/QListWidget \
   C:/Qt/6.8.0/mingw_64/include/QtWidgets/QListWidgetItem \
   C:/Qt/6.8.0/mingw_64/include/QtWidgets/QMainWindow \
   C:/Qt/6.8.0/mingw_64/include/QtWidgets/QMessageBox \
+  C:/Qt/6.8.0/mingw_64/include/QtWidgets/QPushButton \
+  C:/Qt/6.8.0/mingw_64/include/QtWidgets/QVBoxLayout \
+  C:/Qt/6.8.0/mingw_64/include/QtWidgets/qabstractbutton.h \
   C:/Qt/6.8.0/mingw_64/include/QtWidgets/qabstractitemdelegate.h \
   C:/Qt/6.8.0/mingw_64/include/QtWidgets/qabstractitemview.h \
   C:/Qt/6.8.0/mingw_64/include/QtWidgets/qabstractscrollarea.h \
   C:/Qt/6.8.0/mingw_64/include/QtWidgets/qabstractslider.h \
   C:/Qt/6.8.0/mingw_64/include/QtWidgets/qabstractspinbox.h \
+  C:/Qt/6.8.0/mingw_64/include/QtWidgets/qboxlayout.h \
   C:/Qt/6.8.0/mingw_64/include/QtWidgets/qdialog.h \
   C:/Qt/6.8.0/mingw_64/include/QtWidgets/qdialogbuttonbox.h \
   C:/Qt/6.8.0/mingw_64/include/QtWidgets/qfiledialog.h \
   C:/Qt/6.8.0/mingw_64/include/QtWidgets/qframe.h \
+  C:/Qt/6.8.0/mingw_64/include/QtWidgets/qgridlayout.h \
+  C:/Qt/6.8.0/mingw_64/include/QtWidgets/qlayout.h \
+  C:/Qt/6.8.0/mingw_64/include/QtWidgets/qlayoutitem.h \
   C:/Qt/6.8.0/mingw_64/include/QtWidgets/qlistview.h \
   C:/Qt/6.8.0/mingw_64/include/QtWidgets/qlistwidget.h \
   C:/Qt/6.8.0/mingw_64/include/QtWidgets/qmainwindow.h \
   C:/Qt/6.8.0/mingw_64/include/QtWidgets/qmessagebox.h \
+  C:/Qt/6.8.0/mingw_64/include/QtWidgets/qpushbutton.h \
   C:/Qt/6.8.0/mingw_64/include/QtWidgets/qrubberband.h \
   C:/Qt/6.8.0/mingw_64/include/QtWidgets/qsizepolicy.h \
   C:/Qt/6.8.0/mingw_64/include/QtWidgets/qslider.h \
@@ -458,4 +468,6 @@ C:/Users/enigm/Documents/Musicplayer_2/Musikspieler/build/Desktop_Qt_6_8_0_MinGW
   C:/Users/enigm/Documents/Musicplayer_2/Musikspieler/Playlist.h \
   C:/Users/enigm/Documents/Musicplayer_2/Musikspieler/database.h \
   C:/Users/enigm/Documents/Musicplayer_2/Musikspieler/mediacontroller.h \
+  C:/Users/enigm/Documents/Musicplayer_2/Musikspieler/playlist.h \
+  C:/Users/enigm/Documents/Musicplayer_2/Musikspieler/selecttrackdialog.h \
   C:/Users/enigm/Documents/Musicplayer_2/Musikspieler/track.h

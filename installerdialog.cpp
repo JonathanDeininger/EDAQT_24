@@ -3,8 +3,7 @@
 #include "track.h"
 #include <QMediaPlayer>
 #include <QMediaMetaData>
-#include <iostream>
-#include <qdebug.h>
+#include "database.h"
 
 InstallerDialog::InstallerDialog(QWidget *parent)
     : QDialog(parent)
@@ -17,7 +16,34 @@ InstallerDialog::InstallerDialog(QWidget *parent)
 
     // Ensure the database is opened in the constructor
     if (!dataBase.open()) {
-        qDebug() << "Failed to open the database in InstallerDialog constructor.";
+        // Handle database open failure
+    }
+
+    // Check if the necessary tables already exist
+    if (!dataBase.tableExists("Mediathek")) {
+        if (!dataBase.createTableMediathek()) {
+            // Handle table creation failure
+        }
+    }
+    if (!dataBase.tableExists("Pathlist")) {
+        if (!dataBase.createTablePathlist()) {
+            // Handle table creation failure
+        }
+    }
+    if (!dataBase.tableExists("Playlists")) {
+        if (!dataBase.createTablePlaylists()) {
+            // Handle table creation failure
+        }
+    }
+    if (!dataBase.tableExists("PlaylistTracks")) {
+        if (!dataBase.createTablePlaylistTracks()) {
+            // Handle table creation failure
+        }
+    }
+
+    // Check if the "Alle Songs" playlist is empty
+    if (dataBase.getPlaylist("Alle Songs").getTracks().empty()) {
+        dataBase.insertPlaylist("Alle Songs");
     }
 }
 
@@ -29,20 +55,10 @@ InstallerDialog::~InstallerDialog()
 
 void processFiles(DataBase &dataBase, const QString &basePath, const QStringList &fileList) {
     foreach (const QString &fileName, fileList) {
-        Track track(basePath, fileName);
-        qDebug() << "Processing file:" << fileName;
-        qDebug() << "File path:" << track.getFilePath();
-        qDebug() << "Artist:" << track.getArtist();
-        qDebug() << "Album:" << track.getAlbum();
-        qDebug() << "Title:" << track.getTitle();
-        qDebug() << "Duration:" << track.getDuration();
-        qDebug() << "Sample Rate:" << track.getSampleRate();
-        qDebug() << "Sample Count:" << track.getSampleCount();
-        qDebug() << "Hash:" << track.getHash();
-
+        Track track(QDir(basePath).absoluteFilePath(fileName));
         // Daten in die Datenbank einfügen
-        if (!dataBase.insertData(track.getFilePath(), track.getArtist(), track.getAlbum(), track.getTitle(), track.getDuration(), track.getSampleRate(), track.getSampleCount(), track.getHash())) {
-            qDebug() << "Fehler beim Einfügen von Daten für" << fileName;
+        if (!dataBase.insertData(track.getFilePath(), track.getArtist(), track.getAlbum(), track.getTitle(), track.getDuration(), track.getSampleRate(), track.getSampleCount())) {
+            // Handle data insertion failure
         }
     }
 }
@@ -58,27 +74,37 @@ void processDirectory(DataBase &dataBase, const QDir &directory) {
     }
 }
 
+bool hasAudioFiles(const QDir &directory) {
+    QStringList audioFiles = directory.entryList(QStringList() << "*.mp3" << "*.wav" << "*.flac" << "*.aac", QDir::Files);
+    if (!audioFiles.isEmpty()) {
+        return true;
+    }
+
+    QStringList subDirs = directory.entryList(QDir::Dirs | QDir::NoDotAndDotDot);
+    foreach (const QString &subDir, subDirs) {
+        QDir subDirectory(directory.absoluteFilePath(subDir));
+        if (hasAudioFiles(subDirectory)) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 void InstallerDialog::onNextButtonClicked() {
     QDir directory(QString(ui->MusicPath->toPlainText()));
-    QStringList audioFiles = directory.entryList(QStringList() << "*.mp3" << "*.wav" << "*.flac" << "*.aac", QDir::Files);
 
-    if (audioFiles.isEmpty()) {
+    if (!hasAudioFiles(directory)) {
         QMessageBox::information(this, tr("Keine Dateien gefunden"), tr("Der ausgewählte Ordner enthält keine unterstützten Audiodateien."));
         return;
     }
 
-    bool successMediathek = dataBase.createTableMediathek();
-    if (successMediathek) {
-        bool successOptions = dataBase.createTableOptionen();
-        if (successOptions) {
-            processFiles(dataBase, directory.absolutePath(), audioFiles);
-            QList<QPair<float, QString>> options;
-            options.append(qMakePair(0.0f, directory.absolutePath()));
-            bool successInsertOptions = dataBase.insertOptions(options);
-            if (successInsertOptions) {
-                close();
-            }
-        }
+    processDirectory(dataBase, directory); // Process the base directory and its subdirectories
+    bool successInsertPath = dataBase.insertPath(directory.absolutePath());
+    if (successInsertPath) {
+        // Create the "Alle Songs" playlist after inserting all tracks
+        dataBase.createAllSongsPlaylist();
+        accept(); // Close the dialog and return QDialog::Accepted
     }
 }
 
@@ -90,15 +116,49 @@ void InstallerDialog::onChooseMusicFolderClicked() {
     ui->MusicPath->setText(folderPath);
 
     // Save the base path to the database
-    qDebug() << "Attempting to insert path into database:" << folderPath;
-    QList<QPair<float, QString>> options;
-    options.append(qMakePair(0.5f, folderPath));
-    if (!dataBase.insertOptions(options)) {
-        qDebug() << "Failed to insert path into database.";
+    if (!dataBase.insertPath(folderPath)) {
         QMessageBox::warning(this, tr("Fehler"), tr("Der Pfad konnte nicht in die Datenbank geschrieben werden."));
         return;
     }
+}
 
-    // Process the base directory and its subdirectories
-    processDirectory(dataBase, QDir(folderPath));
+void InstallerDialog::addAllSongsToPlaylist() {
+    DataBase db;
+    if (!db.open()) {
+        // Handle database open failure
+        return;
+    }
+
+    // Create the "Alle Songs" playlist if it doesn't exist
+    if (!db.insertPlaylist("Alle Songs")) {
+        // Handle playlist creation failure
+    }
+
+    QSqlQuery query(db.getDatabase());
+    query.exec("SELECT TrackID FROM Mediathek");
+
+    while (query.next()) {
+        int trackID = query.value(0).toInt();
+        db.insertPlaylistTrack(1, trackID); // Assuming "Alle Songs" has PlaylistID 1
+    }
+
+    db.close();
+}
+
+// Modify the method where songs are loaded into the database to call addAllSongsToPlaylist
+void InstallerDialog::loadSongsIntoDatabase() {
+    // ...existing code to load songs into the database...
+
+    // After loading all songs, add them to the "Alle Songs" playlist
+    addAllSongsToPlaylist();
+}
+
+bool InstallerDialog::isDatabaseEmpty() {
+    QSqlQuery query(dataBase.getDatabase());
+    query.exec("SELECT COUNT(*) FROM Mediathek");
+    if (query.next()) {
+        int count = query.value(0).toInt();
+        return count == 0;
+    }
+    return true;
 }

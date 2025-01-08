@@ -7,20 +7,34 @@
 #include <QString>
 #include <QStringList>
 #include <QDir>
-// #include <vector>
+#include "track.h"
+#include "playlist.h"
+
+class Playlist; // Forward declaration of Playlist class
 
 class DataBase {
 public:
     DataBase();
     ~DataBase();
     bool createTableMediathek();
-    bool createTableOptionen();
-    bool insertData(const QString &filePath, const QString &interpret, const QString &album, const QString &titel, int spielzeit, int sampleRate, int sampleCount, const QByteArray &hash);
-    bool insertOptions(const QList<QPair<float, QString>> &options);
-    void queryData();
+    bool createTablePathlist();
+    bool createTablePlaylists();
+    bool createTablePlaylistTracks();
+    bool insertData(const QString &filePath, const QString &interpret, const QString &album, const QString &titel, int spielzeit, int sampleRate, int sampleCount);
+    bool insertPath(const QString &path);
+    bool insertPlaylist(const QString &playlistName);
+    bool insertPlaylistTrack(int playlistID, int trackID);
+    bool tableExists(const QString &tableName);
     bool open();
     void close();
-    QSqlDatabase& getDatabase(); // Add this method to access the database
+    QSqlDatabase& getDatabase();
+    Playlist getPlaylist(const QString &playlistName); // Deklaration der Methode
+    std::vector<QString> getAllPlaylists();
+    bool removePlaylist(const QString &playlistName);
+    bool createAllSongsPlaylist(); // Behalten Sie diese Methode
+    int getPlaylistID(const QString &playlistName); // Add this method declaration
+    // int getTrackID(const QString &filePath); // Add this method declaration
+    Track getTrack(const QString &filePath); // Add this method declaration
 
 private:
     QSqlDatabase db;

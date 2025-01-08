@@ -21,10 +21,8 @@ public:
     void next();
     void prev();
     void setCurrentIndex(int index);
-    QStringList selectMediaFiles(DataBase &database);
-    void addFolderToPlaylist(const QString &folderPath);
-    void onMediaStatusChanged(QMediaPlayer::MediaStatus status);
     void playPlaylist();
+    void setPlaylist(const Playlist &playlist); // Add this method declaration
     QMediaPlayer* getPlayer();
     QAudioOutput* getAudioOutput();
     int getCurrentSongPosition();
@@ -33,10 +31,11 @@ public:
     void updateCurrentSongDuration(qint64 duration);
     Track getCurrentTrack();
     int getCurrentIndex();
-    std::vector<Track> getCurrentPlaylist();
 signals:
     void currentTrackChanged(int index, const QString &title);
     void positionChanged(int position);
+private slots:
+    void onMediaStatusChanged(QMediaPlayer::MediaStatus status); // Add this method declaration
 private:
     QListWidget *playlistWidget;
     Playlist &playlist;
@@ -47,7 +46,6 @@ private:
     int currentSongPosition = 0;
     int currentIndex = 0;
     Track currentTrack;
-
 };
 
 #endif // MEDIACONTROLLER_H

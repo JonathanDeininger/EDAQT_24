@@ -77,13 +77,13 @@
 			{
 				"command" : 4,
 				"file" : 1,
-				"line" : 63,
+				"line" : 64,
 				"parent" : 0
 			},
 			{
 				"command" : 5,
 				"file" : 1,
-				"line" : 44,
+				"line" : 45,
 				"parent" : 0
 			},
 			{
@@ -421,11 +421,11 @@
 	"dependencies" : 
 	[
 		{
-			"backtrace" : 0,
-			"id" : "Musikspieler_autogen::@6890427a1f51a3e7e1df"
+			"id" : "Musikspieler_autogen_timestamp_deps::@6890427a1f51a3e7e1df"
 		},
 		{
-			"id" : "Musikspieler_autogen_timestamp_deps::@6890427a1f51a3e7e1df"
+			"backtrace" : 0,
+			"id" : "Musikspieler_autogen::@6890427a1f51a3e7e1df"
 		}
 	],
 	"id" : "Musikspieler::@6890427a1f51a3e7e1df",
@@ -560,7 +560,8 @@
 				9,
 				11,
 				15,
-				16
+				16,
+				17
 			]
 		},
 		{
@@ -569,14 +570,14 @@
 			[
 				4,
 				13,
-				17
+				18
 			]
 		},
 		{
 			"name" : "CMake Rules",
 			"sourceIndexes" : 
 			[
-				18
+				19
 			]
 		}
 	],
@@ -665,6 +666,11 @@
 			"compileGroupIndex" : 0,
 			"path" : "track.cpp",
 			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"path" : "selecttrackdialog.h",
+			"sourceGroupIndex" : 1
 		},
 		{
 			"backtrace" : 0,

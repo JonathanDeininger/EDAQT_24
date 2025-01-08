@@ -2,3 +2,4 @@
 #include "EWIEGA46WW/moc_installerdialog.cpp"
 #include "EWIEGA46WW/moc_mainwindow.cpp"
 #include "EWIEGA46WW/moc_mediacontroller.cpp"
+#include "EWIEGA46WW/moc_selecttrackdialog.cpp"

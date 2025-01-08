@@ -12,6 +12,7 @@
 #include <QtCore/QVariant>
 #include <QtGui/QIcon>
 #include <QtWidgets/QApplication>
+#include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QListWidget>
@@ -20,6 +21,7 @@
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QSlider>
 #include <QtWidgets/QStatusBar>
+#include <QtWidgets/QTableView>
 #include <QtWidgets/QWidget>
 
 QT_BEGIN_NAMESPACE
@@ -31,9 +33,9 @@ public:
     QPushButton *Play;
     QPushButton *Pause;
     QListWidget *Playlist;
-    QPushButton *AddTrack;
+    QPushButton *AddTrackButton;
     QPushButton *RemoveTrack;
-    QPushButton *ChoosePlaylistButton;
+    QPushButton *AddPlaylistButton;
     QLabel *currentSongLabel;
     QSlider *LautstaerkeRegler;
     QListWidget *PlaylistSammlung;
@@ -44,6 +46,7 @@ public:
     QPushButton *Random;
     QPushButton *Repeat;
     QLineEdit *searchBar;
+    QTableView *songTable;
     QMenuBar *menubar;
     QStatusBar *statusbar;
 
@@ -63,18 +66,22 @@ public:
         Playlist = new QListWidget(centralwidget);
         Playlist->setObjectName("Playlist");
         Playlist->setGeometry(QRect(320, 60, 521, 361));
-        AddTrack = new QPushButton(centralwidget);
-        AddTrack->setObjectName("AddTrack");
-        AddTrack->setGeometry(QRect(960, 150, 101, 24));
+        AddTrackButton = new QPushButton(centralwidget);
+        AddTrackButton->setObjectName("AddTrackButton");
+        AddTrackButton->setGeometry(QRect(960, 150, 101, 24));
         RemoveTrack = new QPushButton(centralwidget);
         RemoveTrack->setObjectName("RemoveTrack");
         RemoveTrack->setGeometry(QRect(960, 190, 101, 24));
-        ChoosePlaylistButton = new QPushButton(centralwidget);
-        ChoosePlaylistButton->setObjectName("ChoosePlaylistButton");
-        ChoosePlaylistButton->setGeometry(QRect(960, 110, 101, 24));
+        AddPlaylistButton = new QPushButton(centralwidget);
+        AddPlaylistButton->setObjectName("AddPlaylistButton");
+        AddPlaylistButton->setGeometry(QRect(960, 110, 101, 24));
         currentSongLabel = new QLabel(centralwidget);
         currentSongLabel->setObjectName("currentSongLabel");
         currentSongLabel->setGeometry(QRect(440, 440, 241, 41));
+        QFont font;
+        font.setBold(true);
+        currentSongLabel->setFont(font);
+        currentSongLabel->setAlignment(Qt::AlignmentFlag::AlignCenter);
         LautstaerkeRegler = new QSlider(centralwidget);
         LautstaerkeRegler->setObjectName("LautstaerkeRegler");
         LautstaerkeRegler->setGeometry(QRect(840, 520, 221, 20));
@@ -108,6 +115,9 @@ public:
         searchBar = new QLineEdit(centralwidget);
         searchBar->setObjectName("searchBar");
         searchBar->setGeometry(QRect(300, 20, 561, 24));
+        songTable = new QTableView(centralwidget);
+        songTable->setObjectName("songTable");
+        songTable->setGeometry(QRect(320, 60, 521, 361));
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName("menubar");
@@ -127,9 +137,9 @@ public:
         MainWindow->setWindowTitle(QCoreApplication::translate("MainWindow", "MainWindow", nullptr));
         Play->setText(QCoreApplication::translate("MainWindow", "Play", nullptr));
         Pause->setText(QCoreApplication::translate("MainWindow", "Pause", nullptr));
-        AddTrack->setText(QCoreApplication::translate("MainWindow", "AddTrack", nullptr));
+        AddTrackButton->setText(QCoreApplication::translate("MainWindow", "AddTrack", nullptr));
         RemoveTrack->setText(QCoreApplication::translate("MainWindow", "RemoveTrack", nullptr));
-        ChoosePlaylistButton->setText(QCoreApplication::translate("MainWindow", "ChoosePlaylist", nullptr));
+        AddPlaylistButton->setText(QCoreApplication::translate("MainWindow", "AddPlaylist", nullptr));
         currentSongLabel->setText(QString());
         previousPushButton->setText(QCoreApplication::translate("MainWindow", "previous", nullptr));
         nextPushButton->setText(QCoreApplication::translate("MainWindow", "next", nullptr));
