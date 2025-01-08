@@ -1,0 +1,56 @@
+[
+{
+  "directory": "C:/_Code/c++qt/EDAQT_24/build",
+  "command": "C:\\Qt\\Tools\\mingw1310_64\\bin\\g++.exe -DMINGW_HAS_SECURE_API=1 -DQT_CORE_LIB -DQT_GUI_LIB -DQT_MULTIMEDIA_LIB -DQT_NETWORK_LIB -DQT_SQL_LIB -DQT_WIDGETS_LIB -DUNICODE -DWIN32 -DWIN64 -D_ENABLE_EXTENDED_ALIGNED_STORAGE -D_UNICODE -D_WIN64 -IC:/_Code/c++qt/EDAQT_24/build/Musikspieler_autogen/include -isystem C:/Qt/6.8.0/mingw_64/include/QtCore -isystem C:/Qt/6.8.0/mingw_64/include -isystem C:/Qt/6.8.0/mingw_64/mkspecs/win32-g++ -isystem C:/Qt/6.8.0/mingw_64/include/QtWidgets -isystem C:/Qt/6.8.0/mingw_64/include/QtGui -isystem C:/Qt/6.8.0/mingw_64/include/QtMultimedia -isystem C:/Qt/6.8.0/mingw_64/include/QtNetwork -isystem C:/Qt/6.8.0/mingw_64/include/QtSql -g -std=gnu++17 -o CMakeFiles\\Musikspieler.dir\\Musikspieler_autogen\\mocs_compilation.cpp.obj -c C:\\_Code\\c++qt\\EDAQT_24\\build\\Musikspieler_autogen\\mocs_compilation.cpp",
+  "file": "C:\\_Code\\c++qt\\EDAQT_24\\build\\Musikspieler_autogen\\mocs_compilation.cpp",
+  "output": "CMakeFiles\\Musikspieler.dir\\Musikspieler_autogen\\mocs_compilation.cpp.obj"
+},
+{
+  "directory": "C:/_Code/c++qt/EDAQT_24/build",
+  "command": "C:\\Qt\\Tools\\mingw1310_64\\bin\\g++.exe -DMINGW_HAS_SECURE_API=1 -DQT_CORE_LIB -DQT_GUI_LIB -DQT_MULTIMEDIA_LIB -DQT_NETWORK_LIB -DQT_SQL_LIB -DQT_WIDGETS_LIB -DUNICODE -DWIN32 -DWIN64 -D_ENABLE_EXTENDED_ALIGNED_STORAGE -D_UNICODE -D_WIN64 -IC:/_Code/c++qt/EDAQT_24/build/Musikspieler_autogen/include -isystem C:/Qt/6.8.0/mingw_64/include/QtCore -isystem C:/Qt/6.8.0/mingw_64/include -isystem C:/Qt/6.8.0/mingw_64/mkspecs/win32-g++ -isystem C:/Qt/6.8.0/mingw_64/include/QtWidgets -isystem C:/Qt/6.8.0/mingw_64/include/QtGui -isystem C:/Qt/6.8.0/mingw_64/include/QtMultimedia -isystem C:/Qt/6.8.0/mingw_64/include/QtNetwork -isystem C:/Qt/6.8.0/mingw_64/include/QtSql -g -std=gnu++17 -o CMakeFiles\\Musikspieler.dir\\main.cpp.obj -c C:\\_Code\\c++qt\\EDAQT_24\\main.cpp",
+  "file": "C:\\_Code\\c++qt\\EDAQT_24\\main.cpp",
+  "output": "CMakeFiles\\Musikspieler.dir\\main.cpp.obj"
+},
+{
+  "directory": "C:/_Code/c++qt/EDAQT_24/build",
+  "command": "C:\\Qt\\Tools\\mingw1310_64\\bin\\g++.exe -DMINGW_HAS_SECURE_API=1 -DQT_CORE_LIB -DQT_GUI_LIB -DQT_MULTIMEDIA_LIB -DQT_NETWORK_LIB -DQT_SQL_LIB -DQT_WIDGETS_LIB -DUNICODE -DWIN32 -DWIN64 -D_ENABLE_EXTENDED_ALIGNED_STORAGE -D_UNICODE -D_WIN64 -IC:/_Code/c++qt/EDAQT_24/build/Musikspieler_autogen/include -isystem C:/Qt/6.8.0/mingw_64/include/QtCore -isystem C:/Qt/6.8.0/mingw_64/include -isystem C:/Qt/6.8.0/mingw_64/mkspecs/win32-g++ -isystem C:/Qt/6.8.0/mingw_64/include/QtWidgets -isystem C:/Qt/6.8.0/mingw_64/include/QtGui -isystem C:/Qt/6.8.0/mingw_64/include/QtMultimedia -isystem C:/Qt/6.8.0/mingw_64/include/QtNetwork -isystem C:/Qt/6.8.0/mingw_64/include/QtSql -g -std=gnu++17 -o CMakeFiles\\Musikspieler.dir\\mainwindow.cpp.obj -c C:\\_Code\\c++qt\\EDAQT_24\\mainwindow.cpp",
+  "file": "C:\\_Code\\c++qt\\EDAQT_24\\mainwindow.cpp",
+  "output": "CMakeFiles\\Musikspieler.dir\\mainwindow.cpp.obj"
+},
+{
+  "directory": "C:/_Code/c++qt/EDAQT_24/build",
+  "command": "C:\\Qt\\Tools\\mingw1310_64\\bin\\g++.exe -DMINGW_HAS_SECURE_API=1 -DQT_CORE_LIB -DQT_GUI_LIB -DQT_MULTIMEDIA_LIB -DQT_NETWORK_LIB -DQT_SQL_LIB -DQT_WIDGETS_LIB -DUNICODE -DWIN32 -DWIN64 -D_ENABLE_EXTENDED_ALIGNED_STORAGE -D_UNICODE -D_WIN64 -IC:/_Code/c++qt/EDAQT_24/build/Musikspieler_autogen/include -isystem C:/Qt/6.8.0/mingw_64/include/QtCore -isystem C:/Qt/6.8.0/mingw_64/include -isystem C:/Qt/6.8.0/mingw_64/mkspecs/win32-g++ -isystem C:/Qt/6.8.0/mingw_64/include/QtWidgets -isystem C:/Qt/6.8.0/mingw_64/include/QtGui -isystem C:/Qt/6.8.0/mingw_64/include/QtMultimedia -isystem C:/Qt/6.8.0/mingw_64/include/QtNetwork -isystem C:/Qt/6.8.0/mingw_64/include/QtSql -g -std=gnu++17 -o CMakeFiles\\Musikspieler.dir\\mediacontroller.cpp.obj -c C:\\_Code\\c++qt\\EDAQT_24\\mediacontroller.cpp",
+  "file": "C:\\_Code\\c++qt\\EDAQT_24\\mediacontroller.cpp",
+  "output": "CMakeFiles\\Musikspieler.dir\\mediacontroller.cpp.obj"
+},
+{
+  "directory": "C:/_Code/c++qt/EDAQT_24/build",
+  "command": "C:\\Qt\\Tools\\mingw1310_64\\bin\\g++.exe -DMINGW_HAS_SECURE_API=1 -DQT_CORE_LIB -DQT_GUI_LIB -DQT_MULTIMEDIA_LIB -DQT_NETWORK_LIB -DQT_SQL_LIB -DQT_WIDGETS_LIB -DUNICODE -DWIN32 -DWIN64 -D_ENABLE_EXTENDED_ALIGNED_STORAGE -D_UNICODE -D_WIN64 -IC:/_Code/c++qt/EDAQT_24/build/Musikspieler_autogen/include -isystem C:/Qt/6.8.0/mingw_64/include/QtCore -isystem C:/Qt/6.8.0/mingw_64/include -isystem C:/Qt/6.8.0/mingw_64/mkspecs/win32-g++ -isystem C:/Qt/6.8.0/mingw_64/include/QtWidgets -isystem C:/Qt/6.8.0/mingw_64/include/QtGui -isystem C:/Qt/6.8.0/mingw_64/include/QtMultimedia -isystem C:/Qt/6.8.0/mingw_64/include/QtNetwork -isystem C:/Qt/6.8.0/mingw_64/include/QtSql -g -std=gnu++17 -o CMakeFiles\\Musikspieler.dir\\database.cpp.obj -c C:\\_Code\\c++qt\\EDAQT_24\\database.cpp",
+  "file": "C:\\_Code\\c++qt\\EDAQT_24\\database.cpp",
+  "output": "CMakeFiles\\Musikspieler.dir\\database.cpp.obj"
+},
+{
+  "directory": "C:/_Code/c++qt/EDAQT_24/build",
+  "command": "C:\\Qt\\Tools\\mingw1310_64\\bin\\g++.exe -DMINGW_HAS_SECURE_API=1 -DQT_CORE_LIB -DQT_GUI_LIB -DQT_MULTIMEDIA_LIB -DQT_NETWORK_LIB -DQT_SQL_LIB -DQT_WIDGETS_LIB -DUNICODE -DWIN32 -DWIN64 -D_ENABLE_EXTENDED_ALIGNED_STORAGE -D_UNICODE -D_WIN64 -IC:/_Code/c++qt/EDAQT_24/build/Musikspieler_autogen/include -isystem C:/Qt/6.8.0/mingw_64/include/QtCore -isystem C:/Qt/6.8.0/mingw_64/include -isystem C:/Qt/6.8.0/mingw_64/mkspecs/win32-g++ -isystem C:/Qt/6.8.0/mingw_64/include/QtWidgets -isystem C:/Qt/6.8.0/mingw_64/include/QtGui -isystem C:/Qt/6.8.0/mingw_64/include/QtMultimedia -isystem C:/Qt/6.8.0/mingw_64/include/QtNetwork -isystem C:/Qt/6.8.0/mingw_64/include/QtSql -g -std=gnu++17 -o CMakeFiles\\Musikspieler.dir\\playlist.cpp.obj -c C:\\_Code\\c++qt\\EDAQT_24\\playlist.cpp",
+  "file": "C:\\_Code\\c++qt\\EDAQT_24\\playlist.cpp",
+  "output": "CMakeFiles\\Musikspieler.dir\\playlist.cpp.obj"
+},
+{
+  "directory": "C:/_Code/c++qt/EDAQT_24/build",
+  "command": "C:\\Qt\\Tools\\mingw1310_64\\bin\\g++.exe -DMINGW_HAS_SECURE_API=1 -DQT_CORE_LIB -DQT_GUI_LIB -DQT_MULTIMEDIA_LIB -DQT_NETWORK_LIB -DQT_SQL_LIB -DQT_WIDGETS_LIB -DUNICODE -DWIN32 -DWIN64 -D_ENABLE_EXTENDED_ALIGNED_STORAGE -D_UNICODE -D_WIN64 -IC:/_Code/c++qt/EDAQT_24/build/Musikspieler_autogen/include -isystem C:/Qt/6.8.0/mingw_64/include/QtCore -isystem C:/Qt/6.8.0/mingw_64/include -isystem C:/Qt/6.8.0/mingw_64/mkspecs/win32-g++ -isystem C:/Qt/6.8.0/mingw_64/include/QtWidgets -isystem C:/Qt/6.8.0/mingw_64/include/QtGui -isystem C:/Qt/6.8.0/mingw_64/include/QtMultimedia -isystem C:/Qt/6.8.0/mingw_64/include/QtNetwork -isystem C:/Qt/6.8.0/mingw_64/include/QtSql -g -std=gnu++17 -o CMakeFiles\\Musikspieler.dir\\installerdialog.cpp.obj -c C:\\_Code\\c++qt\\EDAQT_24\\installerdialog.cpp",
+  "file": "C:\\_Code\\c++qt\\EDAQT_24\\installerdialog.cpp",
+  "output": "CMakeFiles\\Musikspieler.dir\\installerdialog.cpp.obj"
+},
+{
+  "directory": "C:/_Code/c++qt/EDAQT_24/build",
+  "command": "C:\\Qt\\Tools\\mingw1310_64\\bin\\g++.exe -DMINGW_HAS_SECURE_API=1 -DQT_CORE_LIB -DQT_GUI_LIB -DQT_MULTIMEDIA_LIB -DQT_NETWORK_LIB -DQT_SQL_LIB -DQT_WIDGETS_LIB -DUNICODE -DWIN32 -DWIN64 -D_ENABLE_EXTENDED_ALIGNED_STORAGE -D_UNICODE -D_WIN64 -IC:/_Code/c++qt/EDAQT_24/build/Musikspieler_autogen/include -isystem C:/Qt/6.8.0/mingw_64/include/QtCore -isystem C:/Qt/6.8.0/mingw_64/include -isystem C:/Qt/6.8.0/mingw_64/mkspecs/win32-g++ -isystem C:/Qt/6.8.0/mingw_64/include/QtWidgets -isystem C:/Qt/6.8.0/mingw_64/include/QtGui -isystem C:/Qt/6.8.0/mingw_64/include/QtMultimedia -isystem C:/Qt/6.8.0/mingw_64/include/QtNetwork -isystem C:/Qt/6.8.0/mingw_64/include/QtSql -g -std=gnu++17 -o CMakeFiles\\Musikspieler.dir\\track.cpp.obj -c C:\\_Code\\c++qt\\EDAQT_24\\track.cpp",
+  "file": "C:\\_Code\\c++qt\\EDAQT_24\\track.cpp",
+  "output": "CMakeFiles\\Musikspieler.dir\\track.cpp.obj"
+},
+{
+  "directory": "C:/_Code/c++qt/EDAQT_24/build",
+  "command": "C:\\Qt\\Tools\\mingw1310_64\\bin\\g++.exe -DMINGW_HAS_SECURE_API=1 -DQT_CORE_LIB -DQT_GUI_LIB -DQT_MULTIMEDIA_LIB -DQT_NETWORK_LIB -DQT_SQL_LIB -DQT_WIDGETS_LIB -DUNICODE -DWIN32 -DWIN64 -D_ENABLE_EXTENDED_ALIGNED_STORAGE -D_UNICODE -D_WIN64 -IC:/_Code/c++qt/EDAQT_24/build/Musikspieler_autogen/include -isystem C:/Qt/6.8.0/mingw_64/include/QtCore -isystem C:/Qt/6.8.0/mingw_64/include -isystem C:/Qt/6.8.0/mingw_64/mkspecs/win32-g++ -isystem C:/Qt/6.8.0/mingw_64/include/QtWidgets -isystem C:/Qt/6.8.0/mingw_64/include/QtGui -isystem C:/Qt/6.8.0/mingw_64/include/QtMultimedia -isystem C:/Qt/6.8.0/mingw_64/include/QtNetwork -isystem C:/Qt/6.8.0/mingw_64/include/QtSql -g -std=gnu++17 -o CMakeFiles\\Musikspieler.dir\\selecttrackdialog.cpp.obj -c C:\\_Code\\c++qt\\EDAQT_24\\selecttrackdialog.cpp",
+  "file": "C:\\_Code\\c++qt\\EDAQT_24\\selecttrackdialog.cpp",
+  "output": "CMakeFiles\\Musikspieler.dir\\selecttrackdialog.cpp.obj"
+}
+]

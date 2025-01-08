@@ -20,7 +20,7 @@ public:
     bool createTablePathlist();
     bool createTablePlaylists();
     bool createTablePlaylistTracks();
-    bool insertData(const QString &filePath, const QString &interpret, const QString &album, const QString &titel, int spielzeit, int sampleRate, int sampleCount);
+    bool insertData(const QString &filePath, const QString &interpret, const QString &album, const QString &titel, int spielzeit, int sampleRate);
     bool insertPath(const QString &path);
     bool insertPlaylist(const QString &playlistName);
     bool insertPlaylistTrack(int playlistID, int trackID);

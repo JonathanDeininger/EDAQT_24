@@ -57,8 +57,7 @@ bool DataBase::createTableMediathek() {
                                  "Titel TEXT, "
                                  "Album TEXT, "
                                  "Spielzeit INT, "
-                                 "SampleRate INT, "
-                                 "SampleCount INT)");
+                                 "SampleRate INT)");
     query.exec();
     return success;
 }
@@ -112,15 +111,15 @@ bool DataBase::createTablePlaylistTracks() {
     return success;
 }
 
-bool DataBase::insertData(const QString &filePath, const QString &interpret, const QString &album, const QString &titel, int spielzeit, int sampleRate, int sampleCount) {
+bool DataBase::insertData(const QString &filePath, const QString &interpret, const QString &album, const QString &titel, int spielzeit, int sampleRate) {
     if (!open()) {
         return false;
     }
     QSqlQuery query(db); // Use the correct database connection
 
     // SQL-Befehl zum Einfügen von Daten
-    query.prepare("INSERT INTO Mediathek (FilePath, Interpret, Album, Titel, Spielzeit, SampleRate, SampleCount) "
-                  "VALUES (:filePath, :interpret, :album, :titel, :spielzeit, :sampleRate, :sampleCount)");
+    query.prepare("INSERT INTO Mediathek (FilePath, Interpret, Album, Titel, Spielzeit, SampleRate) "
+                  "VALUES (:filePath, :interpret, :album, :titel, :spielzeit, :sampleRate)");
 
     // Bindung der Werte
     query.bindValue(":filePath", filePath);
@@ -129,7 +128,6 @@ bool DataBase::insertData(const QString &filePath, const QString &interpret, con
     query.bindValue(":titel", titel);
     query.bindValue(":spielzeit", spielzeit);
     query.bindValue(":sampleRate", sampleRate);
-    query.bindValue(":sampleCount", sampleCount);
     // Ausführen der Abfrage und Überprüfen auf Fehler
     if (!query.exec()) {
         return false;
@@ -230,7 +228,7 @@ Playlist DataBase::getPlaylist(const QString &playlistName) {
     // Clear the playlist before adding tracks
     playlist.setTracks(std::vector<Track>());
 
-    query.prepare("SELECT Mediathek.TrackID, Mediathek.FilePath, Mediathek.Interpret, Mediathek.Titel, Mediathek.Album, Mediathek.Spielzeit, Mediathek.SampleRate, Mediathek.SampleCount "
+    query.prepare("SELECT Mediathek.TrackID, Mediathek.FilePath, Mediathek.Interpret, Mediathek.Titel, Mediathek.Album, Mediathek.Spielzeit, Mediathek.SampleRate "
                   "FROM PlaylistTracks "
                   "JOIN Mediathek ON PlaylistTracks.TrackID = Mediathek.TrackID "
                   "WHERE PlaylistTracks.PlaylistID = :playlistID");
@@ -245,7 +243,6 @@ Playlist DataBase::getPlaylist(const QString &playlistName) {
             track.setAlbum(query.value("Album").toString());
             track.setDuration(query.value("Spielzeit").toInt());
             track.setSampleRate(query.value("SampleRate").toInt());
-            track.setSampleCount(query.value("SampleCount").toInt());
             playlist.addTrack(track);
         }
     }
@@ -333,7 +330,7 @@ bool DataBase::createAllSongsPlaylist() {
 
 Track DataBase::getTrack(const QString &filePath) {
     QSqlQuery query(db);
-    query.prepare("SELECT TrackID, FilePath, Interpret, Titel, Album, Spielzeit, SampleRate, SampleCount FROM Mediathek WHERE FilePath = :filePath");
+    query.prepare("SELECT TrackID, FilePath, Interpret, Titel, Album, Spielzeit, SampleRate FROM Mediathek WHERE FilePath = :filePath");
     query.bindValue(":filePath", filePath);
     if (query.exec() && query.next()) {
         Track track;
@@ -344,7 +341,6 @@ Track DataBase::getTrack(const QString &filePath) {
         track.setAlbum(query.value("Album").toString());
         track.setDuration(query.value("Spielzeit").toInt());
         track.setSampleRate(query.value("SampleRate").toInt());
-        track.setSampleCount(query.value("SampleCount").toInt());
         return track;
     }
     return Track(); // Return an empty Track object if not found

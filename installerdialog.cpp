@@ -57,7 +57,7 @@ void processFiles(DataBase &dataBase, const QString &basePath, const QStringList
     foreach (const QString &fileName, fileList) {
         Track track(QDir(basePath).absoluteFilePath(fileName));
         // Daten in die Datenbank einfügen
-        if (!dataBase.insertData(track.getFilePath(), track.getArtist(), track.getAlbum(), track.getTitle(), track.getDuration(), track.getSampleRate(), track.getSampleCount())) {
+        if (!dataBase.insertData(track.getFilePath(), track.getArtist(), track.getAlbum(), track.getTitle(), track.getDuration(), track.getSampleRate())) {
             // Handle data insertion failure
         }
     }

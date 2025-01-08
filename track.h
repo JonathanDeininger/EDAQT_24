@@ -21,7 +21,6 @@ public:
     void setTitle(const QString &title);
     void setDuration(int duration);
     void setSampleRate(int sampleRate);
-    void setSampleCount(int sampleCount);
     void setTrackID(int trackID);
     QString getSongDurationAsString() const;
 
@@ -32,7 +31,6 @@ private:
     QString title;
     int duration;
     int sampleRate;
-    int sampleCount;
     int trackID;
 };
 

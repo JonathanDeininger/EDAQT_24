@@ -5,9 +5,9 @@
 #include <QFileInfo>
 #include <QDir>
 
-Track::Track() : duration(0), sampleRate(0), sampleCount(0), trackID(-1) {}
+Track::Track() : duration(0), sampleRate(0), trackID(-1) {}
 
-Track::Track(const QString &filePath) : filePath(filePath), duration(0), sampleRate(0), sampleCount(0), trackID(-1) {
+Track::Track(const QString &filePath) : filePath(filePath), duration(0), sampleRate(0), trackID(-1) {
     if (QFileInfo(filePath).isRelative()) {
         this->filePath = QDir::current().absoluteFilePath(filePath);
     } else {
@@ -32,7 +32,6 @@ Track::Track(const QString &filePath) : filePath(filePath), duration(0), sampleR
     if (sampleRate == 0) {
         sampleRate = 44100; // Default sample rate if not available
     }
-    sampleCount = sampleRate * duration;
 
     if (!player.metaData().isEmpty()) {
         artist = player.metaData().value(QMediaMetaData::AlbumArtist).toString();
@@ -41,7 +40,10 @@ Track::Track(const QString &filePath) : filePath(filePath), duration(0), sampleR
     } else {
         artist = "unbekannt";
         title = QFileInfo(this->filePath).fileName();
+        album = "unbekannt";
+
     }
+
 }
 
 QString Track::getFilePath() const {
@@ -66,10 +68,6 @@ int Track::getDuration() const {
 
 int Track::getSampleRate() const {
     return sampleRate;
-}
-
-int Track::getSampleCount() const {
-    return sampleCount;
 }
 
 int Track::getTrackID() const {
@@ -100,9 +98,7 @@ void Track::setSampleRate(int sampleRate) {
     this->sampleRate = sampleRate;
 }
 
-void Track::setSampleCount(int sampleCount) {
-    this->sampleCount = sampleCount;
-}
+
 
 void Track::setTrackID(int trackID) {
     this->trackID = trackID;

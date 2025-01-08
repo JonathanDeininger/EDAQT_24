@@ -96,6 +96,8 @@ void MainWindow::setupSongTable(){
 }
 
 
+//kann das weg??
+
 void MainWindow::onPlaylistItemClicked(QListWidgetItem *item) {
     // ui->currentSongLabel->setText(item->text());
     // int index = ui->Playlist->row(item);
@@ -183,9 +185,6 @@ void MainWindow::updateProgressBar(qint64 currentSongPosition) {
     }
 
     Track currentTrack = mediaController->getCurrentTrack();
-    // qDebug() << "SampleCount von aktuellen Track: " << currentTrack.getSampleCount();
-    // qDebug() << "Position changed saertzh:" << currentSongPosition;
-
     // Aktualisiert den Slider nur, wenn der Benutzer nicht mit ihm interagiert
     ui->Fortschrittslider->setValue(currentSongPosition);
 }
@@ -201,15 +200,12 @@ void MainWindow::onSliderReleased() {
 
     // Aktualisiert die Position des Songs basierend auf dem Sliderwert
     qint64 currentPosition = static_cast<qint64>(ui->Fortschrittslider->value());
-    qDebug() <<"neuer Wert des Sliders: "<< currentPosition;
     mediaController->setCurrentSongPosition(currentPosition);
     ui->Fortschrittslider->setValue(currentPosition);
 }
 
 void MainWindow::setProgressBarAndSongDurationLabel() {
     Track currentTrack = mediaController->getCurrentTrack();
-    qDebug() << "FilePath von aktuellen Track: " << currentTrack.getFilePath();
-    qDebug() << "Duration von aktuellen Track: " << currentTrack.getDuration();
     ui->Fortschrittslider->setRange(0, currentTrack.getDuration());
     setCurrentSongDuration(currentTrack);
 }
@@ -321,7 +317,6 @@ void MainWindow::loadPlaylist(const QString &playlistName) {
         QListWidgetItem *item = new QListWidgetItem(track.getTitle(), ui->Playlist);
         item->setData(Qt::UserRole, track.getFilePath());
     }
-    qDebug() << "Playlist:" << playList.getName();
     db.close();
 }
 
@@ -344,7 +339,6 @@ void MainWindow::loadPlaylistInTable(const QString &playlistName) {
         QStandardItem *titleItem = new QStandardItem(track.getTitle());
         QStandardItem *artistItem = new QStandardItem(track.getArtist());
         QStandardItem *durationItem = new QStandardItem(track.getSongDurationAsString());
-        qDebug() << "Duration: " << track.getDuration();
         // Index zentrieren
         indexItem->setTextAlignment(Qt::AlignCenter);
         durationItem->setTextAlignment(Qt::AlignCenter);
