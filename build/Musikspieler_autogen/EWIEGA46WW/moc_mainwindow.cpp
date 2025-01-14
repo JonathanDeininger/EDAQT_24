@@ -99,15 +99,15 @@ Q_CONSTINIT static const uint qt_meta_data_CLASSMainWindowENDCLASS[] = {
       17,    0,  157,    2, 0x08,   14 /* Private */,
       18,    0,  158,    2, 0x08,   15 /* Private */,
       19,    1,  159,    2, 0x08,   16 /* Private */,
-      22,    1,  162,    2, 0x08,   18 /* Private */,
-      23,    0,  165,    2, 0x08,   20 /* Private */,
-      24,    0,  166,    2, 0x08,   21 /* Private */,
-      25,    1,  167,    2, 0x08,   22 /* Private */,
-      27,    0,  170,    2, 0x08,   24 /* Private */,
-      28,    0,  171,    2, 0x08,   25 /* Private */,
-      29,    1,  172,    2, 0x08,   26 /* Private */,
-      30,    0,  175,    2, 0x08,   28 /* Private */,
-      31,    0,  176,    2, 0x08,   29 /* Private */,
+      22,    0,  162,    2, 0x08,   18 /* Private */,
+      23,    0,  163,    2, 0x08,   19 /* Private */,
+      24,    0,  164,    2, 0x08,   20 /* Private */,
+      25,    1,  165,    2, 0x08,   21 /* Private */,
+      27,    0,  168,    2, 0x08,   23 /* Private */,
+      28,    0,  169,    2, 0x08,   24 /* Private */,
+      29,    1,  170,    2, 0x08,   25 /* Private */,
+      30,    0,  173,    2, 0x08,   27 /* Private */,
+      31,    0,  174,    2, 0x08,   28 /* Private */,
 
  // slots: parameters
     QMetaType::Void, 0x80000000 | 3,    4,
@@ -122,7 +122,7 @@ Q_CONSTINIT static const uint qt_meta_data_CLASSMainWindowENDCLASS[] = {
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void, 0x80000000 | 20,   21,
-    QMetaType::Void, QMetaType::Int,    7,
+    QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void, QMetaType::QString,   26,
@@ -175,7 +175,6 @@ Q_CONSTINIT const QMetaObject MainWindow::staticMetaObject = { {
         QtPrivate::TypeAndForceComplete<Track, std::false_type>,
         // method 'updateCurrentTrackInfo'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
-        QtPrivate::TypeAndForceComplete<int, std::false_type>,
         // method 'onRandomButtonPressed'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         // method 'onRepeatButtonPressed'
@@ -216,7 +215,7 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 9: _t->onSliderReleased(); break;
         case 10: _t->setProgressBarAndSongDurationLabel(); break;
         case 11: _t->setCurrentSongDuration((*reinterpret_cast< std::add_pointer_t<Track>>(_a[1]))); break;
-        case 12: _t->updateCurrentTrackInfo((*reinterpret_cast< std::add_pointer_t<int>>(_a[1]))); break;
+        case 12: _t->updateCurrentTrackInfo(); break;
         case 13: _t->onRandomButtonPressed(); break;
         case 14: _t->onRepeatButtonPressed(); break;
         case 15: _t->onSearchTextChanged((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1]))); break;
