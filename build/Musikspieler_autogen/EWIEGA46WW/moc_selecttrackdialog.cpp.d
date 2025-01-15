@@ -119,12 +119,14 @@ C:/_Code/c++qt/EDAQT_24/build/Musikspieler_autogen/EWIEGA46WW/moc_selecttrackdia
   C:/Qt/6.8.0/mingw_64/include/QtCore/qtversionchecks.h \
   C:/Qt/6.8.0/mingw_64/include/QtCore/qtypeinfo.h \
   C:/Qt/6.8.0/mingw_64/include/QtCore/qtypes.h \
+  C:/Qt/6.8.0/mingw_64/include/QtCore/qurl.h \
   C:/Qt/6.8.0/mingw_64/include/QtCore/qutf8stringview.h \
   C:/Qt/6.8.0/mingw_64/include/QtCore/qvariant.h \
   C:/Qt/6.8.0/mingw_64/include/QtCore/qvarlengtharray.h \
   C:/Qt/6.8.0/mingw_64/include/QtCore/qversiontagging.h \
   C:/Qt/6.8.0/mingw_64/include/QtCore/qxptype_traits.h \
   C:/Qt/6.8.0/mingw_64/include/QtCore/qyieldcpu.h \
+  C:/Qt/6.8.0/mingw_64/include/QtGui/QStandardItemModel \
   C:/Qt/6.8.0/mingw_64/include/QtGui/qaction.h \
   C:/Qt/6.8.0/mingw_64/include/QtGui/qbitmap.h \
   C:/Qt/6.8.0/mingw_64/include/QtGui/qbrush.h \
@@ -138,12 +140,18 @@ C:/_Code/c++qt/EDAQT_24/build/Musikspieler_autogen/EWIEGA46WW/moc_selecttrackdia
   C:/Qt/6.8.0/mingw_64/include/QtGui/qkeysequence.h \
   C:/Qt/6.8.0/mingw_64/include/QtGui/qpaintdevice.h \
   C:/Qt/6.8.0/mingw_64/include/QtGui/qpalette.h \
+  C:/Qt/6.8.0/mingw_64/include/QtGui/qpen.h \
   C:/Qt/6.8.0/mingw_64/include/QtGui/qpixelformat.h \
   C:/Qt/6.8.0/mingw_64/include/QtGui/qpixmap.h \
   C:/Qt/6.8.0/mingw_64/include/QtGui/qpolygon.h \
   C:/Qt/6.8.0/mingw_64/include/QtGui/qregion.h \
   C:/Qt/6.8.0/mingw_64/include/QtGui/qrgb.h \
   C:/Qt/6.8.0/mingw_64/include/QtGui/qrgba64.h \
+  C:/Qt/6.8.0/mingw_64/include/QtGui/qstandarditemmodel.h \
+  C:/Qt/6.8.0/mingw_64/include/QtGui/qtextcursor.h \
+  C:/Qt/6.8.0/mingw_64/include/QtGui/qtextdocument.h \
+  C:/Qt/6.8.0/mingw_64/include/QtGui/qtextformat.h \
+  C:/Qt/6.8.0/mingw_64/include/QtGui/qtextoption.h \
   C:/Qt/6.8.0/mingw_64/include/QtGui/qtgui-config.h \
   C:/Qt/6.8.0/mingw_64/include/QtGui/qtguiexports.h \
   C:/Qt/6.8.0/mingw_64/include/QtGui/qtguiglobal.h \
@@ -152,8 +160,9 @@ C:/_Code/c++qt/EDAQT_24/build/Musikspieler_autogen/EWIEGA46WW/moc_selecttrackdia
   C:/Qt/6.8.0/mingw_64/include/QtGui/qwindowdefs.h \
   C:/Qt/6.8.0/mingw_64/include/QtGui/qwindowdefs_win.h \
   C:/Qt/6.8.0/mingw_64/include/QtWidgets/QDialog \
-  C:/Qt/6.8.0/mingw_64/include/QtWidgets/QListWidget \
+  C:/Qt/6.8.0/mingw_64/include/QtWidgets/QLineEdit \
   C:/Qt/6.8.0/mingw_64/include/QtWidgets/QPushButton \
+  C:/Qt/6.8.0/mingw_64/include/QtWidgets/QTableView \
   C:/Qt/6.8.0/mingw_64/include/QtWidgets/QVBoxLayout \
   C:/Qt/6.8.0/mingw_64/include/QtWidgets/qabstractbutton.h \
   C:/Qt/6.8.0/mingw_64/include/QtWidgets/qabstractitemdelegate.h \
@@ -167,8 +176,7 @@ C:/_Code/c++qt/EDAQT_24/build/Musikspieler_autogen/EWIEGA46WW/moc_selecttrackdia
   C:/Qt/6.8.0/mingw_64/include/QtWidgets/qgridlayout.h \
   C:/Qt/6.8.0/mingw_64/include/QtWidgets/qlayout.h \
   C:/Qt/6.8.0/mingw_64/include/QtWidgets/qlayoutitem.h \
-  C:/Qt/6.8.0/mingw_64/include/QtWidgets/qlistview.h \
-  C:/Qt/6.8.0/mingw_64/include/QtWidgets/qlistwidget.h \
+  C:/Qt/6.8.0/mingw_64/include/QtWidgets/qlineedit.h \
   C:/Qt/6.8.0/mingw_64/include/QtWidgets/qpushbutton.h \
   C:/Qt/6.8.0/mingw_64/include/QtWidgets/qrubberband.h \
   C:/Qt/6.8.0/mingw_64/include/QtWidgets/qsizepolicy.h \
@@ -176,6 +184,7 @@ C:/_Code/c++qt/EDAQT_24/build/Musikspieler_autogen/EWIEGA46WW/moc_selecttrackdia
   C:/Qt/6.8.0/mingw_64/include/QtWidgets/qstyle.h \
   C:/Qt/6.8.0/mingw_64/include/QtWidgets/qstyleoption.h \
   C:/Qt/6.8.0/mingw_64/include/QtWidgets/qtabbar.h \
+  C:/Qt/6.8.0/mingw_64/include/QtWidgets/qtableview.h \
   C:/Qt/6.8.0/mingw_64/include/QtWidgets/qtabwidget.h \
   C:/Qt/6.8.0/mingw_64/include/QtWidgets/qtwidgets-config.h \
   C:/Qt/6.8.0/mingw_64/include/QtWidgets/qtwidgetsexports.h \

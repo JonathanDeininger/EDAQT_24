@@ -141,16 +141,16 @@ public:
         MainWindow->setWindowTitle(QCoreApplication::translate("MainWindow", "MainWindow", nullptr));
         Play->setText(QCoreApplication::translate("MainWindow", "Play", nullptr));
         Pause->setText(QCoreApplication::translate("MainWindow", "Pause", nullptr));
-        AddTrackButton->setText(QCoreApplication::translate("MainWindow", "AddTrack", nullptr));
-        RemoveTrack->setText(QCoreApplication::translate("MainWindow", "RemoveTrack", nullptr));
-        AddPlaylistButton->setText(QCoreApplication::translate("MainWindow", "AddPlaylist", nullptr));
+        AddTrackButton->setText(QCoreApplication::translate("MainWindow", "Add Track", nullptr));
+        RemoveTrack->setText(QCoreApplication::translate("MainWindow", "Remove Track", nullptr));
+        AddPlaylistButton->setText(QCoreApplication::translate("MainWindow", "Add Playlist", nullptr));
         currentSongLabel->setText(QString());
         previousPushButton->setText(QCoreApplication::translate("MainWindow", "previous", nullptr));
         nextPushButton->setText(QCoreApplication::translate("MainWindow", "next", nullptr));
         currentSongDurationLabel->setText(QString());
         Random->setText(QString());
         Repeat->setText(QString());
-        RemovePlaylist->setText(QCoreApplication::translate("MainWindow", "RemoveTrack", nullptr));
+        RemovePlaylist->setText(QCoreApplication::translate("MainWindow", "Remove Playlist", nullptr));
     } // retranslateUi
 
 };
