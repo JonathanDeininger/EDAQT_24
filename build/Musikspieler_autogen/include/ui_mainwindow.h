@@ -47,6 +47,7 @@ public:
     QPushButton *Repeat;
     QLineEdit *searchBar;
     QTableView *songTable;
+    QPushButton *RemovePlaylist;
     QMenuBar *menubar;
     QStatusBar *statusbar;
 
@@ -118,10 +119,13 @@ public:
         songTable = new QTableView(centralwidget);
         songTable->setObjectName("songTable");
         songTable->setGeometry(QRect(320, 60, 521, 361));
+        RemovePlaylist = new QPushButton(centralwidget);
+        RemovePlaylist->setObjectName("RemovePlaylist");
+        RemovePlaylist->setGeometry(QRect(960, 230, 101, 24));
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName("menubar");
-        menubar->setGeometry(QRect(0, 0, 1144, 21));
+        menubar->setGeometry(QRect(0, 0, 1144, 33));
         MainWindow->setMenuBar(menubar);
         statusbar = new QStatusBar(MainWindow);
         statusbar->setObjectName("statusbar");
@@ -146,6 +150,7 @@ public:
         currentSongDurationLabel->setText(QString());
         Random->setText(QString());
         Repeat->setText(QString());
+        RemovePlaylist->setText(QCoreApplication::translate("MainWindow", "RemoveTrack", nullptr));
     } // retranslateUi
 
 };

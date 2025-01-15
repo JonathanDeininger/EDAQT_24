@@ -64,6 +64,7 @@ constexpr auto qt_meta_stringdata_CLASSMainWindowENDCLASS = QtMocHelpers::string
     "text",
     "onAddPlaylistButtonClicked",
     "onAddTrackButtonClicked",
+    "onRemovePlaylistButtonClicked",
     "onPlaylistSammlungItemClicked",
     "loadPlaylistsFromDatabase",
     "updateCurrentTrackDisplay"
@@ -79,7 +80,7 @@ Q_CONSTINIT static const uint qt_meta_data_CLASSMainWindowENDCLASS[] = {
       12,       // revision
        0,       // classname
        0,    0, // classinfo
-      21,   14, // methods
+      22,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -87,27 +88,28 @@ Q_CONSTINIT static const uint qt_meta_data_CLASSMainWindowENDCLASS[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags, initial metatype offsets
-       1,    1,  140,    2, 0x08,    1 /* Private */,
-       5,    1,  143,    2, 0x08,    3 /* Private */,
-       8,    0,  146,    2, 0x08,    5 /* Private */,
-       9,    1,  147,    2, 0x08,    6 /* Private */,
-      11,    0,  150,    2, 0x08,    8 /* Private */,
-      12,    0,  151,    2, 0x08,    9 /* Private */,
-      13,    0,  152,    2, 0x08,   10 /* Private */,
-      14,    0,  153,    2, 0x08,   11 /* Private */,
-      15,    1,  154,    2, 0x08,   12 /* Private */,
-      17,    0,  157,    2, 0x08,   14 /* Private */,
-      18,    0,  158,    2, 0x08,   15 /* Private */,
-      19,    1,  159,    2, 0x08,   16 /* Private */,
-      22,    0,  162,    2, 0x08,   18 /* Private */,
-      23,    0,  163,    2, 0x08,   19 /* Private */,
-      24,    0,  164,    2, 0x08,   20 /* Private */,
-      25,    1,  165,    2, 0x08,   21 /* Private */,
-      27,    0,  168,    2, 0x08,   23 /* Private */,
-      28,    0,  169,    2, 0x08,   24 /* Private */,
-      29,    1,  170,    2, 0x08,   25 /* Private */,
-      30,    0,  173,    2, 0x08,   27 /* Private */,
-      31,    0,  174,    2, 0x08,   28 /* Private */,
+       1,    1,  146,    2, 0x08,    1 /* Private */,
+       5,    1,  149,    2, 0x08,    3 /* Private */,
+       8,    0,  152,    2, 0x08,    5 /* Private */,
+       9,    1,  153,    2, 0x08,    6 /* Private */,
+      11,    0,  156,    2, 0x08,    8 /* Private */,
+      12,    0,  157,    2, 0x08,    9 /* Private */,
+      13,    0,  158,    2, 0x08,   10 /* Private */,
+      14,    0,  159,    2, 0x08,   11 /* Private */,
+      15,    1,  160,    2, 0x08,   12 /* Private */,
+      17,    0,  163,    2, 0x08,   14 /* Private */,
+      18,    0,  164,    2, 0x08,   15 /* Private */,
+      19,    1,  165,    2, 0x08,   16 /* Private */,
+      22,    0,  168,    2, 0x08,   18 /* Private */,
+      23,    0,  169,    2, 0x08,   19 /* Private */,
+      24,    0,  170,    2, 0x08,   20 /* Private */,
+      25,    1,  171,    2, 0x08,   21 /* Private */,
+      27,    0,  174,    2, 0x08,   23 /* Private */,
+      28,    0,  175,    2, 0x08,   24 /* Private */,
+      29,    0,  176,    2, 0x08,   25 /* Private */,
+      30,    1,  177,    2, 0x08,   26 /* Private */,
+      31,    0,  180,    2, 0x08,   28 /* Private */,
+      32,    0,  181,    2, 0x08,   29 /* Private */,
 
  // slots: parameters
     QMetaType::Void, 0x80000000 | 3,    4,
@@ -126,6 +128,7 @@ Q_CONSTINIT static const uint qt_meta_data_CLASSMainWindowENDCLASS[] = {
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void, QMetaType::QString,   26,
+    QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void, 0x80000000 | 3,    4,
@@ -186,6 +189,8 @@ Q_CONSTINIT const QMetaObject MainWindow::staticMetaObject = { {
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         // method 'onAddTrackButtonClicked'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        // method 'onRemovePlaylistButtonClicked'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
         // method 'onPlaylistSammlungItemClicked'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         QtPrivate::TypeAndForceComplete<QListWidgetItem *, std::false_type>,
@@ -221,9 +226,10 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 15: _t->onSearchTextChanged((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1]))); break;
         case 16: _t->onAddPlaylistButtonClicked(); break;
         case 17: _t->onAddTrackButtonClicked(); break;
-        case 18: _t->onPlaylistSammlungItemClicked((*reinterpret_cast< std::add_pointer_t<QListWidgetItem*>>(_a[1]))); break;
-        case 19: _t->loadPlaylistsFromDatabase(); break;
-        case 20: _t->updateCurrentTrackDisplay(); break;
+        case 18: _t->onRemovePlaylistButtonClicked(); break;
+        case 19: _t->onPlaylistSammlungItemClicked((*reinterpret_cast< std::add_pointer_t<QListWidgetItem*>>(_a[1]))); break;
+        case 20: _t->loadPlaylistsFromDatabase(); break;
+        case 21: _t->updateCurrentTrackDisplay(); break;
         default: ;
         }
     }
@@ -248,13 +254,13 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 21)
+        if (_id < 22)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 21;
+        _id -= 22;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 21)
+        if (_id < 22)
             *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
-        _id -= 21;
+        _id -= 22;
     }
     return _id;
 }
