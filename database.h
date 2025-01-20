@@ -35,6 +35,7 @@ public:
     int getPlaylistID(const QString &playlistName); // Add this method declaration
     // int getTrackID(const QString &filePath); // Add this method declaration
     Track getTrack(const QString &filePath); // Add this method declaration
+    void checkFiles(); // Add this method declaration
 
 private:
     QSqlDatabase db;

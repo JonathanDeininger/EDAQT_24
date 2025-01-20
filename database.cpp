@@ -1,6 +1,10 @@
 #include "DataBase.h"
 #include <QDir>
 #include "playlist.h"
+#include <QFile>
+#include <QSqlQuery>
+#include <QDebug>
+#include <qdebug.h>
 
 DataBase::DataBase() {
     // Überprüfen, ob bereits eine Verbindung mit dem Namen "MusicPlayerConnection" existiert
@@ -163,6 +167,16 @@ bool DataBase::insertPlaylist(const QString &playlistName) {
     }
     QSqlQuery query(db); // Use the correct database connection
 
+    // Check if the playlist already exists
+    query.prepare("SELECT COUNT(*) FROM Playlists WHERE Name = :name");
+    query.bindValue(":name", playlistName);
+    if (query.exec() && query.next()) {
+        if (query.value(0).toInt() > 0) {
+            return false; // Playlist already exists
+        }
+    }
+
+    // Insert the new playlist
     query.prepare("INSERT INTO Playlists (Name) VALUES (:name)");
     query.bindValue(":name", playlistName);
 
@@ -274,6 +288,10 @@ std::vector<QString> DataBase::getAllPlaylists() {
 }
 
 bool DataBase::removePlaylist(const QString &playlistName) {
+    if (playlistName == "Alle Songs") {
+        return false; // Prevent deletion of the "Alle Songs" playlist
+    }
+
     if (!open()) {
         return false;
     }
@@ -346,4 +364,28 @@ Track DataBase::getTrack(const QString &filePath) {
     return Track(); // Return an empty Track object if not found
 }
 
+void DataBase::checkFiles() {
+    QSqlQuery query(getDatabase());
+    query.prepare("SELECT TrackID, FilePath FROM Mediathek");
+    if (query.exec()) {
+        while (query.next()) {
+            int trackID = query.value("TrackID").toInt();
+            QString filePath = query.value("FilePath").toString();
+            if (!QFile::exists(filePath)) {
+                qDebug() << "File missing:" << filePath;
 
+                // Delete the track from Mediathek
+                QSqlQuery deleteQuery(getDatabase());
+                deleteQuery.prepare("DELETE FROM Mediathek WHERE TrackID = :trackID");
+                deleteQuery.bindValue(":trackID", trackID);
+                deleteQuery.exec();
+
+                // Delete the track from PlaylistTracks
+                deleteQuery.prepare("DELETE FROM PlaylistTracks WHERE TrackID = :trackID");
+                deleteQuery.bindValue(":trackID", trackID);
+                deleteQuery.exec();
+                qDebug() << "Track removed from database:" << trackID;
+            }
+        }
+    }
+}

@@ -33,15 +33,29 @@ Track::Track(const QString &filePath) : filePath(filePath), duration(0), sampleR
         sampleRate = 44100; // Default sample rate if not available
     }
 
-    if (!player.metaData().isEmpty()) {
-        artist = player.metaData().value(QMediaMetaData::AlbumArtist).toString();
-        album = player.metaData().value(QMediaMetaData::AlbumTitle).toString();
-        title = player.metaData().value(QMediaMetaData::Title).toString();
+QString albumArtist = player.metaData().value(QMediaMetaData::AlbumArtist).toString();
+QString contributingArtist = player.metaData().value(QMediaMetaData::ContributingArtist).toString();
+
+    if (!albumArtist.isEmpty() && !contributingArtist.isEmpty()) {
+        artist = albumArtist + ", " + contributingArtist;
+    } else if (!albumArtist.isEmpty()) {
+        artist = albumArtist;
+    } else if (!contributingArtist.isEmpty()) {
+        artist = contributingArtist;
     } else {
         artist = "unbekannt";
-        title = QFileInfo(this->filePath).fileName();
-        album = "unbekannt";
+    }
 
+    qDebug() << "Artist: " << artist;
+
+    album = player.metaData().value(QMediaMetaData::AlbumTitle).toString();
+    if (album.isEmpty()) {
+        album = "unbekannt";
+    }
+
+    title = player.metaData().value(QMediaMetaData::Title).toString();
+    if (title.isEmpty()) {
+        title = QFileInfo(this->filePath).fileName();
     }
 
 }

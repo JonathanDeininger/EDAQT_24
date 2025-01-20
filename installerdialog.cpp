@@ -128,29 +128,16 @@ void InstallerDialog::addAllSongsToPlaylist() {
         // Handle database open failure
         return;
     }
+    if(db.tableExists("Mediathek")) {
+        QSqlQuery query(db.getDatabase());
+        query.exec("SELECT TrackID FROM Mediathek");
 
-    // Create the "Alle Songs" playlist if it doesn't exist
-    if (!db.insertPlaylist("Alle Songs")) {
-        // Handle playlist creation failure
+        while (query.next()) {
+            int trackID = query.value(0).toInt();
+            db.insertPlaylistTrack(1, trackID);
+        }
     }
-
-    QSqlQuery query(db.getDatabase());
-    query.exec("SELECT TrackID FROM Mediathek");
-
-    while (query.next()) {
-        int trackID = query.value(0).toInt();
-        db.insertPlaylistTrack(1, trackID); // Assuming "Alle Songs" has PlaylistID 1
-    }
-
     db.close();
-}
-
-// Modify the method where songs are loaded into the database to call addAllSongsToPlaylist
-void InstallerDialog::loadSongsIntoDatabase() {
-    // ...existing code to load songs into the database...
-
-    // After loading all songs, add them to the "Alle Songs" playlist
-    addAllSongsToPlaylist();
 }
 
 bool InstallerDialog::isDatabaseEmpty() {

@@ -2,8 +2,10 @@
 #define SELECTTRACKDIALOG_H
 
 #include <QDialog>
-#include <QListWidget>
+#include <QLineEdit>
 #include <QPushButton>
+#include <QStandardItemModel>
+#include <QTableView>
 #include <QVBoxLayout>
 #include "track.h" // Include the Track header
 
@@ -17,11 +19,15 @@ public:
 
 private slots:
     void onTrackSelected();
+    void onSearchTextChanged(const QString &text);
 
 private:
-    QListWidget *trackListWidget;
+    QLineEdit *searchBar;
+    QTableView *trackTableView;
     QPushButton *selectButton;
+    QStandardItemModel *model;
     Track selectedTrack;
+    std::vector<Track> allTracks;
 };
 
 #endif // SELECTTRACKDIALOG_H

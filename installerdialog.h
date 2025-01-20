@@ -30,7 +30,7 @@ private:
     Ui::InstallerDialog *ui;
     DataBase dataBase;
     void addAllSongsToPlaylist(); // Add this method declaration
-    void loadSongsIntoDatabase(); // Add this method declaration
+    int totalSongsAdded;
 };
 
 #endif // INSTALLERDIALOG_H

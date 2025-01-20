@@ -22,9 +22,10 @@ int main(int argc, char *argv[]) {
         if (installerDialog.exec() != QDialog::Accepted) {
             return 0; // Exit the application if the installer dialog is not accepted
         }
+    } else {
+        // Check if all files are still in the path
+        db.checkFiles();
     }
-
-    // Create the "Alle Songs" playlist if it doesn't exist
 
     // Proceed to the main application
     MainWindow w;

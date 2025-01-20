@@ -60,7 +60,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>AddTrack</string>
+     <string>Add Track</string>
     </property>
    </widget>
    <widget class="QPushButton" name="RemoveTrack">
@@ -73,7 +73,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>RemoveTrack</string>
+     <string>Remove Track</string>
     </property>
    </widget>
    <widget class="QPushButton" name="AddPlaylistButton">
@@ -86,7 +86,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>AddPlaylist</string>
+     <string>Add Playlist</string>
     </property>
    </widget>
    <widget class="QLabel" name="currentSongLabel">
@@ -237,6 +237,19 @@
      </rect>
     </property>
    </widget>
+   <widget class="QPushButton" name="RemovePlaylist">
+    <property name="geometry">
+     <rect>
+      <x>960</x>
+      <y>230</y>
+      <width>101</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Remove Playlist</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -244,7 +257,7 @@
      <x>0</x>
      <y>0</y>
      <width>1144</width>
-     <height>21</height>
+     <height>33</height>
     </rect>
    </property>
   </widget>

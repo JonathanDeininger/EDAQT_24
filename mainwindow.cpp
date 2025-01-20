@@ -1,10 +1,10 @@
 #include "mainwindow.h"
-#include "playlist.h"
-#include "mediacontroller.h"
+#include <QInputDialog> // Include QInputDialog header
 #include "./ui_mainwindow.h"
 #include "installerdialog.h" // Include InstallerDialog header
+#include "mediacontroller.h"
+#include "playlist.h"
 #include "selecttrackdialog.h" // Include the SelectTrackDialog header
-#include <QInputDialog> // Include QInputDialog header
 #include <qdebug.h>
 #include <qlogging.h>
 
@@ -23,19 +23,35 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->Play, &QPushButton::clicked, this, &MainWindow::onPlayButtonPressed);
     connect(ui->LautstaerkeRegler, &QSlider::valueChanged, this, &MainWindow::onVolumeChanged);
     connect(ui->Pause, &QPushButton::clicked, this, &MainWindow::onPauseButtonPressed);
-    connect(ui->previousPushButton, &QPushButton::clicked, this, &MainWindow::onPreviousButtonPressed);
+    connect(ui->previousPushButton,
+            &QPushButton::clicked,
+            this,
+            &MainWindow::onPreviousButtonPressed);
     connect(ui->nextPushButton, &QPushButton::clicked, this, &MainWindow::onNextButtonPressed);
     connect(ui->Fortschrittslider, &QSlider::sliderReleased, this, &MainWindow::onSliderReleased);
     connect(ui->Fortschrittslider, &QSlider::sliderPressed, this, &MainWindow::onSliderPressed);
-    connect(mediaController, &MediaController::positionChanged,this, &MainWindow::updateProgressBar);
-    connect(mediaController, &MediaController::currentTrackChanged, this, &MainWindow::updateCurrentTrackInfo);
+    connect(mediaController,
+            &MediaController::positionChanged,
+            this,
+            &MainWindow::updateProgressBar);
+    connect(mediaController,
+            &MediaController::currentTrackChanged,
+            this,
+            &MainWindow::updateCurrentTrackInfo);
     connect(ui->searchBar, &QLineEdit::textChanged, this, &MainWindow::onSearchTextChanged);
-    connect(ui->Random,&QPushButton::clicked, this, &MainWindow::onRandomButtonPressed);
-    connect(ui->Repeat,&QPushButton::clicked, this, &MainWindow::onRepeatButtonPressed);
-    connect(ui->AddPlaylistButton, &QPushButton::clicked, this, &MainWindow::onAddPlaylistButtonClicked);
+    connect(ui->Random, &QPushButton::clicked, this, &MainWindow::onRandomButtonPressed);
+    connect(ui->Repeat, &QPushButton::clicked, this, &MainWindow::onRepeatButtonPressed);
+    connect(ui->AddPlaylistButton,
+            &QPushButton::clicked,
+            this,
+            &MainWindow::onAddPlaylistButtonClicked);
     connect(ui->AddTrackButton, &QPushButton::clicked, this, &MainWindow::onAddTrackButtonClicked);
-    connect(ui->PlaylistSammlung, &QListWidget::itemClicked, this, &MainWindow::onPlaylistSammlungItemClicked);
-    connect(ui->songTable,&QTableView::doubleClicked, this, &MainWindow::onSongTableItemClicked);
+    connect(ui->RemovePlaylist, &QPushButton::clicked, this, &MainWindow::onRemovePlaylistButtonClicked); // Connect the RemovePlaylist button
+    connect(ui->PlaylistSammlung,
+            &QListWidget::itemClicked,
+            this,
+            &MainWindow::onPlaylistSammlungItemClicked);
+    connect(ui->songTable, &QTableView::doubleClicked, this, &MainWindow::onSongTableItemClicked);
 
     // Show InstallerDialog if the database is empty
     InstallerDialog installerDialog;
@@ -53,66 +69,64 @@ MainWindow::MainWindow(QWidget *parent)
     ui->LautstaerkeRegler->setSliderPosition(50);
 }
 
-MainWindow::~MainWindow() {
+MainWindow::~MainWindow()
+{
     delete ui;
 }
 
-
-void MainWindow::setupSongTable(){
-
+void MainWindow::setupSongTable()
+{
     model->setHorizontalHeaderLabels({"#", "Titel", "Artist", "Duration"});
 
     // Modell an TableView binden
     ui->songTable->setModel(model);
 
     // Hover- und Auswahl-Stil
-    ui->songTable->setStyleSheet(
-        "QTableView::item:hover {"
-        "    background-color: none;"
-        "}"
-        "QTableView::item:selected {"
-        "    background-color: lightgrey;"
-        "    color: black;"
-        "}"
-        "QTableView::row:hover {"
-        "    background-color: lightblue;"
-        "}"
-        );
+    ui->songTable->setStyleSheet("QTableView::item:hover {"
+                                 "    background-color: none;"
+                                 "}"
+                                 "QTableView::item:selected {"
+                                 "    background-color: lightgrey;"
+                                 "    color: black;"
+                                 "}"
+                                 "QTableView::row:hover {"
+                                 "    background-color: lightblue;"
+                                 "}");
     // Einstellungen für die Zeilenauswahl
     ui->songTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
     ui->songTable->horizontalHeader()->setHighlightSections(false); // Header nicht markieren
-    ui->songTable->setSelectionBehavior(QTableView::SelectRows); // Ganze Zeile auswählen
-    ui->songTable->setSelectionMode(QTableView::SingleSelection); // Nur eine Zeile auswählbar
+    ui->songTable->setSelectionBehavior(QTableView::SelectRows);    // Ganze Zeile auswählen
+    ui->songTable->setSelectionMode(QTableView::SingleSelection);   // Nur eine Zeile auswählbar
     // ui->songTable->
     // Gitter entfernen
     ui->songTable->setShowGrid(false);
 
-
     // Header formatieren
     QHeaderView *header = ui->songTable->horizontalHeader();
     ui->songTable->verticalHeader()->setVisible(false); // Vertikalen Header ausblenden
-
-
 }
-
 
 //kann das weg??
 
-void MainWindow::onPlaylistItemClicked(QListWidgetItem *item) {
+void MainWindow::onPlaylistItemClicked(QListWidgetItem *item)
+{
     // ui->currentSongLabel->setText(item->text());
     // int index = ui->Playlist->row(item);
     // mediaController->setCurrentIndex(index);
     // mediaController->playPlaylist();
     // setProgressBarAndSongDurationLabel();
 }
-void MainWindow::onSongTableItemClicked(const QModelIndex &index){ //für später
+void MainWindow::onSongTableItemClicked(const QModelIndex &index)
+{ //für später
 
     // Aktuelle Zeile ermitteln
     int row = index.row();
 
+    //qDebug() << "Current index row:" << row;
     // Song-Details aus der Tabelle abrufen
     QString songTitle = model->item(row, 1)->text(); // Spalte 1: Titel
-    QString songFilePath = model->item(row, 0)->data(Qt::UserRole).toString(); // Dateipfad aus UserRole
+    QString songFilePath
+        = model->item(row, 0)->data(Qt::UserRole).toString(); // Dateipfad aus UserRole
 
     // Aktuelles Lied setzen
     ui->currentSongLabel->setText(songTitle);
@@ -121,7 +135,6 @@ void MainWindow::onSongTableItemClicked(const QModelIndex &index){ //für späte
 
     // Fortschrittsbalken und Song-Dauer setzen
     setProgressBarAndSongDurationLabel();
-
 }
 
 void MainWindow::setCurrentSongDuration(Track currentTrack)
@@ -132,56 +145,62 @@ void MainWindow::setCurrentSongDuration(Track currentTrack)
     int seconds = totalSeconds % 60;
 
     // Anzeige im Format hh:mm:ss
-    ui->currentSongDurationLabel->setText(
-        QString("%1:%2:%3")
-            .arg(hours, 2, 10, QChar('0'))
-            .arg(minutes, 2, 10, QChar('0'))
-            .arg(seconds, 2, 10, QChar('0'))
-        );
+    ui->currentSongDurationLabel->setText(QString("%1:%2:%3")
+                                              .arg(hours, 2, 10, QChar('0'))
+                                              .arg(minutes, 2, 10, QChar('0'))
+                                              .arg(seconds, 2, 10, QChar('0')));
 }
 
-void MainWindow::onPlayButtonPressed() {
+void MainWindow::onPlayButtonPressed()
+{
     mediaController->playCurrent();
 }
 
-void MainWindow::onVolumeChanged(float value) {
+void MainWindow::onVolumeChanged(float value)
+{
     mediaController->getAudioOutput()->setVolume(value / 100);
 }
 
-void MainWindow::onPauseButtonPressed() {
+void MainWindow::onPauseButtonPressed()
+{
     mediaController->pauseCurrent();
 }
 
-void MainWindow::onPreviousButtonPressed() {
+void MainWindow::onPreviousButtonPressed()
+{
     mediaController->prev();
     updateCurrentTrackDisplay();
 }
 
-void MainWindow::onNextButtonPressed() {
+void MainWindow::onNextButtonPressed()
+{
     mediaController->next();
     updateCurrentTrackDisplay();
 }
 
-void MainWindow::updateCurrentTrackInfo(int index) {
+void MainWindow::updateCurrentTrackInfo()
+{
 
-
+    int index = mediaController->getCurrentIndex();
     Track currentTrack = mediaController->getCurrentTrack();
     // Markiere die entsprechende Zeile in der TableView
-    QModelIndex modelIndex = model->index(index, 0); // Zeile: index, Spalte: 0 (oder eine andere Spalte, falls nötig)
-    ui->songTable->setCurrentIndex(modelIndex);      // Markiere die Zeile
-    ui->songTable->scrollTo(modelIndex);            // Scrolle zu der Zeile, falls sie nicht sichtbar ist
+    QModelIndex modelIndex
+        = model->index(index, 0); // Zeile: index, Spalte: 0 (oder eine andere Spalte, falls nötig)
+    ui->songTable->setCurrentIndex(modelIndex); // Markiere die Zeile
+    ui->songTable->scrollTo(modelIndex); // Scrolle zu der Zeile, falls sie nicht sichtbar ist
 
     // Setze den aktuellen Songtitel im Label
-    ui->currentSongLabel->setText(QString("%1 | %2").arg(currentTrack.getTitle(),currentTrack.getArtist()));
+    ui->currentSongLabel->setText(
+        QString("%1 | %2").arg(currentTrack.getTitle(), currentTrack.getArtist()));
     // Aktualisiere die Fortschrittsleiste und die Songdaueranzeige
     setProgressBarAndSongDurationLabel();
-
 }
 
-void MainWindow::updateProgressBar(qint64 currentSongPosition) {
+void MainWindow::updateProgressBar(qint64 currentSongPosition)
+{
     // Überprüft, ob der Benutzer den Slider gerade bewegt
     if (sliderBeingDragged) {
-        return;  // Funktion verlassen, wenn der Slider gerade bewegt wird
+        return; // Funktion verlassen, wenn der Slider gerade bewegt wird
     }
 
     Track currentTrack = mediaController->getCurrentTrack();
@@ -189,12 +208,14 @@ void MainWindow::updateProgressBar(qint64 currentSongPosition) {
     ui->Fortschrittslider->setValue(currentSongPosition);
 }
 
-void MainWindow::onSliderPressed() {
+void MainWindow::onSliderPressed()
+{
     // Setzt das Flag, wenn der Benutzer den Slider drückt
     sliderBeingDragged = true;
 }
 
-void MainWindow::onSliderReleased() {
+void MainWindow::onSliderReleased()
+{
     // Setzt das Flag zurück, wenn der Benutzer den Slider loslässt
     sliderBeingDragged = false;
 
@@ -204,51 +225,62 @@ void MainWindow::onSliderReleased() {
     ui->Fortschrittslider->setValue(currentPosition);
 }
 
-void MainWindow::setProgressBarAndSongDurationLabel() {
+void MainWindow::setProgressBarAndSongDurationLabel()
+{
     Track currentTrack = mediaController->getCurrentTrack();
     ui->Fortschrittslider->setRange(0, currentTrack.getDuration());
     setCurrentSongDuration(currentTrack);
 }
 
-
-void MainWindow::onRandomButtonPressed() {
-    // Wechsel des Shuffle-Status
-    isShuffleActive = !isShuffleActive;
-
-    // Ändere die Farbe des Buttons basierend auf dem Status
-    if (isShuffleActive) {
-        // Shuffle aktiv: Button grün färben
-        ui->Random->setStyleSheet("background-color: green; color: white;");
-        qDebug() << "Shuffle mode activated.";
-
-        // Starte mit der zufälligen Wiedergabe
-        mediaController->setCurrentIndex(0); // Erster Track in der zufälligen Reihenfolge
-        mediaController->playCurrent();
-    } else {
-        // Shuffle deaktiviert: Button rot färben
+void MainWindow::onRandomButtonPressed()
+{
+    mediaController->toggleShuffle();
+    if (mediaController->getIsShuffleActive()) {
         ui->Random->setStyleSheet("background-color: red; color: white;");
-        qDebug() << "Shuffle mode deactivated.";
+    } else {
+        ui->Random->setStyleSheet(""); // Reset auf den Standard-Stil
     }
 }
 
 void MainWindow::onRepeatButtonPressed()
 {
-    return;
+    RepeatMode mode = mediaController->getRepeatMode();
+
+    switch (mode) {
+    case RepeatMode::NoRepeat:
+        mediaController->setRepeatMode(RepeatMode::RepeatPlaylist);
+        ui->Repeat->setStyleSheet("background-color: green; color: white;");
+        break;
+    case RepeatMode::RepeatPlaylist:
+        mediaController->setRepeatMode(RepeatMode::RepeatTrack);
+        ui->Repeat->setStyleSheet("background-color: red; color: white;");
+        break;
+    case RepeatMode::RepeatTrack:
+        mediaController->setRepeatMode(RepeatMode::NoRepeat);
+        ui->Repeat->setStyleSheet(""); // Reset to the default style
+        break;
+    }
 }
 
 void MainWindow::onSearchTextChanged(const QString &text)
 {
-    for (int i = 0; i < ui->Playlist->count(); ++i) {
-        QListWidgetItem *item = ui->Playlist->item(i);
-        bool match = item->text().contains(text, Qt::CaseInsensitive);
-        item->setHidden(!match);
+    for (int i = 0; i < model->rowCount(); ++i) {
+        bool match = false;
+        for (int j = 0; j < model->columnCount(); ++j) {
+            QStandardItem *item = model->item(i, j);
+            if (item && item->text().contains(text, Qt::CaseInsensitive)) {
+                match = true;
+                break;
+            }
+        }
+        ui->songTable->setRowHidden(i, !match);
     }
 }
-
 // Diese Methode wird aufgerufen, wenn der "Playlist hinzufügen"-Button geklickt wird und fügt eine neue Playlist hinzu
 // zur Datenbank und lädt die aktualisierte PlaylistSammlung
 
-void MainWindow::onAddPlaylistButtonClicked() {
+void MainWindow::onAddPlaylistButtonClicked()
+{
     // Prompt the user to enter a name for the new playlist
     QString playlistName = QInputDialog::getText(this, tr("Add Playlist"), tr("Playlist Name:"));
     if (!playlistName.isEmpty()) {
@@ -262,7 +294,8 @@ void MainWindow::onAddPlaylistButtonClicked() {
 }
 // Diese Methode wird aufgerufen, wenn der "Track hinzufügen"-Button geklickt wird und fügt
 // einen Track zur aktuellen Playlist hinzu
-void MainWindow::onAddTrackButtonClicked() {
+void MainWindow::onAddTrackButtonClicked()
+{
     // Lade die "Alle Songs"-Playlist
     Playlist allSongsPlaylist = db.getPlaylist("Alle Songs");
 
@@ -285,19 +318,22 @@ void MainWindow::onAddTrackButtonClicked() {
 
             // Aktualisiere die UI, um den neuen Track anzuzeigen
             loadPlaylist(playList.getName());
+            loadPlaylistInTable(playList.getName()); // Reload the playlist in the table
         }
     }
 }
 // Diese Methode wird aufgerufen, wenn ein Element in der PlaylistSammlung geklickt wird und
 // lädt die ausgewählte Playlist
-void MainWindow::onPlaylistSammlungItemClicked(QListWidgetItem *item) {
+void MainWindow::onPlaylistSammlungItemClicked(QListWidgetItem *item)
+{
     QString playlistName = item->text();
     loadPlaylist(playlistName);
     loadPlaylistInTable(playlistName);
 }
 
 // Diese Methode lädt alle Playlists aus der Datenbank und fügt sie zur PlaylistSammlung hinzu (QListWidget)
-void MainWindow::loadPlaylistsFromDatabase() {
+void MainWindow::loadPlaylistsFromDatabase()
+{
     ui->PlaylistSammlung->clear();
     std::vector<QString> playlists = db.getAllPlaylists();
     for (const auto &playlistName : playlists) {
@@ -308,7 +344,8 @@ void MainWindow::loadPlaylistsFromDatabase() {
 // Diese Methode lädt die Playlist mit dem angegebenen Namen aus der Datenbank
 // und fügt die Tracks zur Playlist hinzu und zeigt sie in der QListWidget an
 
-void MainWindow::loadPlaylist(const QString &playlistName) {
+void MainWindow::loadPlaylist(const QString &playlistName)
+{
     Playlist playlist = db.getPlaylist(playlistName);
     playList.setName(playlistName);
     playList.setTracks(playlist.getTracks());
@@ -320,7 +357,8 @@ void MainWindow::loadPlaylist(const QString &playlistName) {
     db.close();
 }
 
-void MainWindow::loadPlaylistInTable(const QString &playlistName) {
+void MainWindow::loadPlaylistInTable(const QString &playlistName)
+{
     // Playlist aus der Datenbank laden
     Playlist playlist = db.getPlaylist(playlistName);
     playList.setName(playlistName);
@@ -330,7 +368,7 @@ void MainWindow::loadPlaylistInTable(const QString &playlistName) {
     model->clear(); // Vorherige Daten löschen
 
     // Header-Titel setzen
-    model->setHorizontalHeaderLabels({"#" ,"Title", "Artist", "Duration"});
+    model->setHorizontalHeaderLabels({"#", "Title", "Artist", "Duration"});
 
     // Daten aus der Playlist ins Modell einfügen
     int row = 0;
@@ -369,7 +407,8 @@ void MainWindow::loadPlaylistInTable(const QString &playlistName) {
 }
 // Diese Methode aktualisiert die Anzeige des aktuellen Tracks in der UI
 
-void MainWindow::updateCurrentTrackDisplay() {
+void MainWindow::updateCurrentTrackDisplay()
+{
     // Track currentTrack = mediaController->getCurrentTrack();
     // QString currentTitle = currentTrack.getTitle();
     // ui->currentSongLabel->setText(currentTitle);
@@ -391,5 +430,20 @@ void MainWindow::updateCurrentTrackDisplay() {
 
     // Fortschrittsbalken und Song-Dauer aktualisieren
     setProgressBarAndSongDurationLabel();
+}
 
+void MainWindow::onRemovePlaylistButtonClicked()
+{
+    QListWidgetItem *currentItem = ui->PlaylistSammlung->currentItem();
+    if (currentItem) {
+        QString playlistName = currentItem->text();
+        if (db.removePlaylist(playlistName)) {
+            loadPlaylistsFromDatabase();
+            ui->Playlist->clear();
+            model->clear();
+            ui->currentSongLabel->clear();
+        } else {
+            QMessageBox::warning(this, tr("Error"), tr("Failed to remove playlist or 'Alle Songs' playlist cannot be removed."));
+        }
+    }
 }
