@@ -7,6 +7,7 @@
 #include "selecttrackdialog.h" // Include the SelectTrackDialog header
 #include <qdebug.h>
 #include <qlogging.h>
+#include <vector>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -49,6 +50,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->RemovePlaylist, &QPushButton::clicked, this, &MainWindow::onRemovePlaylistButtonClicked); // Connect the RemovePlaylist button
     connect(ui->AddFolder, &QPushButton::clicked, this, &MainWindow::onAddFolderButtonClicked); // Connect the AddFolder button
     connect(ui->RefreshFiles, &QPushButton::clicked, this, &MainWindow::onRefreshFilesButtonClicked); // Connect the RefreshFiles button
+    connect(ui->RemoveTrack, &QPushButton::clicked, this, &MainWindow::onRemoveTrackButtonClicked); // Connect the RemoveTrack button
     connect(ui->PlaylistSammlung,
             &QListWidget::itemClicked,
             this,
@@ -336,10 +338,11 @@ void MainWindow::onPlaylistSammlungItemClicked(QListWidgetItem *item)
 void MainWindow::loadPlaylistsFromDatabase()
 {
     ui->PlaylistSammlung->clear();
-    std::vector<QString> playlists = db.getAllPlaylists();
-    for (const auto &playlistName : playlists) {
-        ui->PlaylistSammlung->addItem(new QListWidgetItem(playlistName));
+    std::vector<Playlist> playlists = db.getAllPlaylists();
+    for (const auto &playlist : playlists) {
+        ui->PlaylistSammlung->addItem(new QListWidgetItem(playlist.getName()));
     }
+
 }
 
 // Diese Methode lädt die Playlist mit dem angegebenen Namen aus der Datenbank
@@ -364,6 +367,8 @@ void MainWindow::loadPlaylistInTable(const QString &playlistName)
 {
     // Playlist aus der Datenbank laden
     Playlist playlist = db.getPlaylist(playlistName);
+    playList.setPlaylistID(playlist.getPlaylistID());
+    qDebug() << "Playlist ID:" << playList.getPlaylistID();
     playList.setName(playlistName);
     playList.setTracks(playlist.getTracks());
 
@@ -475,4 +480,24 @@ void MainWindow::onRefreshFilesButtonClicked() {
     }
     loadPlaylistInTable("Alle Songs");
     db.checkFiles(); // Execute the checkFiles function of the database
+}
+
+void MainWindow::onRemoveTrackButtonClicked() {
+    QModelIndex currentIndex = ui->songTable->currentIndex();
+    if (!currentIndex.isValid()) {
+        QMessageBox::warning(this, tr("Fehler"), tr("Kein Track ausgewählt."));
+        return;
+    }
+
+    int row = currentIndex.row();
+    int trackID = playList.getTracks().at(row).getTrackID();
+    qDebug() << "Track ID:" << trackID;
+    int playlistID = playList.getPlaylistID();
+    qDebug() << "Playlist ID:" << playlistID;
+
+    if (db.removeTrackFromPlaylist(playlistID, trackID)) {
+        loadPlaylistInTable(playList.getName()); // Reload the playlist in the table
+    } else {
+        QMessageBox::warning(this, tr("Fehler"), tr("Track konnte nicht entfernt werden."));
+    }
 }

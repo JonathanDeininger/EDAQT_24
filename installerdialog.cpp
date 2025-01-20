@@ -1,6 +1,5 @@
 #include "installerdialog.h"
 #include "ui_installerdialog.h"
-#include "track.h"
 #include <QMediaPlayer>
 #include <QMediaMetaData>
 #include "database.h"

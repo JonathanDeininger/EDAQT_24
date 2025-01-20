@@ -216,6 +216,24 @@ bool DataBase::insertPlaylistTrack(int playlistID, int trackID) {
     return true;
 }
 
+bool DataBase::removeTrackFromPlaylist(int playlistID, int trackID) {
+    if (!open()) {
+        return false;
+    }
+    QSqlQuery query(db); // Use the correct database connection
+
+    query.prepare("DELETE FROM PlaylistTracks WHERE PlaylistID = :playlistID AND TrackID = :trackID");
+    query.bindValue(":playlistID", playlistID);
+    query.bindValue(":trackID", trackID);
+
+    if (!query.exec()) {
+        return false;
+        qDebug() << "Track konnte nicht entfernt werden.";
+    }
+
+    return true;
+}
+
 bool DataBase::tableExists(const QString &tableName) {
     if (!open()) {
         return false;
@@ -251,6 +269,7 @@ Playlist DataBase::getPlaylist(const QString &playlistName) {
     }
     int playlistID = query.value(0).toInt();
 
+    playlist.setPlaylistID(playlistID);
     // Clear the playlist before adding tracks
     playlist.setTracks(std::vector<Track>());
 
@@ -279,21 +298,31 @@ Playlist DataBase::getPlaylist(const QString &playlistName) {
     return playlist;
 }
 
-std::vector<QString> DataBase::getAllPlaylists() {
-    std::vector<QString> playlists;
+std::vector<Playlist> DataBase::getAllPlaylists() {
+    std::vector<Playlist> playlists;
 
     if (!open()) {
         return playlists;
     }
 
     QSqlQuery query(db);
-    query.prepare("SELECT Name FROM Playlists");
+    query.prepare("SELECT PlaylistID, Name FROM Playlists");
     if (!query.exec()) {
         return playlists;
     }
 
     while (query.next()) {
-        playlists.push_back(query.value(0).toString());
+        int playlistID = query.value("PlaylistID").toInt();
+        QString playlistName = query.value("Name").toString();
+        Playlist playlist;
+        playlist.setPlaylistID(playlistID);
+        playlist.setName(playlistName);
+        playlists.push_back(playlist); // Push the Playlist object into the vector
+    }
+
+    // Debug output for all playlist IDs and names
+    for (const auto &playlist : playlists) {
+        qDebug() << "Playlist ID:" << playlist.getPlaylistID() << "Name:" << playlist.getName();
     }
 
     return playlists;

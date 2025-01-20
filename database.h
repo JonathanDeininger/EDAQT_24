@@ -29,7 +29,7 @@ public:
     void close();
     QSqlDatabase& getDatabase();
     Playlist getPlaylist(const QString &playlistName); // Deklaration der Methode
-    std::vector<QString> getAllPlaylists();
+    std::vector<Playlist> getAllPlaylists();
     bool removePlaylist(const QString &playlistName);
     int getPlaylistID(const QString &playlistName); // Add this method declaration
     // int getTrackID(const QString &filePath); // Add this method declaration
@@ -37,6 +37,7 @@ public:
     void checkFiles(); // Add this method declaration
     void processFiles(const QString &basePath, const QStringList &fileList);
     void processDirectory(const QDir &directory);
+    bool removeTrackFromPlaylist(int playlistID, int trackID); // Add this method declaration
 
 private:
     QSqlDatabase db;

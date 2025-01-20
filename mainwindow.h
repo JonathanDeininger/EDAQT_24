@@ -9,6 +9,7 @@
 #include <QMimeData> // Include the QMimeData header
 #include <QStandardItemModel>
 #include <QTimer>
+#include <vector>
 #include "Playlist.h" // Include the Playlist header
 #include "database.h" // Include the database header
 #include "mediacontroller.h"
@@ -50,6 +51,7 @@ private slots:
     void onRemovePlaylistButtonClicked(); // Add this method declaration
     void onAddFolderButtonClicked(); // Add this method declaration
     void onRefreshFilesButtonClicked(); // Add this method declaration
+    void onRemoveTrackButtonClicked(); // Add this method declaration
     void onPlaylistSammlungItemClicked(QListWidgetItem *item);
     void loadPlaylistsFromDatabase(); // Add this method to load playlists from the database
     void updateCurrentTrackDisplay(); // Add this method declaration
