@@ -48,6 +48,8 @@ public:
     QLineEdit *searchBar;
     QTableView *songTable;
     QPushButton *RemovePlaylist;
+    QPushButton *AddFolder;
+    QPushButton *RefreshFiles;
     QMenuBar *menubar;
     QStatusBar *statusbar;
 
@@ -122,6 +124,12 @@ public:
         RemovePlaylist = new QPushButton(centralwidget);
         RemovePlaylist->setObjectName("RemovePlaylist");
         RemovePlaylist->setGeometry(QRect(960, 230, 101, 24));
+        AddFolder = new QPushButton(centralwidget);
+        AddFolder->setObjectName("AddFolder");
+        AddFolder->setGeometry(QRect(960, 270, 101, 24));
+        RefreshFiles = new QPushButton(centralwidget);
+        RefreshFiles->setObjectName("RefreshFiles");
+        RefreshFiles->setGeometry(QRect(960, 310, 101, 24));
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName("menubar");
@@ -151,6 +159,8 @@ public:
         Random->setText(QString());
         Repeat->setText(QString());
         RemovePlaylist->setText(QCoreApplication::translate("MainWindow", "Remove Playlist", nullptr));
+        AddFolder->setText(QCoreApplication::translate("MainWindow", "Add Folder", nullptr));
+        RefreshFiles->setText(QCoreApplication::translate("MainWindow", "Refresh Files", nullptr));
     } // retranslateUi
 
 };

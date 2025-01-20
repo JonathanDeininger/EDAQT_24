@@ -121,6 +121,14 @@ bool DataBase::insertData(const QString &filePath, const QString &interpret, con
     }
     QSqlQuery query(db); // Use the correct database connection
 
+    // Check if the file path already exists in the database
+    query.prepare("SELECT TrackID FROM Mediathek WHERE FilePath = :filePath");
+    query.bindValue(":filePath", filePath);
+    if (query.exec() && query.next()) {
+        qDebug() << "File path already exists in the database:" << filePath;
+        return false; // File path already exists
+    }
+
     // SQL-Befehl zum Einfügen von Daten
     query.prepare("INSERT INTO Mediathek (FilePath, Interpret, Album, Titel, Spielzeit, SampleRate) "
                   "VALUES (:filePath, :interpret, :album, :titel, :spielzeit, :sampleRate)");
@@ -137,7 +145,11 @@ bool DataBase::insertData(const QString &filePath, const QString &interpret, con
         return false;
     }
 
-    return true;
+    // Get the TrackID of the newly inserted track
+    int trackID = query.lastInsertId().toInt();
+
+    // Add the track to the "Alle Songs" playlist<
+    return insertPlaylistTrack(1, trackID);
 }
 
 bool DataBase::insertPath(const QString &path) {
@@ -314,37 +326,6 @@ bool DataBase::removePlaylist(const QString &playlistName) {
     return true;
 }
 
-bool DataBase::createAllSongsPlaylist() {
-    if (!db.isOpen()) {
-        if (!open()) {
-            return false;
-        }
-    }
-
-    std::vector<int> songIDs;
-    QSqlQuery query(db);
-
-    // Retrieve all song IDs from Mediathek
-    query.prepare("SELECT TrackID FROM Mediathek");
-    if (query.exec()) {
-        while (query.next()) {
-            songIDs.push_back(query.value(0).toInt());
-        }
-    } else {
-        return false;
-    }
-
-    // Insert all song IDs into PlaylistTracks with PlaylistID = 1
-    query.prepare("INSERT INTO PlaylistTracks (PlaylistID, TrackID) VALUES (1, :trackID)");
-    for (int trackID : songIDs) {
-        query.bindValue(":trackID", trackID);
-        if (!query.exec()) {
-            return false;
-        }
-    }
-
-    return true;
-}
 
 Track DataBase::getTrack(const QString &filePath) {
     QSqlQuery query(db);
@@ -364,7 +345,12 @@ Track DataBase::getTrack(const QString &filePath) {
     return Track(); // Return an empty Track object if not found
 }
 
+//diese funktion überprüft ob die Dateien noch vorhanden sind und durchsucht die Pfade in der Pathlist nach neuen Dateien
+
 void DataBase::checkFiles() {
+    if (!open()) {
+        return;
+    }
     QSqlQuery query(getDatabase());
     query.prepare("SELECT TrackID, FilePath FROM Mediathek");
     if (query.exec()) {
@@ -387,5 +373,45 @@ void DataBase::checkFiles() {
                 qDebug() << "Track removed from database:" << trackID;
             }
         }
+    }
+
+    // Check directories in Pathlist for new files
+    query.prepare("SELECT MusikPfad FROM Pathlist");
+    if (query.exec()) {
+        while (query.next()) {
+            QString directoryPath = query.value("MusikPfad").toString();
+            QDir directory(directoryPath);
+            if (directory.exists()) {
+                processDirectory(directory);
+            } else {
+                // Remove the directory from Pathlist if it no longer exists
+                QSqlQuery deleteQuery(getDatabase());
+                deleteQuery.prepare("DELETE FROM Pathlist WHERE MusikPfad = :directoryPath");
+                deleteQuery.bindValue(":directoryPath", directoryPath);
+                deleteQuery.exec();
+                qDebug() << "Directory removed from Pathlist:" << directoryPath;
+            }
+        }
+    }
+}
+
+void DataBase::processFiles(const QString &basePath, const QStringList &fileList) {
+    foreach (const QString &fileName, fileList) {
+        Track track(QDir(basePath).absoluteFilePath(fileName));
+        // Daten in die Datenbank einfügen
+        if (!insertData(track.getFilePath(), track.getArtist(), track.getAlbum(), track.getTitle(), track.getDuration(), track.getSampleRate())) {
+            // Handle data insertion failure
+        }
+    }
+}
+
+void DataBase::processDirectory(const QDir &directory) {
+    QStringList audioFiles = directory.entryList(QStringList() << "*.mp3" << "*.wav" << "*.flac" << "*.aac", QDir::Files);
+    processFiles(directory.absolutePath(), audioFiles);
+
+    QStringList subDirs = directory.entryList(QDir::Dirs | QDir::NoDotAndDotDot);
+    foreach (const QString &subDir, subDirs) {
+        QDir subDirectory(directory.absoluteFilePath(subDir));
+        processDirectory(subDirectory);
     }
 }

@@ -53,27 +53,6 @@ InstallerDialog::~InstallerDialog()
     delete ui;
 }
 
-void processFiles(DataBase &dataBase, const QString &basePath, const QStringList &fileList) {
-    foreach (const QString &fileName, fileList) {
-        Track track(QDir(basePath).absoluteFilePath(fileName));
-        // Daten in die Datenbank einfügen
-        if (!dataBase.insertData(track.getFilePath(), track.getArtist(), track.getAlbum(), track.getTitle(), track.getDuration(), track.getSampleRate())) {
-            // Handle data insertion failure
-        }
-    }
-}
-
-void processDirectory(DataBase &dataBase, const QDir &directory) {
-    QStringList audioFiles = directory.entryList(QStringList() << "*.mp3" << "*.wav" << "*.flac" << "*.aac", QDir::Files);
-    processFiles(dataBase, directory.absolutePath(), audioFiles);
-
-    QStringList subDirs = directory.entryList(QDir::Dirs | QDir::NoDotAndDotDot);
-    foreach (const QString &subDir, subDirs) {
-        QDir subDirectory(directory.absoluteFilePath(subDir));
-        processDirectory(dataBase, subDirectory);
-    }
-}
-
 bool hasAudioFiles(const QDir &directory) {
     QStringList audioFiles = directory.entryList(QStringList() << "*.mp3" << "*.wav" << "*.flac" << "*.aac", QDir::Files);
     if (!audioFiles.isEmpty()) {
@@ -99,11 +78,10 @@ void InstallerDialog::onNextButtonClicked() {
         return;
     }
 
-    processDirectory(dataBase, directory); // Process the base directory and its subdirectories
+    dataBase.processDirectory(directory); // Process the base directory and its subdirectories
     bool successInsertPath = dataBase.insertPath(directory.absolutePath());
     if (successInsertPath) {
         // Create the "Alle Songs" playlist after inserting all tracks
-        dataBase.createAllSongsPlaylist();
         accept(); // Close the dialog and return QDialog::Accepted
     }
 }
@@ -122,23 +100,6 @@ void InstallerDialog::onChooseMusicFolderClicked() {
     }
 }
 
-void InstallerDialog::addAllSongsToPlaylist() {
-    DataBase db;
-    if (!db.open()) {
-        // Handle database open failure
-        return;
-    }
-    if(db.tableExists("Mediathek")) {
-        QSqlQuery query(db.getDatabase());
-        query.exec("SELECT TrackID FROM Mediathek");
-
-        while (query.next()) {
-            int trackID = query.value(0).toInt();
-            db.insertPlaylistTrack(1, trackID);
-        }
-    }
-    db.close();
-}
 
 bool InstallerDialog::isDatabaseEmpty() {
     QSqlQuery query(dataBase.getDatabase());

@@ -31,11 +31,12 @@ public:
     Playlist getPlaylist(const QString &playlistName); // Deklaration der Methode
     std::vector<QString> getAllPlaylists();
     bool removePlaylist(const QString &playlistName);
-    bool createAllSongsPlaylist(); // Behalten Sie diese Methode
     int getPlaylistID(const QString &playlistName); // Add this method declaration
     // int getTrackID(const QString &filePath); // Add this method declaration
     Track getTrack(const QString &filePath); // Add this method declaration
     void checkFiles(); // Add this method declaration
+    void processFiles(const QString &basePath, const QStringList &fileList);
+    void processDirectory(const QDir &directory);
 
 private:
     QSqlDatabase db;

@@ -48,6 +48,8 @@ private slots:
     void onAddPlaylistButtonClicked();
     void onAddTrackButtonClicked(); // Add this method declaration
     void onRemovePlaylistButtonClicked(); // Add this method declaration
+    void onAddFolderButtonClicked(); // Add this method declaration
+    void onRefreshFilesButtonClicked(); // Add this method declaration
     void onPlaylistSammlungItemClicked(QListWidgetItem *item);
     void loadPlaylistsFromDatabase(); // Add this method to load playlists from the database
     void updateCurrentTrackDisplay(); // Add this method declaration

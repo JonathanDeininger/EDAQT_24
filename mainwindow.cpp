@@ -47,6 +47,8 @@ MainWindow::MainWindow(QWidget *parent)
             &MainWindow::onAddPlaylistButtonClicked);
     connect(ui->AddTrackButton, &QPushButton::clicked, this, &MainWindow::onAddTrackButtonClicked);
     connect(ui->RemovePlaylist, &QPushButton::clicked, this, &MainWindow::onRemovePlaylistButtonClicked); // Connect the RemovePlaylist button
+    connect(ui->AddFolder, &QPushButton::clicked, this, &MainWindow::onAddFolderButtonClicked); // Connect the AddFolder button
+    connect(ui->RefreshFiles, &QPushButton::clicked, this, &MainWindow::onRefreshFilesButtonClicked); // Connect the RefreshFiles button
     connect(ui->PlaylistSammlung,
             &QListWidget::itemClicked,
             this,
@@ -63,7 +65,6 @@ MainWindow::MainWindow(QWidget *parent)
     loadPlaylistsFromDatabase();
 
     // Load the "Alle Songs" playlist
-    loadPlaylist("Alle Songs");
     loadPlaylistInTable("Alle Songs");
 
     ui->LautstaerkeRegler->setSliderPosition(50);
@@ -357,6 +358,8 @@ void MainWindow::loadPlaylist(const QString &playlistName)
     db.close();
 }
 
+
+
 void MainWindow::loadPlaylistInTable(const QString &playlistName)
 {
     // Playlist aus der Datenbank laden
@@ -446,4 +449,30 @@ void MainWindow::onRemovePlaylistButtonClicked()
             QMessageBox::warning(this, tr("Error"), tr("Failed to remove playlist or 'Alle Songs' playlist cannot be removed."));
         }
     }
+}
+
+void MainWindow::onAddFolderButtonClicked() {
+    QString folderPath = QFileDialog::getExistingDirectory(this, tr("Wähle einen Ordner"), QDir::homePath());
+    if (folderPath.isEmpty()) {
+        return;
+    }
+
+    QDir directory(folderPath);
+    db.processDirectory(directory); // Process the selected directory and its subdirectories
+    bool successInsertPath = db.insertPath(directory.absolutePath());
+    if (successInsertPath) {
+        // Create the "Alle Songs" playlist after inserting all tracks
+        loadPlaylistInTable("Alle Songs");
+    } else {
+        QMessageBox::warning(this, tr("Fehler"), tr("Der Pfad konnte nicht in die Datenbank geschrieben werden."));
+    }
+}
+
+void MainWindow::onRefreshFilesButtonClicked() {
+    if (!db.open()) {
+        QMessageBox::warning(this, tr("Fehler"), tr("Datenbank konnte nicht geöffnet werden."));
+        return;
+    }
+    loadPlaylistInTable("Alle Songs");
+    db.checkFiles(); // Execute the checkFiles function of the database
 }
