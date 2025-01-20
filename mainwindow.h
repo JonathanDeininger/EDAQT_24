@@ -9,11 +9,9 @@
 #include <QMimeData> // Include the QMimeData header
 #include <QStandardItemModel>
 #include <QTimer>
-#include <vector>
 #include "Playlist.h" // Include the Playlist header
 #include "database.h" // Include the database header
 #include "mediacontroller.h"
-#include "selecttrackdialog.h" // Include the SelectTrackDialog header
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -30,7 +28,6 @@ public:
     ~MainWindow();
 
 private slots:
-    void onPlaylistItemClicked(QListWidgetItem *item);
     void onSongTableItemClicked(const QModelIndex &index); // für später
     void onPlayButtonPressed();
     void onVolumeChanged(float value);

@@ -19,42 +19,26 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     setupSongTable();
     progressTimer = new QTimer(this);
-    connect(ui->Playlist, &QListWidget::itemClicked, this, &MainWindow::onPlaylistItemClicked);
     // Fix incorrect member name
     connect(ui->Play, &QPushButton::clicked, this, &MainWindow::onPlayButtonPressed);
     connect(ui->LautstaerkeRegler, &QSlider::valueChanged, this, &MainWindow::onVolumeChanged);
     connect(ui->Pause, &QPushButton::clicked, this, &MainWindow::onPauseButtonPressed);
-    connect(ui->previousPushButton,
-            &QPushButton::clicked,
-            this,
-            &MainWindow::onPreviousButtonPressed);
+    connect(ui->previousPushButton,&QPushButton::clicked,this,&MainWindow::onPreviousButtonPressed);
     connect(ui->nextPushButton, &QPushButton::clicked, this, &MainWindow::onNextButtonPressed);
     connect(ui->Fortschrittslider, &QSlider::sliderReleased, this, &MainWindow::onSliderReleased);
     connect(ui->Fortschrittslider, &QSlider::sliderPressed, this, &MainWindow::onSliderPressed);
-    connect(mediaController,
-            &MediaController::positionChanged,
-            this,
-            &MainWindow::updateProgressBar);
-    connect(mediaController,
-            &MediaController::currentTrackChanged,
-            this,
-            &MainWindow::updateCurrentTrackInfo);
+    connect(mediaController,&MediaController::positionChanged,this,&MainWindow::updateProgressBar);
+    connect(mediaController,&MediaController::currentTrackChanged,this,&MainWindow::updateCurrentTrackInfo);
     connect(ui->searchBar, &QLineEdit::textChanged, this, &MainWindow::onSearchTextChanged);
     connect(ui->Random, &QPushButton::clicked, this, &MainWindow::onRandomButtonPressed);
     connect(ui->Repeat, &QPushButton::clicked, this, &MainWindow::onRepeatButtonPressed);
-    connect(ui->AddPlaylistButton,
-            &QPushButton::clicked,
-            this,
-            &MainWindow::onAddPlaylistButtonClicked);
+    connect(ui->AddPlaylistButton,&QPushButton::clicked,this,&MainWindow::onAddPlaylistButtonClicked);
     connect(ui->AddTrackButton, &QPushButton::clicked, this, &MainWindow::onAddTrackButtonClicked);
     connect(ui->RemovePlaylist, &QPushButton::clicked, this, &MainWindow::onRemovePlaylistButtonClicked); // Connect the RemovePlaylist button
     connect(ui->AddFolder, &QPushButton::clicked, this, &MainWindow::onAddFolderButtonClicked); // Connect the AddFolder button
     connect(ui->RefreshFiles, &QPushButton::clicked, this, &MainWindow::onRefreshFilesButtonClicked); // Connect the RefreshFiles button
     connect(ui->RemoveTrack, &QPushButton::clicked, this, &MainWindow::onRemoveTrackButtonClicked); // Connect the RemoveTrack button
-    connect(ui->PlaylistSammlung,
-            &QListWidget::itemClicked,
-            this,
-            &MainWindow::onPlaylistSammlungItemClicked);
+    connect(ui->PlaylistSammlung,&QListWidget::itemClicked,this,&MainWindow::onPlaylistSammlungItemClicked);
     connect(ui->songTable, &QTableView::doubleClicked, this, &MainWindow::onSongTableItemClicked);
 
     // Show InstallerDialog if the database is empty
@@ -109,16 +93,6 @@ void MainWindow::setupSongTable()
     ui->songTable->verticalHeader()->setVisible(false); // Vertikalen Header ausblenden
 }
 
-//kann das weg??
-
-void MainWindow::onPlaylistItemClicked(QListWidgetItem *item)
-{
-    // ui->currentSongLabel->setText(item->text());
-    // int index = ui->Playlist->row(item);
-    // mediaController->setCurrentIndex(index);
-    // mediaController->playPlaylist();
-    // setProgressBarAndSongDurationLabel();
-}
 void MainWindow::onSongTableItemClicked(const QModelIndex &index)
 { //für später
 
@@ -128,8 +102,7 @@ void MainWindow::onSongTableItemClicked(const QModelIndex &index)
     //qDebug() << "Current index row:" << row;
     // Song-Details aus der Tabelle abrufen
     QString songTitle = model->item(row, 1)->text(); // Spalte 1: Titel
-    QString songFilePath
-        = model->item(row, 0)->data(Qt::UserRole).toString(); // Dateipfad aus UserRole
+    QString songFilePath= model->item(row, 0)->data(Qt::UserRole).toString(); // Dateipfad aus UserRole
 
     // Aktuelles Lied setzen
     ui->currentSongLabel->setText(songTitle);
@@ -478,8 +451,8 @@ void MainWindow::onRefreshFilesButtonClicked() {
         QMessageBox::warning(this, tr("Fehler"), tr("Datenbank konnte nicht geöffnet werden."));
         return;
     }
-    loadPlaylistInTable("Alle Songs");
     db.checkFiles(); // Execute the checkFiles function of the database
+    loadPlaylistInTable("Alle Songs");
 }
 
 void MainWindow::onRemoveTrackButtonClicked() {
@@ -494,10 +467,17 @@ void MainWindow::onRemoveTrackButtonClicked() {
     qDebug() << "Track ID:" << trackID;
     int playlistID = playList.getPlaylistID();
     qDebug() << "Playlist ID:" << playlistID;
+    if (playlistID != 1){
 
-    if (db.removeTrackFromPlaylist(playlistID, trackID)) {
-        loadPlaylistInTable(playList.getName()); // Reload the playlist in the table
-    } else {
-        QMessageBox::warning(this, tr("Fehler"), tr("Track konnte nicht entfernt werden."));
+        if (db.removeTrackFromPlaylist(playlistID, trackID)) {
+            loadPlaylistInTable(playList.getName()); // Reload the playlist in the table
+        } else {
+            QMessageBox::warning(this, tr("Fehler"), tr("Track konnte nicht entfernt werden."));
+        }
+
+    }
+    else
+    {
+        QMessageBox::warning(this,tr("Fehler"),tr("Track kann nicht von Alle Songs entfernt werden"));
     }
 }
